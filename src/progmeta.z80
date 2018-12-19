@@ -2,16 +2,32 @@
 ;It indexes labels, and sets up space for variables.
 progmeta:
   ret
-;$1D is for an array
-;Need to create a variable for the label indexes
-;Data starts as:
-;   .db 1,0   ;name is just 0x01
-;   .db $1D   ;array
-;   .dw 2     ;size of each element
-;   .dw 0     ;number of elements
-;   .db $02   ;data type, uint16
-
-
+;Set first byte to $FF to indicate the start of the labels index.
+;  Next two bytes are size
+;  Need to verify at least five bytes.
+;
+  ld hl,(OPS)
+  ld de,(FPS)
+  or a
+  sbc hl,de
+  ld de,5
+  sbc hl,de
+  ret c   ;not enough RAM
+  add hl,de
+  ld b,h
+  ld c,l
+  ld hl,(OPS)
+  srl b
+  rr c
+  inc bc
+;BC is the number entries available
+  ld (hl),$FF
+  dec hl
+  dec hl
+  dec hl
+  ld (label_index_ptr),hl
+  ld (label_index_size),bc
+;
   ld de,(progStart)
   ld hl,(progEnd)
   xor a
@@ -24,7 +40,7 @@ progmeta:
   ld (OP1),hl
   ld hl,(OPS) ;We are going to build the table down
   ex de,hl
-  ld a,$D6    ;Lbl token  
+  ld a,$D6    ;Lbl token
 _:
   push hl
   ld hl,(FPS)
