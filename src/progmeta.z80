@@ -2,11 +2,11 @@
 ;This code sets up data for the program to execute
 ;It indexes labels, and sets up space for variables.
 progmeta:
-  ret
 ;Set first byte to $FF to indicate the start of the labels index.
 ;  Next two bytes are size
 ;  Need to verify at least five bytes.
 ;
+  scf \ jr c,$
   ld hl,(OPS)
   ld de,(FPS)
   or a
@@ -14,7 +14,6 @@ progmeta:
   ld de,5
   sbc hl,de
   ret c   ;not enough RAM
-  add hl,de
   ld b,h
   ld c,l
   ld hl,(OPS)
@@ -36,7 +35,8 @@ progmeta:
   sbc hl,bc
   ld b,h
   ld c,l
-;DE points to the start of the program
+  ld hl,(progStart)
+;HL points to the start of the program
 ;BC is the size of the program
   call +_
 ;gotta update pointers and such
@@ -55,7 +55,7 @@ progmeta:
   ld (hl),e
   ret
 _:
-  ld a,$D6    ;Lbl token
+  ld a,$3A    ;decimal point token
   cpir
   ret nz
   ret po
