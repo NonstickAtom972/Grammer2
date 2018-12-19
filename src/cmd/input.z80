@@ -1,0 +1,146 @@
+InputToken:
+  ld bc,Str1Space
+  ld a,(hl)
+  call EndOArg
+  jr z,SetInputStr
+  call ParseFullArg
+  ld h,b
+  ld l,c
+  ld de,OP1
+  call GetGrammerText+3
+  ld h,b
+  ld l,c
+  add hl,de
+  ld (hl),20h
+  inc l
+  ld (hl),0
+  ld b,d
+  ld c,e
+SetInputStr:
+  ld (TempWord5),bc
+  ld hl,966Eh
+  ld bc,128
+g_Input:
+  res 0,(iy+35)
+  xor a
+  out (0),a
+  ld (TempWord3),hl
+  add hl,bc
+  ld (TempWord4),hl
+  ld hl,(textRow)
+  ld (TempWord2),hl
+  set 3,(iy+33)
+  ld hl,(TempWord5)
+  call GPutS
+  call GraphToLCD
+  ld hl,(TempWord2)
+  ld (textRow),hl
+  ld hl,(TempWord3)
+  ld (hl),3Fh
+  ld (TempWord1),hl
+InputLoop:
+  res 4,(iy+9)
+  bcall(_GetKeyRetOff)
+  cp 3
+  jp z, EnterP
+  cp 5
+  jp z, EnterP
+  cp 9
+  jr z,DelP
+  cp 10
+  jr z,DelP
+  bcall(_ConvKeyToTok)
+  jp m,InputLoop
+  ld hl,(TempWord1)
+  ld bc,(TempWord4) \ or a
+  sbc hl,bc \ add hl,bc
+  jr nc,InputLoop
+  ld a,d \ or a
+  jr z,$+4
+  ld (hl),d \ inc hl
+  ld (hl),e \ inc hl
+  ld (TempWord1),hl
+  ld (hl),3Fh
+  call DispInputString
+  jr InputLoop
+ClearP:
+DelP:
+  call DelInput
+  jr InputLoop
+DelInput:
+  ld bc,0
+  ld hl,(TempWord1)
+  ld de,(TempWord3) \ inc de
+  or a
+  sbc hl,de
+  add hl,de
+  jr c,DelDone
+  dec hl \ dec hl
+  ld a,(hl) \ call Is_2_Byte
+  jr z,$+3
+  inc hl
+  ld (TempWord1),hl
+  bcall(_Get_Tok_Strng)
+DelDone:
+  ld (hl),3Fh
+  ld a,b
+  or c
+  jr z,$+7
+  push bc
+  set 0,(iy+35)
+DispInputString:
+  ld hl,(TempWord3)
+  call GetGrammerText
+  ld hl,(TempWord2)
+  ld (TextRow),hl
+  ex de,hl
+  ld a,1
+  xor (iy+34)
+  ld (iy+34),a
+  call PutSM
+  ld a,1
+  xor (iy+34)
+  ld (iy+34),a
+  ld hl,(textRow)         
+  push hl
+  bit 0,(iy+35)
+  jr z,NoDelToken
+  res 0,(iy+35)
+  pop hl
+  pop bc
+  push hl
+  push bc
+  ld a,20h
+  call PutSC
+  pop bc
+  cpi
+  jp pe,$-9
+  ld hl,(TempWord5)
+  push hl
+  ld a,20h
+  call PutSC
+  pop hl
+  ld a,(hl)
+  inc hl
+  or a
+  jr nz,$-10
+  pop hl
+  ld (textRow),hl
+  push hl
+NoDelToken:
+  ld hl,(TempWord5)
+  call GPutS
+  pop hl
+  ld (textRow),hl
+;DE points to string
+;BC is the size
+  jp GraphToLCD
+EnterP:
+  ld hl,(TempWord2)
+  ld (TextRow),hl
+  ld hl,($84b0)
+  call TokenTextLoop
+  ld bc,(TempWord3)
+  sbc hl,bc
+  res 3,(iy+33)
+  ret

@@ -1,0 +1,12 @@
+optimize sqrt
+optimize disp32
+use crystal timers for pause
+fix FirePattern
+optimize ncr
+optimize BufferToLCD
+optimize DrawRectToGraph
+optimize Circle
+optimize TileMap1
+optimize VPutC, especially looking up the character
+optimize TokenHook
+Test TileMap1

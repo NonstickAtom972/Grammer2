@@ -1,0 +1,15 @@
+cmdJmp              = $4023
+ProgramAccessStart  = $4026
+CompatCall          = $4029
+SelectedProg        = $402C
+ExecOP1             = $402F
+ParseFullArg        = $4032
+ParseNextFullArg    = $4035
+ParseNextFullArg_Inc= $4038
+ParseCondition      = $403B
+DrawRectToGraph     = $403E
+GraphToLCD          = $4041
+VPutSC              = $4044
+GetKey              = $4047
+GetGrammerText      = $404A
+GetGrammerText_DE   = $404D

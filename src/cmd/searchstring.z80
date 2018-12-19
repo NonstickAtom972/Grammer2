@@ -1,0 +1,48 @@
+;SearchString is used by inString  and Lbl
+SearchString:
+;Inputs:
+;     BC size o' string
+;     DE points to string to find
+;     HL points to the string to search
+;Outputs:
+;     c flag set if there was a match, nc if no match was found
+;     HL points to the match if there was one
+;     DE is preserved
+;Destroys:
+;     A,BC
+  dec bc
+  ld (TempWord1),bc
+  xor a
+  ld b,a
+  ld c,a
+  ld (TempWord2),bc
+  
+_:
+  ld bc,(TempWord2)
+  ld a,(de)
+  cpir
+  ret po
+  ret nz
+  ld a,b
+;at this point, we have a match
+;now we need to compare the strings
+  ld bc,(TempWord1)
+  push hl
+  push de
+  call +_
+  pop de
+  pop hl
+  jr -_
+  
+_:
+  inc de
+  ld a,(de)
+  cpi
+  ret nz
+  jp pe,-_
+;we have a match!
+  pop de
+  pop de
+  pop bc
+  scf
+  ret

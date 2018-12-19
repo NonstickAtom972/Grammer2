@@ -1,0 +1,17 @@
+Move the Menu( and Input functions to the module. These aren't speed-critical.
+Allow modules to be in flash.
+Make variables 40-bits each, first byte is a type byte, followed by 4-bytes of data
+    Types:
+      uint16   00, followed by two bytes of data
+      int16    01, signed 16-bit int
+      uint32   02, followed by four bytes of data
+      int32    03, followed by four bytes of data
+      single   04, followed by four bytes of data
+      ptr      05, followed by a 3-byte pointer. Math operations treat this like an unsigned 32-bit integer with the top 8 bits being zero. Operations that shift RAM around will automatically update pointers.
+      string   06, followed by a 3-byte pointer.
+      label    07, followed by a 3-byte pointer.
+      sprite   08, followed by a 3-byte pointer.
+      array    09, followed by a 3-byte pointer, then a 1-byte type byte (all elements are this type).
+
+5*54 = 270 bytes.
+Maybe it is time for Grammer to insertMem at $9D95 for its internal vars.

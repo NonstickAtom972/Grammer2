@@ -1,0 +1,6 @@
+Output(       Changes the fontset
+Output(^o     Changes OutputLogic
+solve(5       Write to a port
+solve(6       Read from a port
+solve(7       Copy Variables
+solve(8       Overwrites variables with new data

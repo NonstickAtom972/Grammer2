@@ -1,0 +1,119 @@
+10 Nov. 2018
+  - Updated the ConvHexTo86ECh routine, made it ~6% faster on
+    average. Now it correctly identifies invalid tokens, but
+    doesn't detect an odd number of tokens.
+12 Nov. 2018
+  - Added a much better main menu. As far as UIs go, it's
+    actually not a pain in the ass to find your program.
+    It properly filters for appvars, assembly programs,
+    and Grammer programs (assembly or otherwise).
+13 Nov. 2018
+  - Cleaning up code, removing (at least temporarily)
+    routines that aren't vital, or useful.
+      - Fire graphics code.     **Probably temporary.
+      - Factring code.          **Probably permanent.
+  - Optimized CopyHex
+  - ConvHexStr is reorganized to be smaller
+14 Nov. 2018
+  - Optimized ConvOP1 to be smaller, updated performance
+    analysis
+  - Optimized GetPixelLoc 3 bytes smaller, 10cc faster
+  - Optimized ReadArc routine. 3 bytes smaller, 18cc
+    faster for archived data, 3cc slower for data in RAM.
+  - Removed LoadTSA as the only internal usage was to load
+    the ReadArc routine. Instead it is a specialized routine
+    that no longer destroys IX. Next savings of 11 bytes,
+    even after extended the mov9 LDI chain to a mov13. Saves
+    172cc overall (186cc, actually, since no more ld ix,**)
+  - Error also takes advantage of mov13, saving 2 bytes.
+  - Added a few more fixed-size moves, including mov768.
+    Total cost was 6 bytes.
+  - ClrHome uses the faster SetSmallMem, saves a byte.
+    Makes it 901cc faster, roughly 21% faster
+  - I removed the unknown routine I labeled "lbl000", as it
+    isn't used anywhere (or shouldn't be!) It looks like an
+    attempt at making an off-page call, probably when the
+    low mem scared me.
+  - Optimized and fixed IsHexTok. It used to accept the
+    ' and ' token as equivalent to 9. Saved a byte and 2cc
+    when the token was 0~9.
+  - Optimized DE_Times_BC. No change in size, 120cc faster
+    in the average case. No longer leaves A=0.
+  - optimized HL_Div_BC to be 264cc faster on average, with
+    a net cost of five bytes. DE_Div_BC is now the
+    subroutine, though, and is 272cc faster than if you had
+    called it previously. Nearly 18% speed up
+  - Fixed SearchString at a cost of 8 bytes, but should
+    perform roughly 4 times faster. Also, there is now no
+    risk of it entering an infinite loop, an issue the
+    previous routine had.
+  - SqrtHL is optimized. Actually replaced with SqrtDE.
+    Saved 2 bytes, on average 261cc faster (20.17% faster).
+    Worst case is still 165cc faster (12.75% faster).
+15 Nov. 2018
+  - I replaced the Sqrt routine with Runer112's from Axe.
+    It is 221cc faster with the small modifications on my
+    part to fit the output registers, and 2 bytes smaller.
+    That's roughly 21.5% faster.
+  - Removed ConvNumBase and HL_Div_C. HL_Div_C was only
+    used by ConvNumBase, and ConvNumBase wasn't used
+    anywhere in the code.
+  - Changed Is_2_Byte. It's no faster or slower, just
+    a little more sensible and readable.
+  - Removed HexTok and GetHexAtDE.
+  - Moved CompatCall so it didn't have to JP to
+    IsOP1GrammerProg, saving 3 bytes and 10cc
+  - Removed EndHook2 as it appears unused?
+  - Optimized ONErr to be 1 byte less, 2cc faster.
+  - Optimized TileMap1. 21cc faster, 2 bytes smaller.
+  - Removed HL_SDiv_BC replacing the only use of it
+    with a wrapper around a call to HL_Div_BC.
+    Net 21 bytes smaller. Signed division command now
+    averages about 47cc faster.
+  - Removed PutIM, ParseFullArgI, CallI, CopyZStr,
+    CreateZVar, FindVar.
+  - Renamed memory addresses in the Menu command.
+    May have messed something up.
+  - vPutscr is 1 byte smaller, 3cc faster.
+  - Optimized DrawRectToGraphI since it didn't need
+    to preserve registers. Saved 9 bytes.
+19 Nov. 2018
+  - Did some testing and fixed some new bugs.
+  - Opted to use interrupts for the Pause routine. It
+    isn't as close to 1/100 seconds, but it is more
+    energy efficient, smaller, and more reliable.
+21 Nov. 2018
+  - Ammended this log so it didn't say 2011 on the
+    previous entry.
+  - Moved a bunch of error related code to err.z80.
+    Notable only because a bunch of code could not be
+    moved due to how tightly woven into the rest of
+    the code it was (for efficiency's sake). I may
+    have missed something critical that will require
+    later reversion.
+  - On 14 Nov. 2018, I introduced a bug by using
+    mov13. Custom errors are rarely 13 bytes.
+  - Modified GramHandl to map errors to values using
+    a LUT instead of a bunch of jumps. Makes it
+    smaller and faster in the average case.
+  - Added an error for the module if the module isn't
+    found.
+22 Nov. 2018
+  - I removed LoadReadArc and put the code in
+    SetUpData. Since it is the only code ever loaded
+    to TempSwapArea, there was no need to call it
+    before every read from archive. Call it once and
+    we have a ReadArc routine waiting for use. Saves
+    18 bytes and 720cc every time a ReadArc is used.
+  - Optimized InfoIsArched. Saves 6 bytes, 35cc~44cc.
+  - Created a tool to convert the jump table to an
+    include. Not useful, to assembly programmers yet.
+  - Saved 2 bytes by taking out the the page restore
+    code in the ReadArc code, and just setting it
+    externally. Saves 45cc on every call to read from
+    archive.
+  - Overhauled the module system so that it can now
+    read from archive. It is limited to 384 functions.
+    Overall, 76 bytes were added.
+  - Moved the Menu command to the external module
+    since it isn't speed-critical.
