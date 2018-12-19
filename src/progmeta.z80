@@ -1,3 +1,4 @@
+#define label_index_size OP1
 ;This code sets up data for the program to execute
 ;It indexes labels, and sets up space for variables.
 progmeta:
@@ -25,41 +26,52 @@ progmeta:
   dec hl
   dec hl
   dec hl
-  ld (label_index_ptr),hl
+;  ld (label_index_ptr),hl
   ld (label_index_size),bc
 ;
-  ld de,(progStart)
+  ex de,hl      ;points to where to write the pointers
+  ld bc,(progStart)
   ld hl,(progEnd)
   xor a
-  sbc hl,de
+  sbc hl,bc
   ld b,h
   ld c,l
-  ld h,a
-  ld l,a
-  ld (vars_count),hl
-  ld (OP1),hl
-  ld hl,(OPS) ;We are going to build the table down
-  ex de,hl
-  ld a,$D6    ;Lbl token
-_:
-  push hl
-  ld hl,(FPS)
+;DE points to the start of the program
+;BC is the size of the program
+  call +_
+;gotta update pointers and such
+;((OPS)-DE-3)/2 is number of entries
+  ld hl,(OPS)
   or a
-  sbc hl,de  ;if FPS>=OPS, no more free RAM
-  pop hl
-  jr nc,+_
-  cpir
-  jr nz,+_
-  jp po,+_
-  call stovar
-  jp -_
+  sbc hl,de
+  srl h
+  rr l
+  dec hl
+  ex de,hl
+  ld hl,(OPS)
+  dec hl
+  ld (hl),d
+  dec hl
+  ld (hl),e
+  ret
 _:
+  ld a,$D6    ;Lbl token
+  cpir
+  ret nz
+  ret po
+  ex de,hl
+  ld (hl),d
+  dec hl
+  ld (hl),e
+  dec hl
+  ex de,hl
+  push hl
+  ld hl,(label_index_size)
+  dec hl
+  ld (label_index_size),hl
+  ld a,h
+  or l
+  pop hl
+  jr nz,-_
   ret
-
-
-stovar:
-;HL points to the name
-;DE points to the data
-;BC is the size of the data
-
-  ret
+#undefine label_index_size
