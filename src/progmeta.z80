@@ -6,7 +6,6 @@ progmeta:
 ;  Next two bytes are size
 ;  Need to verify at least five bytes.
 ;
-  scf \ jr c,$
   ld hl,(OPS)
   ld de,(FPS)
   or a
@@ -75,3 +74,22 @@ _:
   jr nz,-_
   ret
 #undefine label_index_size
+
+pushlabel:
+;write the label string to the stack, null-terminated, followed by the address
+  ret
+findlabel:
+;Check if the next byte is "
+;   - if not, then just exit
+;   - Otherwise, look for the label in the label stack
+;     - if found
+;       - If the pointer is not zero, write to the output
+;         stream .db $ED \ .dw addr
+;       - If the pointer is zero, increment the size field
+;         and add the address to the list.
+;     - Otherwise, write the label string to the stack,
+;       null-terminated, followed by 0x0000, then a
+;       16-bit word for the number of references (in this case,
+;       initialize to 0x0001 the address), followed by the
+;       address where to write when found
+  ret
