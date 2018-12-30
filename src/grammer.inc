@@ -23,6 +23,7 @@ _ConvKeyToTok   = 4A02h
 _GetKeyRetOff   = 500Bh
 _RunIndicOff    = 4570h
 _DeleteTempPrograms = 5041h
+_MemChk         = 42E5h
 appErr1         = 984Dh
 cxErrorEP       = 8595h
 curRow          = 844Bh
@@ -34,6 +35,7 @@ parsePtr        = 965Dh
 progEnd         = 965Fh
 parserHookPtr   = 9BACh
 OP5             = 84A4h
+OP4             = 8499h
 OP3             = 848Eh
 OP2             = 8483h
 intmask         = %00001011
@@ -75,7 +77,7 @@ cmdShadow           = 966Eh  ;128 bytes
 ;userMenuSA-13 bytes
 
 pTemp         = 982Eh ;bottom of named vars VAT
-ThetaPrimeVar = 913Dh ;        
+ThetaPrimeVar = 913Dh ;
 
 TempWord1   = OP6-1       ;2       2
 TempWord2   = TempWord1+2 ;2       4
@@ -85,9 +87,9 @@ TempWord5   = TempWord4+2 ;2      10
 textRow     = TempWord5+2 ;1      11
 textCol     = textRow+1   ;1      12
 
-TextPauseTime=984Dh           ;1      
-GrayBufPtr  = TextPauseTime+1 ;2 984E      
-Ans         = GrayBufPtr+2    ;2 9850 
+TextPauseTime=984Dh           ;1
+GrayBufPtr  = TextPauseTime+1 ;2 984E
+Ans         = GrayBufPtr+2    ;2 9850
 StackCount  = Ans+2           ;2 9852
 StackLoc    = StackCount+2    ;2 9854
 OutputLogic = StackLoc+2      ;1 9856

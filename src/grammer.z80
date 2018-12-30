@@ -108,7 +108,7 @@ SelectedProgOP1:
   ld hl,gbuf
   ld (BufPtr),hl
   bcall(_ChkFindSym)
-  ret c  
+  ret c
   ld hl,cmdShadow+2
   ld a,$BB
   cp (hl)
@@ -126,19 +126,98 @@ _:
   ld a,(TempWord3)
   or a
   jr z,ExecOP1
+;Here we need to move the code to RAM.
+;  We will perform some minor pre-compiling
+;  by evaluating labels
   ld hl,GramTempName
   rst rMov9ToOP1
   ld hl,(TempWord4)
   ld a,h \ or l
   ret z
+ bcall(_MemChk)
+ ld bc,-20     ;at some point I have to actually calculate this
+ add hl,bc
+ jp nc,err_LowMem
+ ld de,(TempWord4)
+ ;check if there is enough room to at least copy the program
+ or a
+ sbc hl,de
+ jp c,err_LowMem
+ add hl,de
+
   ld a,16h
+ ld (size_of_buffer),hl
   bcall(_CreateVar)
   inc de \ inc de
   ld a,(TempWord3)
   ld bc,(TempWord4)
   ld hl,(TempWord5)
+ ld (start_of_prog),de
+
   call ReadArc
-  ld hl,OP1+33
+ ld (end_of_prog),de
+;instead of the ReadArc, we need to stream in bytes, building a table of various pointers and converting numbers.
+;If the numbers are 1 digit, the output will be larger :(
+;If the numbers are 2 digits, the output will be the same size :|
+;If the number is 3 digits, less than 256, the output will be smaller! (3 digits, but >=256 is same size :|)
+;All other numbers will be more compact!
+;
+;When a comment/label is parsed, we need to instead copy it to an LUT at the back, along with the address where it would be inserted.
+;If the "Lbl " command is come across, first search for if the label has already found.
+;  If yes, just replace it with a pointer value
+;  If no, then store a pointer of 0x0000, and in another LUT, if the name does not exist yet, add it along with the address, else append the address to it.
+;Move Strings to the data section
+;
+;Parse through the source, looking for '.' or 'Lbl ' (0x3A and 0xD6, respectively)
+ ld de,(start_of_prog)
+ ld hl,(size_of_buffer)
+ add hl,de
+ ld (end_of_buffer),hl
+ ld (stack_top),hl
+ ld h,d
+ ld l,e     ;read_head, DE is write_head
+ ld bc,(TempWord4)
+;end_of_prog
+;end_of_buffer
+;stack_top
+;size_of_buffer
+;start_of_prog
+_:
+  ld a,(hl)
+  cp $3A
+  call z,pushlabel
+  cp $D6
+  call z,findlabel
+  ldi
+  jp pe,-_
+
+;Now we need to deallocate unused RAM
+;
+ ld hl,(start_of_prog)
+ ex de,hl
+ or a
+ sbc hl,de
+ ex de,hl
+ dec hl
+ ld b,(hl)
+ ld (hl),d
+ dec hl
+ ld c,(hl)
+ ld (hl),e
+;Now we need to get rid of BC-DE bytes at HL+DE+2
+ add hl,de
+ inc hl
+ inc hl
+;Now we need to get rid of BC-DE bytes at HL
+ ld a,c
+ sub e
+ ld e,a
+ ld a,b
+ sbc a,d
+ ld d,a
+;Now we need to get rid of DE bytes at HL
+ bcall(_DelMem)
+  ld hl,OP4
   rst rMov9ToOP1
   jr ExecOP1
 ProgramAccessStart:
@@ -980,7 +1059,7 @@ PartConv:
   cp $2b
 
   ld a,c
-                  
+
   push af
   call ParseNextFullArg_BC
   pop af
@@ -1036,7 +1115,7 @@ PToRX:
 ;HL points to where particle data gets written
   call ParseFullArg
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   ld a,c
   pop bc \ ld b,a
   pop hl \ pop de
@@ -1078,12 +1157,12 @@ OSVarToken:
   ld b,d \ ld c,e
   ret
 TangentToken:
-  call ParseFullArg   
+  call ParseFullArg
   xor a \ ld b,a
   or c
   ret z
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   ld a,c
   pop bc
   or a \ ret z
@@ -1457,12 +1536,12 @@ ForToken:
 _:
   ld (parsePtr),de
   push hl
-  call ParseNextFullArg   
+  call ParseNextFullArg
   pop hl
   push  hl
   ld (hl),c \ inc hl
   ld (hl),b
-  call ParseNextFullArg 
+  call ParseNextFullArg
   ld e,c
   ld d,b
   pop hl
@@ -1554,9 +1633,9 @@ g_ClrHome:
 minToken:
 maxToken:
   push af
-  call ParseFullArg   
-  push bc          
-  call ParseNextFullArg 
+  call ParseFullArg
+  push bc
+  call ParseNextFullArg
   pop hl
   pop af
 g_max:
@@ -1611,7 +1690,7 @@ LoadBytePatternOR:
   cp 22 \ jr nc,NotArg
   push af \ push bc \ push hl
   call ParseNextFullArg
-  ld d,b \ ld e,c \ pop hl \ pop bc \ pop af 
+  ld d,b \ ld e,c \ pop hl \ pop bc \ pop af
 NotArg:
   dec a \ jr z,FillBufOR+3
 LoadBytePatternXOR:
@@ -1773,7 +1852,7 @@ _:
 #endif
 HorizontalToken:
   call ParseFullArg
-  
+
   ld a,b \ or a \ ret nz
   ld a,c
   cp 64
@@ -1817,7 +1896,7 @@ InvertMem:
   djnz $-4
   ret
 VerticalToken:
-  call ParseFullArg   
+  call ParseFullArg
   ld a,b \ or a \ ret nz
   ld a,c \ cp 96 \ ret nc
   ld a,c
@@ -1872,7 +1951,7 @@ DrawVertInv:
 DrawVertOff:
   ld a,c
   cpl
-  ld c,a            
+  ld c,a
   ld a,c
   and (hl)
   ld (hl),a
@@ -1880,7 +1959,7 @@ DrawVertOff:
   djnz $-4
   ret
 ShadeToken:
-  call ParseFullArg   
+  call ParseFullArg
   ld a,c
   add a,$D9
   jr nc,$+3
@@ -2201,14 +2280,14 @@ DelGoodSize:
   jr z,$+5
   bcall(_DelMem)
   ld hl,(parsePtr)
-  ld (parsePtr),hl
+;  ld (parsePtr),hl   ;seems redundant, I probably messed up when I was cleaning the code.
   pop bc
   ret
 ANOVAsubset:
 DelvarToken:
   cp 54h \ jr nz,UnArchiveToken
   call GetVarInfo \ ret c
-  bcall(_DelVarArc) 
+  bcall(_DelVarArc)
   ret
 UnArchiveToken:
   cp 69h \ jr nz,ArchiveToken
@@ -2352,9 +2431,9 @@ BBrandInt:
 BBLCM:
   cp 8
   jr nz,BBGCD
-  call ParseFullArg   
-  push bc          
-  call ParseNextFullArg 
+  call ParseFullArg
+  push bc
+  call ParseNextFullArg
   pop de
 LCM_BC_DE:
   push de
@@ -2367,13 +2446,13 @@ LCM_BC_DE:
   call HL_Div_BC
   ld b,h
   ld c,l
-  ret          
+  ret
 BBGCD:
   cp 9
   ret nz
-  call ParseFullArg   
-  push bc          
-  call ParseNextFullArg 
+  call ParseFullArg
+  push bc
+  call ParseNextFullArg
   pop hl
 ;===============================================================
 GCDHL_BC:
@@ -2405,17 +2484,17 @@ _:
   ld b,d \ ld c,e
   jr -_
 CircleToken:
-  call ParseFullArg   
+  call ParseFullArg
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   pop de
   ld d,c
   push de
-  call ParseNextFullArg 
+  call ParseNextFullArg
   push bc
   cp 2Bh
   ld c,1
-  call z,ParseNextFullArg 
+  call z,ParseNextFullArg
   push bc
   ld c,00
   cp 2Bh
@@ -2493,9 +2572,9 @@ PxlTestToken:
   ld a,(hl)
   cp $AE
   jr z,PxlTestBox
-  call ParseFullArg   
+  call ParseFullArg
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   cp 2Bh
   ld a,c
   push af
@@ -2630,7 +2709,7 @@ SlowText:
   inc hl
   ld (parsePtr),hl
   call LoadTextCoordinates
-  call ParseNextFullArg 
+  call ParseNextFullArg
   push bc
   push de
   ld a,(hl)
@@ -2728,12 +2807,12 @@ FindingTextStr:
   call ParseNextFullArg
   ld h,b \ ld l,c
   jp GPutS
-  call ParseNextFullArg 
+  call ParseNextFullArg
   push bc
   set 0,(iy+ParticleFlag)
   cp 2Bh
   jr nz,$+6
-  call ParseNextFullArg 
+  call ParseNextFullArg
   xor a
   pop hl
   jr z,TokenTextLoop
@@ -2792,7 +2871,7 @@ _:
   ld a,c
   ld (textRow),a
   ld bc,(textCol)
-  call ParseNextFullArg 
+  call ParseNextFullArg
   ld a,c
   ld (textCol),a
   ld a,(hl)
@@ -2807,24 +2886,24 @@ PtOff:
   jr z,$+6
   set 0,(iy+InternalFlag)
   push af
-  call ParseNextFullArg 
+  call ParseNextFullArg
   bit 0,(iy+InternalFlag)
   jr z,$+8
   call ConvHexTo86ECh
   ld bc,86ECh
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   pop de
   ld d,c
   push de
   cp 2Bh
   ld c,1
-  call z,ParseNextFullArg 
+  call z,ParseNextFullArg
   cp 2Bh
   ld c,8
-  call z,ParseNextFullArg 
+  call z,ParseNextFullArg
   ld l,1
   ld h,c
   pop bc
@@ -3506,13 +3585,13 @@ PtOn:
   ld a,16
   xor (hl)
   ld (hl),a
-  call ParseNextFullArg 
+  call ParseNextFullArg
   bit 0,(iy+InternalFlag)
   jr z,$+8
   call ConvHexTo86ECh
   ld bc,86ECh
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   ld (TempWord2),bc
   ld b,0
   ld h,b
@@ -3522,18 +3601,18 @@ PtOn:
   add hl,hl
   add hl,hl
   push hl
-  call ParseNextFullArg 
+  call ParseNextFullArg
   pop hl
   add hl,bc
   push hl
   cp 2Bh
   ld c,1
-  call z,ParseNextFullArg 
+  call z,ParseNextFullArg
   ld b,c
   push bc
   cp 2Bh
   ld c,$08
-  call z,ParseNextFullArg 
+  call z,ParseNextFullArg
   pop af
   ld b,a
   ld a,(TempWord2)
@@ -4005,7 +4084,7 @@ StoString:
 ;HL = pointer to the variable's Symbol Table entry
 ;DE = pointer to the variable's data structure
 ;B  = 0 for Ram, or Flashpage
-;OP1=.db StrngObj,tVarStrng,tStr1,0,0; not all nötig
+;OP1=.db StrngObj,tVarStrng,tStr1,0,0; not all nï¿½tig
   bcall(_DelVarArc)
   pop hl  ;length
   push hl
@@ -4135,16 +4214,16 @@ StoModule:
   ld (hl),b
   ret
 Return:
-  call EndOfLine     
+  call EndOfLine
   ld c,l
   ld b,h
   ret
 LblToken:
   push hl
-  call ParseFullArg  
+  call ParseFullArg
   pop hl
   push bc
-  call GetGrammerStr 
+  call GetGrammerStr
   pop hl
   ld de,OP2
   push de
@@ -4176,7 +4255,7 @@ _:
   ret
 GotoToken:
   push bc
-  call ParseFullArg  
+  call ParseFullArg
   ld (parsePtr),bc
   pop bc
   ret
@@ -4190,7 +4269,7 @@ DispGraph:
   ld l,c
   jp GraphToLCD+3
 Number:
-  jp ConvRStr     
+  jp ConvRStr
 Math:
 Sqrt:
   ld a,(hl)
@@ -4221,7 +4300,7 @@ Cos:
 Sin:
   xor a
   push af
-  call ParseFullArg 
+  call ParseFullArg
   pop af
   add a,c
   ld d,a
@@ -4247,12 +4326,12 @@ _:
   ld b,a
   ret
 absToken:
-  call ParseFullArg 
+  call ParseFullArg
   bit 7,b
   ret z
   jr Negative+3
 Negative:
-  call ParseFullArg 
+  call ParseFullArg
   xor a \ sub c \ ld c,a
   sbc a,a \ sub b \ ld b,a
   ret
@@ -4271,7 +4350,7 @@ Add:
   ret
 Subtract:
   push bc
-  call ParseFullArg 
+  call ParseFullArg
   pop hl
   xor a
   sbc hl,bc
@@ -4293,9 +4372,9 @@ Squared:
   jr $+7
 Multiply:
   push bc
-  call ParseFullArg 
+  call ParseFullArg
   pop de
-  call DE_Times_BC  
+  call DE_Times_BC
   ld b,h
   ld c,l
   ld (ThetaPrimeVar),de
@@ -4311,7 +4390,7 @@ SkipLine:
   cp 29h
   jr nz,Divide
   push bc
-  call ParseNextFullArg 
+  call ParseNextFullArg
   pop hl
 ;1366cc+6cc for every 0 bit in the result (up to +90cc
 ;+48cc unless HL and BC are both positive
@@ -4341,7 +4420,7 @@ _:
 _:
   call HL_Div_BC
   pop af
-  jp p,+_  
+  jp p,+_
   xor a
   sub l
   ld l,a
@@ -4355,9 +4434,9 @@ _:
   ret
 Divide:
   push bc
-  call ParseFullArg 
+  call ParseFullArg
   pop hl
-  call HL_Div_BC    
+  call HL_Div_BC
   ld b,h
   ld c,l
   ld (ThetaPrimeVar),de
@@ -4366,7 +4445,7 @@ Logic:
 Equals:
   push bc
 factorialStepIn:
-  call ParseFullArg 
+  call ParseFullArg
   pop hl
   xor a
   sbc hl,bc
@@ -4530,7 +4609,7 @@ TokToASCII:
 ;     DE points to where the token should get converted to
 ;Outputs:
 ;     HL is incremented
-;     DE points to the byte after the string 
+;     DE points to the byte after the string
 ;     BC is the size of the string
   ld bc,0
   push hl
@@ -4613,7 +4692,7 @@ VarPointer:
   ld l,a
   inc de
   scf
-  ret        
+  ret
 NotBBVar:
   cp 41h
   ccf
@@ -4662,7 +4741,7 @@ IsHexTok:
 ;     DE is incremented by 1
 ;      A is the hex value if A is a hex token
 ;     nc if A is a hex token
-;      c if A is not a hex token 
+;      c if A is not a hex token
 ;===============================================================
   ld a,(de)
   inc de
@@ -4682,21 +4761,21 @@ _:
 ;===============================================================
 ConvRStr:
 ;===============================================================
-;Input: 
-;     DE points to the base 10 number string in RAM. 
-;Outputs: 
-;     HL is the 16-bit value of the number 
-;     DE points to the byte after the number 
-;     BC is HL/10 
+;Input:
+;     DE points to the base 10 number string in RAM.
+;Outputs:
+;     HL is the 16-bit value of the number
+;     DE points to the byte after the number
+;     BC is HL/10
 ;     z flag reset (nz)
 ;     c flag reset (nc)
-;Destroys: 
-;     A (actually, add 30h and you get the ending token) 
+;Destroys:
+;     A (actually, add 30h and you get the ending token)
 ;Size:  41 bytes
 ;Speed: 134+(106+{0,9})n
-;       n is the number of digits 
-;       c is at most n-2 
-;       at most 691 cycles for any 16-bit decimal value 
+;       n is the number of digits
+;       c is at most n-2
+;       at most 691 cycles for any 16-bit decimal value
 ;===============================================================
   dec hl
   bit 3,(iy+UserFlags)
@@ -5495,7 +5574,7 @@ DrawLoop:
   dec h
   inc b
 _:
-  ld d,a      
+  ld d,a
   ld a,h
   sub l
   ld a,d
@@ -5899,7 +5978,7 @@ _:
   cp 15h
   ret nz
 _:
-;need to pull in six bytes  
+;need to pull in six bytes
 #ifdef include_LoadTSA
   call LoadReadArc
 #endif
@@ -5962,7 +6041,7 @@ asm_header_only:
   bit 3,(iy+UserFlags)
   ret z
 ;next two bytes must be $55,$C9
-;  
+;
   inc hl \ ld a,(hl) \ cp $55 \ ret nz
   inc hl \ ld a,(hl) \ cp $C9
   ret
@@ -6295,7 +6374,7 @@ _:
   pop bc
 ;DE points to first Map Element
 ;(TempWord2) is the map width thing
-;BC points to the sprite data     
+;BC points to the sprite data
 TileMap1loop:
   ld h,12
   ld a,(de) \ inc de
