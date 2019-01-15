@@ -125,7 +125,7 @@ SelectedProgOP1:
 _:
   ld a,(TempWord3)
   or a
-  jr z,ExecOP1
+  jp z,ExecOP1
 ;Here we need to move the code to RAM.
 ;  We will perform some minor pre-compiling
 ;  by evaluating labels
@@ -3963,38 +3963,52 @@ CheckOnPress:
   ret nz
   ld c,41
   ret
+ElseToken:
+;Check for an If token, maybe?
+  push bc
+  call FindEndToken
+  call EndOfLine
+  ld (parsePtr),hl
+  pop bc
+  ret
 IfToken:
   push bc
   call ParseCondition
-  xor a
-  ld h,a
-  ld l,a
-  sbc hl,bc
+  ld a,b
+  or c
+  jr z,$+3
+  scf
   pop bc
   ld hl,flags+gflags
   bit invlogic,(hl)
-  jr z,$+5
+  jr z,+_
   res invlogic,(hl)
   ret nc
+_:
   ret c
   ld hl,(parsePtr)
   inc hl
   ld a,(hl)
   push bc
   cp $CF    ;Then token
-  call z,FindEndToken
-_:
+  call z,FindElseEnd
+  cp $D0  ;Check if it was an Else token
+  jr z,+_
   call EndOfLine
   ld (parsePtr),hl
   pop bc
   ret
+_:
+  ld (parsePtr),hl
+  pop bc
+  jp ParserNext
 VarToken:
   call VarP
   ld (parsePtr),de
-  ld c,(hl)           ;4E
-  inc hl              ;23
-  ld b,(hl)           ;46
-  ex de,hl            ;EB
+  ld c,(hl)
+  inc hl
+  ld b,(hl)
+  ex de,hl
   ld a,(hl)
   inc hl
   call VarP
@@ -4576,6 +4590,32 @@ SearchEndLoop:
 _:
   inc b
   jr SearchEndLoop
+FindElseEnd:
+;Input:
+;     HL is an address
+;Outputs:
+;     HL points to the byte after the proper Else or End token
+;     A is the last token checked
+  ld b,0
+_:
+  inc b
+  inc hl
+  ld a,(hl)
+  sub $CF           ;Then
+  jr c,-_+1
+  jr z,-_
+  dec a \ jr z,+_
+  dec a \ jr z,-_   ;While
+  dec a \ jr z,-_   ;Repeat
+  dec a \ jr z,-_   ;For
+  dec a \ jr nz,-_+1
+_:
+  djnz -_+1
+  ld a,(hl)
+  inc hl
+  ret
+
+
 ;===============================================================
 GetGrammerText:
 ;===============================================================
@@ -6890,7 +6930,7 @@ CommandJumpTable:
  .dw ErrBadToken      ; $CD
  .dw IfToken          ; $CE
  .dw ParserNext       ; $CF
- .dw ErrBadToken      ; $D0
+ .dw ElseToken        ; $D0
  .dw WhileToken       ; $D1
  .dw RepeatToken      ; $D2
  .dw ForToken         ; $D3

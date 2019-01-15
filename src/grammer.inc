@@ -132,7 +132,11 @@ module3     = 8028h
 module4     = 802Ah
 vars        = 802Ch
 vars_count  = 802Eh
-
+size_of_buffer = 8030h
+start_of_prog = 8032h
+end_of_prog = 8034h
+stack_top   = 8036h
+end_of_buffer = 8038h
 
 PBuf          = 9872h
 ramCode       = 8100h
