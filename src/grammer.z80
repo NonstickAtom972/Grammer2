@@ -2715,7 +2715,7 @@ SlowText:
   ld a,(hl)
   cp 2Bh
   ld c,10
-  call z,ParseNextFullArg+3 ;L5e5d: ;ParseNextFullArg_Inc
+  call z,ParseNextFullArg+3
 
   ld hl,OP2
   ld (hl),0
