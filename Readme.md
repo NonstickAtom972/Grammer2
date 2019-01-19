@@ -1,3 +1,6 @@
+# Readme
+For a tutorial/documentation on the commands open [/docs/commands.html](/docs/readme.md)
+
 # Building
 
 Binaries are available in the `/bin` folder, but for developers, building from source might be useful.
