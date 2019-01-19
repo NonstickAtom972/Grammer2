@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>commands</title>
+      <style>.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(85, 85, 85); background-color: white; overflow: auto; }
+.markdown-preview:not([data-use-github-style]) > :first-child { margin-top: 0px; }
+.markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(3, 3, 3); }
+.markdown-preview:not([data-use-github-style]) h1 { font-size: 2.4em; font-weight: 300; }
+.markdown-preview:not([data-use-github-style]) h2 { font-size: 1.8em; font-weight: 400; }
+.markdown-preview:not([data-use-github-style]) h3 { font-size: 1.5em; font-weight: 500; }
+.markdown-preview:not([data-use-github-style]) h4 { font-size: 1.2em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h5 { font-size: 1.1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h6 { font-size: 1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) strong { color: rgb(3, 3, 3); }
+.markdown-preview:not([data-use-github-style]) del { color: rgb(126, 126, 126); }
+.markdown-preview:not([data-use-github-style]) a, .markdown-preview:not([data-use-github-style]) a code { color: black; }
+.markdown-preview:not([data-use-github-style]) img { max-width: 100%; }
+.markdown-preview:not([data-use-github-style]) > p { margin-top: 0px; margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) > ul, .markdown-preview:not([data-use-github-style]) > ol { margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) blockquote { margin: 1.5em 0px; font-size: inherit; color: rgb(126, 126, 126); border-color: rgb(214, 214, 214); border-width: 4px; }
+.markdown-preview:not([data-use-github-style]) hr { margin: 3em 0px; border-top: 2px dashed rgb(214, 214, 214); background: none; }
+.markdown-preview:not([data-use-github-style]) table { margin: 1.5em 0px; }
+.markdown-preview:not([data-use-github-style]) th { color: rgb(3, 3, 3); }
+.markdown-preview:not([data-use-github-style]) th, .markdown-preview:not([data-use-github-style]) td { padding: 0.66em 1em; border: 1px solid rgb(214, 214, 214); }
+.markdown-preview:not([data-use-github-style]) code { color: rgb(3, 3, 3); background-color: rgb(240, 240, 240); }
+.markdown-preview:not([data-use-github-style]) pre.editor-colors { margin: 1.5em 0px; padding: 1em; font-size: 0.92em; border-radius: 3px; background-color: rgb(245, 245, 245); }
+.markdown-preview:not([data-use-github-style]) kbd { color: rgb(3, 3, 3); border-width: 1px 1px 2px; border-style: solid; border-color: rgb(214, 214, 214) rgb(214, 214, 214) rgb(199, 199, 199); border-image: initial; background-color: rgb(240, 240, 240); }
+.markdown-preview[data-use-github-style] { font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif; line-height: 1.6; word-wrap: break-word; padding: 30px; font-size: 16px; color: rgb(51, 51, 51); background-color: rgb(255, 255, 255); overflow: scroll; }
+.markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview[data-use-github-style] h1, .markdown-preview[data-use-github-style] h2, .markdown-preview[data-use-github-style] h3, .markdown-preview[data-use-github-style] h4, .markdown-preview[data-use-github-style] h5, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview[data-use-github-style] h1 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview[data-use-github-style] h1 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] p, .markdown-preview[data-use-github-style] blockquote, .markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol, .markdown-preview[data-use-github-style] dl, .markdown-preview[data-use-github-style] table, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; background-color: rgb(231, 231, 231); border: 0px none; }
+.markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview[data-use-github-style] ul.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview[data-use-github-style] ul ul, .markdown-preview[data-use-github-style] ul ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left: 4px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: keep-all; }
+.markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview[data-use-github-style] table th, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] table tr { background-color: rgb(255, 255, 255); border-top: 1px solid rgb(204, 204, 204); }
+.markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] code, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; background-color: rgba(0, 0, 0, 0.04); border-radius: 3px; }
+.markdown-preview[data-use-github-style] code::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview[data-use-github-style] code::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: " "; }
+.markdown-preview[data-use-github-style] code br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; background: transparent; border: 0px; }
+.markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] .highlight pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, 247); border-radius: 3px; }
+.markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview[data-use-github-style] pre code, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; background-color: transparent; border: 0px; }
+.markdown-preview[data-use-github-style] pre code::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; background-color: rgb(252, 252, 252); border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-image: initial; border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; }
+.markdown-preview[data-use-github-style] a { color: rgb(51, 122, 183); }
+.markdown-preview[data-use-github-style] code { color: inherit; }
+.markdown-preview[data-use-github-style] pre.editor-colors { padding: 0.8em 1em; margin-bottom: 1em; font-size: 0.85em; border-radius: 4px; overflow: auto; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors .horizontal-scrollbar { visibility: hidden; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors:hover .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors:hover .horizontal-scrollbar { visibility: visible; }
+.markdown-preview .task-list-item-checkbox { position: absolute; margin: 0.25em 0px 0px -1.4em; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+.line-number.bracket-matcher.bracket-matcher {
+  color: #555;
+  background-color: rgba(255, 255, 134, 0.34);
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 2px dotted rgba(255, 51, 51, 0.75);
+}
+.spell-check-corrections {
+  width: 25em !important;
+}
+
+pre.editor-colors {
+  background-color: white;
+  color: #555;
+}
+pre.editor-colors .invisible-character {
+  color: rgba(85, 85, 85, 0.2);
+}
+pre.editor-colors .indent-guide {
+  color: rgba(85, 85, 85, 0.2);
+}
+pre.editor-colors .wrap-guide {
+  background-color: rgba(85, 85, 85, 0.2);
+}
+pre.editor-colors .gutter {
+  color: #555;
+  background: white;
+}
+pre.editor-colors .gutter .line-number.folded,
+pre.editor-colors .gutter .line-number:after,
+pre.editor-colors .fold-marker:after {
+  color: #e87b00;
+}
+pre.editor-colors .invisible {
+  color: #555;
+}
+pre.editor-colors .selection .region {
+  background-color: #e1e1e1;
+}
+pre.editor-colors .bracket-matcher .region {
+  background-color: #C9C9C9;
+  opacity: .7;
+  border-bottom: 0 none;
+}
+pre.editor-colors.is-focused .cursor {
+  border-color: black;
+}
+pre.editor-colors.is-focused .selection .region {
+  background-color: #afc4da;
+}
+pre.editor-colors.is-focused .line-number.cursor-line-no-selection,
+pre.editor-colors.is-focused .line.cursor-line {
+  background-color: rgba(255, 255, 134, 0.34);
+}
+pre.editor-colors .syntax--source.syntax--gfm {
+  color: #444;
+}
+pre.editor-colors .syntax--gfm .syntax--markup.syntax--heading {
+  color: #111;
+}
+pre.editor-colors .syntax--gfm .syntax--link {
+  color: #888;
+}
+pre.editor-colors .syntax--gfm .syntax--variable.syntax--list {
+  color: #888;
+}
+pre.editor-colors .syntax--markdown .syntax--paragraph {
+  color: #444;
+}
+pre.editor-colors .syntax--markdown .syntax--heading {
+  color: #111;
+}
+pre.editor-colors .syntax--markdown .syntax--link {
+  color: #888;
+}
+pre.editor-colors .syntax--markdown .syntax--link .syntax--string {
+  color: #888;
+}
+.syntax--comment {
+  color: #999988;
+  font-style: italic;
+}
+.syntax--string {
+  color: #D14;
+}
+.syntax--string .syntax--source,
+.syntax--string .syntax--meta.syntax--embedded.syntax--line {
+  color: #5A5A5A;
+}
+.syntax--string .syntax--punctuation.syntax--section.syntax--embedded {
+  color: #920B2D;
+}
+.syntax--string .syntax--punctuation.syntax--section.syntax--embedded .syntax--source {
+  color: #920B2D;
+}
+.syntax--constant.syntax--numeric {
+  color: #D14;
+}
+.syntax--constant.syntax--language {
+  color: #606aa1;
+}
+.syntax--constant.syntax--character,
+.syntax--constant.syntax--other {
+  color: #606aa1;
+}
+.syntax--constant.syntax--symbol {
+  color: #990073;
+}
+.syntax--constant.syntax--numeric.syntax--line-number.syntax--find-in-files .syntax--match {
+  color: rgba(143, 190, 0, 0.63);
+}
+.syntax--variable {
+  color: #008080;
+}
+.syntax--variable.syntax--parameter {
+  color: #606aa1;
+}
+.syntax--keyword {
+  color: #222;
+  font-weight: bold;
+}
+.syntax--keyword.syntax--unit {
+  color: #445588;
+}
+.syntax--keyword.syntax--special-method {
+  color: #0086B3;
+}
+.syntax--storage {
+  color: #222;
+}
+.syntax--storage.syntax--type {
+  color: #222;
+}
+.syntax--entity.syntax--name.syntax--class {
+  text-decoration: underline;
+  color: #606aa1;
+}
+.syntax--entity.syntax--other.syntax--inherited-class {
+  text-decoration: underline;
+  color: #606aa1;
+}
+.syntax--entity.syntax--name.syntax--function {
+  color: #900;
+}
+.syntax--entity.syntax--name.syntax--tag {
+  color: #008080;
+}
+.syntax--entity.syntax--other.syntax--attribute-name {
+  color: #458;
+  font-weight: bold;
+}
+.syntax--entity.syntax--name.syntax--filename.syntax--find-in-files {
+  color: #E6DB74;
+}
+.syntax--support.syntax--constant,
+.syntax--support.syntax--function,
+.syntax--support.syntax--type {
+  color: #458;
+}
+.syntax--support.syntax--class {
+  color: #008080;
+}
+.syntax--invalid {
+  color: #F8F8F0;
+  background-color: #00A8C6;
+}
+.syntax--invalid.syntax--deprecated {
+  color: #F8F8F0;
+  background-color: #8FBE00;
+}
+.syntax--meta.syntax--structure.syntax--dictionary.syntax--json > .syntax--string.syntax--quoted.syntax--double.syntax--json,
+.syntax--meta.syntax--structure.syntax--dictionary.syntax--json > .syntax--string.syntax--quoted.syntax--double.syntax--json .syntax--punctuation.syntax--string {
+  color: #000080;
+}
+.syntax--meta.syntax--structure.syntax--dictionary.syntax--value.syntax--json > .syntax--string.syntax--quoted.syntax--double.syntax--json {
+  color: #d14;
+}
+.syntax--meta.syntax--diff,
+.syntax--meta.syntax--diff.syntax--header {
+  color: #75715E;
+}
+.syntax--css.syntax--support.syntax--property-name {
+  font-weight: bold;
+  color: #333;
+}
+.syntax--css.syntax--constant {
+  color: #099;
+}
+</style>
+  </head>
+  <body class='markdown-preview' data-use-github-style><h1 id="commands-and-tutorial">Commands and Tutorial</h1>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Author........Zeda&nbsp;Elnara</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>e-mail........xedaelnara@gmail.com</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Project.......Grammer</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Version.......2.50.0.2</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Last&nbsp;Update...01&nbsp;March&nbsp;2012</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Language......English</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Programming...Assembly</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Size..........1-Page&nbsp;app</span></span></div></pre><p>To follow the progress of Grammer, check out <a href="https://www.omnimaga.org/grammer/">Omnimaga</a>, <a href="http://www.cemetech.net/forum/viewforum.php?f=71">Cemetech</a> or <a href="https://github.com/Zeda/Grammer2">GitHub</a>, where development is most active.</p>
+<p>If you have questions or suggestions, feel free to email me or post in the forums!</p>
+<h2 id="intro">Intro</h2>
+<p>Grammer is a powerful programming language for the TI-83+/84+/SE calculators.
+Unlike TI-BASIC, it is not designed to do math and as such, Grammer math is fairly
+limited in some respects. This also means, however, that it uses a math system with
+its own tricks and optimizations. If you are going to learn how to effectively use
+Grammer, you will first need the Grammer interpreter on your calculator (this
+document assumes you have the latest version of the Grammer App). After that, you
+should become familiar with Grammer's:</p>
+<ul>
+<li>Number system</li>
+<li>Math</li>
+<li>Pointers</li>
+<li>Drawing</li>
+<li>Data structures (sprites, arrays)</li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<p>First, send Grammer 2 to your calculator. If you have this document, I assume you have the App.
+Next, run the app on your calc. Grammer is now installed until your next RAM clear.<br><img alt="Grammer Main Menu-- (Default) Grammer programs only" src="/home/zeda/prog/Z80/asm/Grammer/Grammer2/docs/img/img000.png">
+<img alt="Grammer Main Menu-- All Programs and Appvars" src="/home/zeda/prog/Z80/asm/Grammer/Grammer2/docs/img/img001.png">
+<img alt="Grammer Main Menu-- Appvars Only" src="/home/zeda/prog/Z80/asm/Grammer/Grammer2/docs/img/img002.png"></p>
+<p><img alt="Grammer Main Menu-- Assembly Programs Only" src="/home/zeda/prog/Z80/asm/Grammer/Grammer2/docs/img/img003.png">
+<img alt="Grammer Main Menu-- Token Hook Enabled" src="/home/zeda/prog/Z80/asm/Grammer/Grammer2/docs/img/img004.png"></p>
+<h2 id="your-first-program">Your First Program</h2>
+<p>If you want to make a program, you have to remember two very important things:</p>
+<ul>
+<li>Start the program with <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">.0:</code><ul>
+<li>This lets Grammer know it is a Grammer program</li>
+</ul>
+</li>
+<li>End the program with Stop.<ul>
+<li>This lets Grammer know to stop executing code.</li>
+</ul>
+</li>
+</ul>
+<p>Now, before I explain all the technical stuff, could you to create this program and
+run it?</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.0:Return</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:ClrDraw</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text(0,0,"YUM</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div></pre><p>It should look like this:</p>
+<p><img title="Grammer Main Menu-- 'Yum' example" alt="alt text" src="/home/zeda/prog/Z80/asm/Grammer/Grammer2/docs/img/img006.png"></p>
+<h2 id="number-system">Number System</h2>
+<p>The Grammer number system works like this: Numbers are integers 0 to 65535. This means no fractions, or decimals. There are a few commands that handle higher numbers.</p>
+<p>Let's look at this closer. First, why 65535? That is easy to answer. Grammer
+uses 16-bit math. In binary, the numbers are 0000000000000000b to
+1111111111111111b. Convert that to decimal (our number system) and you get 0 to 65535. If you don't understand binary or hexadecimal, see the <a href="#binary-lesson">Binary Lesson</a>
+section. Understanding binary and hex is not necessary, but it will help you
+understand why certain commands act the way they do. Plus, it can help you figure
+out some advanced tricks.</p>
+<p>Now, let's look at some scenarios. If you overflow and add 1 to 65535, it
+loops back to 0. Similarly, if you subtract 1 from 0, you loop back to 65535.
+Then you can see that 65530+11=5. You also now know that -1=65535. So what happens
+if you multiply 11*65535? Believe it or not, you will get -11 which is 65536-
+11=65525.(If you ever want to go into more advanced math in college, hold on to
+this info for when you get into Abstract Algebra. You are working with the ring
+<strong>Z</strong><sub>2<sup>16</sup></sub>).</p>
+<p>Division, unfortunately is not as nice as multiplication, addition, or
+subtraction. 3/-1 will give you 0 because it is 3/65535. Don't worry, though, there
+are ways to get around this, just read the next section.</p>
+<h2 id="math">Math</h2>
+<p>Grammer math is very different from the math that you are used to. The main
+points are:</p>
+<ul>
+<li>Math is done right to left</li>
+<li>All functions in Grammer are math.</li>
+</ul>
+<p>For the first point, let's look at an example of the math string 3+9/58-3*14+2*2:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3+9/58-3*14+2*2</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3+9/58-3*14+4</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3+9/58-3*18</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3+9/58-54</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3+9/4</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3+2</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>5</span></span></div></pre><p>Parentheses are not part of Grammer math, but to give you better control, you
+have two main options: Use a space or use a colon between chunks of math to compute
+each chunk in order. In most situations, you should use a colon. So say you want to
+do ((3+4)*(6+3))/6. You have 3 chunks that you can compute in order:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3+4:*6+3:/6</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>7:*6+3:/6</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>7*6+3:/6</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>7*9:/6</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>63:/6</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>63/6</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>10</span></span></div></pre><p>Pretty cool, right? That is actually even more optimized than using parentheses! Now, if you are like me, you might not like the look of that missing remainder of 3 in that division. 63/6 is 10.5, not 10, but you know Grammer rounds down. But guess what? There is a system variable called θ' that will contain the remainder after division and other such extra information after math.</p>
+<p>You probably want to know what math operations you have access to and what they do, so here
+you go:</p>
+<ul>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a+b</code> (add) This adds two numbers together. If there is overflow, θ'=1, else it is 0.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a-b</code> (subtract) This subtracts two numbers. If there is overflow, θ'=65535, else it is zero</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a*b</code> (multiply) This multiplies two numbers. Overflow is stored in θ'.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a/b</code> (divide) This divides two numbers. The remainder is stored in θ'.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a/ b</code> (signed divide) This divides two signed numbers. There is a space after the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">/</code>.<ul>
+<li>Example: 65533/ 65535=3, since 65533=-3, 65535=-1. -3/-1=3</li>
+</ul>
+</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a</code><sup><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">2</code></sup> squared This squares a number. Overflow is stored in θ'.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">-a</code> negative This returns the negative of whatever follows it. Essentially, this is 65536-n.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">min(a,b</code> (minimum) This returns the smaller of two values</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">max(a,b</code> (maximum) This returns the larger of two values</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">sin(a</code> (sine) This returns the sine of a number as a value between -128 and 127.<ul>
+<li>The period is 256, not 360. For example, sin(32) is like sin(45) in normal math. If you need help, take the actual sin(45) and multiply by 128. Rounded, this is 91. So, sin(32)=91.</li>
+</ul>
+</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">cos(a</code> (cosine) This computes the cosine of a number. See the notes on sin(.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">e^(a</code> (2^) This returns 2 to the power of a. For example, e^(3 returns 8.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">gcd(a,b</code> (GCD) Returns the greatest common divisor of two numbers.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">lcm(a,b</code> (LCM) Returns the lowest common multiple of two numbers.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a&gt;Frac</code> (Factor) θ' contains the smallest factor of the number. Output is a divided by that number. For example, 96&gt;Frac will output 48 with θ'=2. You can use this to test primality.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">√(a</code> (square root) Returns the square root of the number, rounded down. θ' contains a remainder.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">√('a</code> (Rounded sqrt) Returns the square root rounded to the nearest integer</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">abs(a</code> (absolute val) Returns the absolute value of a number. If a&gt;32767, it is treated as negative.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">rand</code> (random) Returns a random integer between 0 and 65535</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">randInt(a,b</code> (rand integer) Returns a random integer between a and b-1</li>
+<li><del><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a nCr b</code> (n choose r) Returns a choose b. In mathematics, this is typically seen as n!/((n-r)!r!). I had to invent an algorithm for this to avoid factorials because otherwise, you could not do anything like 9 nCr 7 (9!&gt;65535).</del></li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!a</code> (Is 0?) If the following expression results in 0, this returns 1, else it returns 0.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a and b</code> (bit-wise AND) Computes bit-wise AND of two values. Remember the <a href="#binary-lesson">Binary Lesson</a> ?</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a or b</code> (bit-wise OR) Computes bit-wise OR of two values.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a xor b</code> (bit-wise XOR) Computes bit-wise XOR of two values.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">not(a</code> (bit-wise invert) Inverts the bits in the value.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a=b</code> (equal) If a and b are equal, this returns 1, else it returns 0.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a≠b</code> (not equal) If a and b are not equal, this returns 1, else it returns 0.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a&gt;b</code> (greater) If a is greater than b, this returns 1, else it returns 0.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a≥b</code> (greater or equal) If a is greater than or equal to b, this returns 1, else it returns 0.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a&lt;b</code> (less) If a is less than b, this returns 1, else it returns 0.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">a≤b</code> (less or equal) If a is less than or equal to b, this returns 1, else it returns 0.</li>
+</ul>
+<h2 id="pointers-and-more">Pointers and More</h2>
+<p>To understand pointers, you have to understand how memory works. First, every byte of memory has what is called an address. An address, is a pointer to that byte. For example, the first byte of memory is at address 0, the second byte is at address 1, et cetera. On the calcs, there are 65536 bytes of memory addressed at a time. The last 32768 bytes are RAM. This is where your program and everything in it is stored. This has some powerful implications. If you have a pointer to a section of code and you tell Grammer to start executing there, it can jump there immediately. If you have a pointer to a string, you can use that pointer to draw the string or use it. This means you don't have to create any external variables for your strings or sprites. If you want to create an appvar for save data, having the pointer to that lets you edit the data, save to it, or read from it. Pointers are powerful. As such, you will probably be using a bunch of them, so you should use pointer vars:</p>
+<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pointer Vars</code>-(or just "vars") are two byte values. These can hold a 16-bit number, so these are well suited to holding pointers. These are all the letters <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code> to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Z</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">θ</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A'</code> to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Z'</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">θ'</code>. For readability, you can use the lowercase letters instead of <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A'</code>, for example.</p>
+<p>How do you store to these? Like all BASIC programmers know, use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">→</code>. For example: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">3→A</code><br>Likewise, for a string: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"Hello World→A</code><br>Don't be fooled, that does not store the string anywhere. It just stores where the string is located in A.
+So if you change the byte at A, you will change the "H" in your program. If you want to try it, run this program and then check the source again.</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.0:</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:"HELLO&nbsp;WORLD→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:int(A,47</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div></pre><p>You will see that after running the program, it now says <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"QuartReg ELLO WORLD"</code> ! That is because we changed the first byte of the string to the value <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">47</code>, which corresponds to the token <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">QuartReg</code>. Be careful! Not all tokens are one byte-- lowercase letters are a notorious example of two-byte tokens.</p>
+<p>Where else are pointers useful? The best example is with labels or finding programs. Anything that requires searching, actually. For example, in Grammer, to goto a label, you would do something like <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Goto Lbl "HI</code> and that would jump to the label named <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">.HI</code>. You can also get a pointer to this label. If you need to jump to that label often, this saves lots of time by not having to search for the label every time. Remember, everything is math in Grammer:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.0:</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Lbl&nbsp;"HI→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Repeat&nbsp;getKey(15&nbsp;&nbsp;&nbsp;;`getKey(15`&nbsp;returns&nbsp;1&nbsp;if&nbsp;clear&nbsp;is&nbsp;being&nbsp;pressed</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:prgmA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;This&nbsp;calls&nbsp;the&nbsp;subroutine&nbsp;pointed&nbsp;to&nbsp;by&nbsp;A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.HI</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:B+1→B</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text('0,0,B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Displays&nbsp;the&nbsp;number&nbsp;B&nbsp;at&nbsp;(0,0)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;End&nbsp;the&nbsp;subroutine</span></span></div></pre><p>Remember to always <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> your subroutines! Now I want to take time to finally start explaining some code. Labels can be a bit more descriptive than in BASIC. You can use up to 42 bytes for a name, technically, but try to maintain readability. You can also use pretty much whatever tokens you want in a label name. For example, I had a label named <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">ICircle(</code> that I had draw inverted filled circles. <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Lbl</code> takes a string argument where the string is the name of a label. It returns the pointer to the line <em>after</em> the label.</p>
+<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Goto</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">prgm</code> let you redirect your program. <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Goto</code> jumps to the code and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">prgm</code> will execute the code and return once it gets to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code>. Both of these take a pointer to figure out where to go.</p>
+<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Repeat</code> works like it does in TI-BASIC. It first executes the code between <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Repeat</code>...<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> and then it tests the condition. If the result is 0, it repeats the procedure. If it is anything else, it stops looping and continues after the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code>.</p>
+<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">getKey</code> gives you two ways to read keys. Key codes are different in Grammer from TI-BASIC. The first way is to use it like you would in TI-BASIC. For example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">getKey→A</code> stores the current keypress in A. You can also use something like <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">getKey(15</code> to quickly test a specific key. This is great if you want to use multiple key presses. I shamelessly stole this wonderful idea from Axe, I think. Or maybe somebody suggested it to me? I can't remember.</p>
+<h2 id="drawing">Drawing</h2>
+<p>Drawing in Grammer has a few similarities to TI-BASIC, but not many. The
+first concept I want to tell you about is that of drawing buffers. These include
+the graph screen and other chunks of memory that you use like the graph screen. A
+drawing buffer is 768 bytes and there are two that do not use user RAM that you can
+use in Grammer. Their pointers are <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">π9872</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">π9340</code>. The first is called
+AppBackUpScreen by assembly programmers and the second is what we know as the graph
+screen. The graph screen is default. You can also use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">π86EC</code>, but Grammer uses that
+for scratch work for a few commands as well. Now, to the actual drawing!
+In all cases, (0,0) is the upper left corner of the screen. If you want to
+try to draw a circle, be prepared for how awesome this will be to if you were a
+BASIC coder:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.0:</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:ClrDraw</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Repeat&nbsp;getKey(15</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:randInt(0,96→X</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:randInt(0,64→Y</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:randInt(0,64→R</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Circle(Y,X,R,3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Draws&nbsp;a&nbsp;circle&nbsp;with&nbsp;an&nbsp;inverted&nbsp;outline&nbsp;at&nbsp;(Y,X)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div></pre><p>If you tried it, you will see that drawing in Grammer is very fast compared
+to BASIC. One of the reasons is that Grammer does not update the LCD with the
+contents of the graph screen automatically. This means you have to do it yourself
+with <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">DispGraph</code> and this means that you can do a lot of drawing without showing your
+users the behind the scenes stuff.</p>
+<p>Now let's say you want to draw to another buffer as default. This is
+where you use Disp: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Disp π9872</code>.
+Now, whenever you draw or update the LCD, that is the buffer that will be
+used. This means you can preserve the graph screen. Alternatively, most drawing
+commands have an optional argument to draw to a specific buffer.</p>
+<h2 id="grayscale">Grayscale</h2>
+<p>Grayscale is a nice little feature in Grammer that can be used if you do it
+correctly. Now that you know how buffers work, you can give this a try. First, you
+need two buffers-- the back buffer and the front buffer. Define these using <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Disp</code>
+and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Disp '</code>, respectively (both found in the Angle menu). For example, to add the
+gray buffer, use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Disp π9872</code> and now whenever you use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">DispGraph</code>, it will update one
+cycle of gray. Because the LCD does not support grayscale naturally, you will need
+to update the LCD often and regularly.</p>
+<p>A pixel is seen as gray if it is ON in one of the buffers, but OFF in the other
+buffer. If a pixel is on in the front buffer, it will appear darker. Because
+grayscale is so important, I will give an example program that draws in grayscale:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.0:</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:π9872→Z</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Disp&nbsp;o&nbsp;Z</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:ClrDraw</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:ClrDrawZ</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:0→X→Y</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Repeat&nbsp;getKey(15)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-Change(Y,X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Just&nbsp;drawing&nbsp;the&nbsp;cursor</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-Change(Y,X,Z&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Pixel&nbsp;changing&nbsp;it&nbsp;on&nbsp;both&nbsp;buffers</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-Change(Y,X</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-Change(Y,X,Z</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;getKey(54</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-On(Y,X,Z</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;getKey(9</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-On(Y,X</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;getKey(54:+getKey(56&nbsp;&nbsp;;If&nbsp;[2nd]&nbsp;or&nbsp;[Del]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-Off(Y,X</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;getKey(9:+getkey(56&nbsp;&nbsp;&nbsp;;If&nbsp;[Enter]&nbsp;or&nbsp;[Del]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Pxl-Off(Y,X,Z</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:X+getKey(3</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:-getKey(2</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;&lt;96</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:→X</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Y+getKey(1</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:-getKey(4:If&nbsp;&lt;64</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:→Y</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div></pre><h2 id="sprites">Sprites</h2>
+<p>Using sprites is a pretty advanced technique, so don't expect to understand
+everything here.
+Sprites are pretty much mini pictures. They are a quick way to get detailed
+objects that move around making them a powerful graphics tool. In Grammer, the main
+sprite commands are <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pt-On(</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pt-Off(</code> and both have differences and advantages
+over the other.</p>
+<h3 id="sprite-data">Sprite Data</h3>
+<p>Sprite data is in the form of bytes or hexadecimal and you will want to understand
+binary to hex conversions for this. For example, to draw an 8x8 circle, all the
+pixels on should be a 1 in binary and each row needs to be converted to hex:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0&nbsp;0&nbsp;1&nbsp;1&nbsp;1&nbsp;1&nbsp;0&nbsp;0&nbsp;=3C</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0&nbsp;1&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;1&nbsp;0&nbsp;=42</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>1&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;1&nbsp;=81</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>1&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;1&nbsp;=81</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>1&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;1&nbsp;=81</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>1&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;1&nbsp;=81</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0&nbsp;1&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;1&nbsp;0&nbsp;=42</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0&nbsp;0&nbsp;1&nbsp;1&nbsp;1&nbsp;1&nbsp;0&nbsp;0&nbsp;=3C</span></span></div></pre><p>So the data would be <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">3C4281818181423C</code> in hexadecimal.</p>
+<h3 id="sprite-logic">Sprite Logic</h3>
+<p>There are 5 forms of sprite logic offered by Grammer, currrently. These tell how
+the sprite should be drawn and can all be useful in different situations.</p>
+<ul>
+<li><p>Overwrite:
+For an 8x8 sprite, this will erase the 8x8 area on the screen and draw the
+sprite.</p>
+</li>
+<li><p>AND:
+This leaves the pixel on the screen on if and only if the sprites pixel is on
+and the pixel on the screen is on.</p>
+</li>
+<li><p>OR:
+This will turn a pixel on on the screen if it is already on or the sprite has
+the pixel on. This never erases pixels.</p>
+</li>
+<li><p>XOR:
+If the sprites pixel is the same state as the one on the screen, the pixel is
+turned off, otherwise, it is turned on. For example, if both pixels are on, the
+result is off.</p>
+</li>
+<li><p>Erase:Any pixels that are on in the sprite are erased on screen. The pixels that are
+off in the sprite do not affect the pixels on the graph buffer.</p>
+</li>
+</ul>
+<h3 id="pt-on-">Pt-On(</h3>
+<p>This is used to display sprites as tiles. This means it displays the sprite very
+quickly, but you can only draw to every 8 pixels.</p>
+<h3 id="pt-off-">Pt-Off(</h3>
+<p>This is a slightly slower sprite routine, but it allows you to draw the sprite
+to pixel coordinates.</p>
+<h1 id="command-list">Command List</h1>
+<p>Here are a bunch of commands that do not fit in the drawing or math category. This is a whole
+lot of info (about 9 pages), but I made some examples later on so that you can figure out how to use these better :)</p>
+<h2 id="operators">Operators</h2>
+<h3 id="-">→</h3>
+<p>This stores the last computed value to a variable. For example <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Return→A'</code> will store the value output from <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Return</code> to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A'</code>.</p>
+<p>Likewise, you can store to some OS variables such as real vars (<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code> through <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">θ</code>) and Strings (<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Str1</code> to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Str256</code>). For real vars, use the prefix <em><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">i</code></em> (the imaginary number) and Strings just use their string number. For example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">3→iA</code> will store to the OS realvar <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code>. <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"Hello→Str2</code> will store the string <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"Hello"</code> to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Str2</code>. With Strings, if you use the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Str1</code> token followed by a number like 55, you will be accessing the hacked string 155. <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Str0</code> is the same as string 10, remember, so <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Str00</code> is the same as <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Str100</code>.</p>
+<p>As another note, when storing to an OS string, if you want to use it as a Grammer string, you need to have <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">'</code> follow the string name (it adds a  newline token to the end of the string).</p>
+<p>To store 32-bit results, you will need 2 vars. →AB will store <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Ɵ'</code> in A and
+Ans in B. So to store a 32-bit result from multiplication: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A*D→AB</code>.</p>
+<h3 id="-">//</h3>
+<p>This is used to start a comment. The comment goes to the end of the line. A commented line is skipped. As a note, the user can include a comment after code.</p>
+<h3 id="">"</h3>
+<p>This starts a string. The output is a pointer to the string that can be
+used later to reference it.</p>
+<h3 id="-">π</h3>
+<p>If you put a <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">π</code> symbol before a number, the number is read as hexadecimal. For example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">π3F</code> would be read as <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">63</code>.</p>
+<h3 id="-">!</h3>
+<p>This has several uses. The first is to work like the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">not()</code> token in TI-BASIC. So for example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">3=4</code> would return <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code> because it is not true. However, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!3=4</code> would return <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">1</code>. Likewise, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!3=3</code> would return <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code>. The other use is with loops and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">If</code>. For example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">If A=3</code> will test if <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code> is <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">3</code> and if it is, it executes the code. However, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!If A=3</code> will execute the code if <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code> is <em>not</em> <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">3</code>. See <a href="#if">If</a> , <a href="#if-then">If-Then</a>, <a href="#if-then-else">If-Then-Else</a>, <a href="#while">While</a>, <a href="#repeat">Repeat</a>, and <a href="#pause-if">Pause If</a>.</p>
+<h3 id="i">i</h3>
+<p>This is the imaginary i. Use this to access OS real vars. For example, to read OS var <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code> and store it to Grammer var <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code>: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">iA→A</code>. To store a Grammer var to an OS var: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">B'→iA</code>.
+This does not read decimals or imaginary parts of a number.</p>
+<h3 id="e">E</h3>
+<p>This indicates the start of a binary string. This is the exponential <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">E</code>.</p>
+<h2 id="loops-conditionals">Loops/Conditionals</h2>
+<h3 id="if">If</h3>
+<p>If the expression following is not <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code>, the line following it will be
+executed. The line is skipped if it is <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code>. Conditions are computed to the
+next newline. For example, you can have <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">→</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">:</code> in an <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">If</code> statement in
+Grammer.</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;A=B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Since&nbsp;A=B&nbsp;is&nbsp;false,&nbsp;the&nbsp;following&nbsp;line&nbsp;is&nbsp;skipped</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:9→A</span></span></div></pre><p>Or also:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;3=B→A:*14:-14&nbsp;&nbsp;&nbsp;;This&nbsp;is&nbsp;the&nbsp;full&nbsp;statement</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text(0,0,"Yay!</span></span></div></pre><h3 id="if-then">If-Then</h3>
+<p>This is similar to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">If</code> except if the statement results in <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code>, any code between and including <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Then</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> will be skipped. This works like the TI-BASIC command. For example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;3=4</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Then</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:3→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:9→B</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:16→C</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div></pre><h3 id="if-then-else">If-Then-Else</h3>
+<p>This is similar to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">If-Then</code>, except if the condition is non-zero, only the code between <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Then</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Else</code> is executed, otherwise the code between <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Else</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> is executed.</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;3=4</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Then</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:3→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:9→B</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Else</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:16→C&nbsp;&nbsp;&nbsp;;This&nbsp;is&nbsp;the&nbsp;code&nbsp;that&nbsp;gets&nbsp;executed</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div></pre><h3 id="for-">For(</h3>
+<p>The arguments for this are <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">For(Var,Start,End</code>.</p>
+<ul>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Var</code> is the name of a var</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Start</code> is the starting value to load to the var</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> is the max value to load to the var</li>
+</ul>
+<p>Alternatively, you can use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">For(Val</code>. <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Val</code> is the number of times to execute the loop. 0=65536  </p>
+<p>What this does is load the initial <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Start</code> value into <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Var</code>. It executes
+code until it reaches an <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> statement, then it increments the var. If
+incrementing goes higher than the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> value, the loop finishes and code continues,
+otherwise it executes the loop again. So for an example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:For(R,0,48</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Circle(32,48,R,1</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div></pre><h3 id="pause-if">Pause If</h3>
+<p>This will pause so long as the condition is true for example, to pause
+until a key is pressed, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pause If !getKey</code>
+Alternatively, using <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!Pause If</code> will pause while the condition is false.
+So to pause until enter is pressed, do <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!Pause If 9=getKey</code>.</p>
+<h3 id="while">While</h3>
+<p>While loops are like <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">If</code>, except they keep running the code so long as the condition is True. An <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">If</code> statement is content with just checking if the result is true (true is anything but <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code>), but a while loop will not only execute the code up to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> if it is true, but it will loop back to try it again! To give you an idea, this will keep looping until Clear is pressed, and while it is at it, it will increment <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A</code> and decrement <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">B</code>:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:0→A→B</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:While&nbsp;getKey≠15</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:A+1→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:B-1→B</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;This&nbsp;tells&nbsp;the&nbsp;While&nbsp;loop&nbsp;to&nbsp;End&nbsp;/&nbsp;restart!</span></span></div></pre><p>Alternatively, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!While</code> will only execute the code if the statement is not
+true.</p>
+<h3 id="repeat">Repeat</h3>
+<p>This is a loop that is kind of the opposite of a <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">While</code> loop. This will repeat the code up to an <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">End</code> until the statement is true. So for example, to wait until clear is pressed:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Repeat&nbsp;getKey=15</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div></pre><p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">!Repeat</code> checks if the statement is false in order to end. For example,
+to remain in the loop while Enter is being pressed:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:!Repeat&nbsp;getkey=9</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div></pre><h2 id="control">Control</h2>
+<h3 id="return">Return</h3>
+<p>This returns a pointer to the next line of code.</p>
+<h3 id="goto">Goto</h3>
+<p>This is unlike the BASIC <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Goto</code> command. This jumps to a pointer as opposed to a label. For example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Return→L</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:&lt;&lt;code&gt;&gt;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Goto&nbsp;L&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;This&nbsp;jumps&nbsp;to&nbsp;the&nbsp;line&nbsp;after&nbsp;"Return→L"</span></span></div></pre><h3 id="lbl">Lbl</h3>
+<p>This returns the pointer of a label. The argument is a pointer to the
+label name. For example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Lbl "HI</code> will search for <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">.HI</code> in the program code.
+Also, you can specify which variable the label is in. For example, if
+you wanted to jump to a label in another program, you can add a second
+argument as the name of the var. For example, to find the label <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">HI</code> in
+prgmBYE: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Lbl "HI","BYE</code></p>
+<h3 id="pause">Pause</h3>
+<p>This will pause for approximately x/100 seconds. So <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pause 66</code> will pause
+for about .66 seconds.</p>
+<h3 id="prgm">prgm</h3>
+<p>This is used to execute a sub routine.</p>
+<h3 id="func">Func</h3>
+<p>The arguments are <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">FuncPointer[,Counter</code>.</p>
+<p>This will automatically execute the subroutine pointed to by &lt;&gt;
+based on Counter. Counter is based on an internal counter, not based on
+actual timings like seconds or milliseconds. The default is 128. So for
+example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:FuncLbl&nbsp;"DISP</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Repeat&nbsp;getKey(15</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:&lt;&lt;do&nbsp;stuff&gt;&gt;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.DISP</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div></pre><p>That will do DispGraph several times per second automatically.</p>
+<h3 id="asm-">Asm(</h3>
+<p>This can be used to run an assembly program.</p>
+<h3 id="asmprgm">AsmPrgm</h3>
+<p>This allows you to input asm code in hex. (C9 is needed)</p>
+<h3 id="ln-">ln(</h3>
+<p>This will let you jump forwards or backwards a given number of lines.
+For example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:ln(3</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:"NOT</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:"Executed</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:"YAY&nbsp;:D</span></span></div></pre><p>Or to jump backwards:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:"YAY&nbsp;:D</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:"Erm...</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:"Yeah...:ln(-3</span></span></div></pre><h3 id="-sub-l-sub-"><sub>L</sub></h3>
+<p>The list <sub>L</sub>. Arguments are <sub><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">L</code></sub><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">line#,[start,[size,[EOL</code>
+This let's you execute a specific line number. By default, it starts the line count within the main program, but you can pass an optional start value, an optional size value (default is 32768 bytes long), and an optional End-Of-Line argument (default is 63, the newline token).</p>
+<h2 id="input-computing">Input/Computing</h2>
+<h3 id="getkey">getKey</h3>
+<p>This returns a value from 0 to 56 that is the current key press. You
+can use <a href="#keycodes">this chart</a> for values.</p>
+<p>Alternatively, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">getKey(</code> will allow you to see if a key is being pressed. For
+example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">getKey(9</code> will return <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">1</code> if enter is pressed</p>
+<h3 id="input">Input</h3>
+<p>This allows you to input a string. The pointer to the string is
+returned. (this is not a permanent location, the data will be
+overwritten the next time Input is used). To get a value input from
+the user, you can use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">expr(</code> : <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">expr(Input →A</code>. This will store the result to A</p>
+<p><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Input</code> can also take an optional string input. The input string will be displayed after what the user is typing.
+If you execute this code, I think it'll explain it better. It's honestly pretty cool for a calulator.</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>.0:Return</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>ClrDraw</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Text(°"(x,y)=(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;ClrDraw&nbsp;sets&nbsp;the&nbsp;cursor&nbsp;to&nbsp;(0,0),&nbsp;so&nbsp;I&nbsp;can&nbsp;use&nbsp;°</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>expr(Input&nbsp;",)→X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;I&nbsp;get&nbsp;the&nbsp;next&nbsp;input&nbsp;here.&nbsp;The&nbsp;string&nbsp;is&nbsp;,)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Text(,+1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;This&nbsp;increments&nbsp;the&nbsp;X&nbsp;coordinate.</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>expr(Input&nbsp;")→Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;This&nbsp;gets&nbsp;the&nbsp;Y&nbsp;value.</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Pxl-On(Y,X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Or&nbsp;whatever&nbsp;you&nbsp;want&nbsp;to&nbsp;do&nbsp;with&nbsp;the&nbsp;coordinates.</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>Stop</span></span></div></pre><h3 id="menu-">Menu(</h3>
+<p><em>This requires the default package, GramPkg to be on your calc (in RAM or archived).</em></p>
+<p>Syntax is, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Menu(y,x,w,"Header","Item0","Item1","Item2","Exit</code></p>
+<p>It basically makes a pop-up style menu, returning the number of the selected item.</p>
+<h3 id="ans">Ans</h3>
+<p>This will return the value of the previous line</p>
+<h3 id="expr-">expr(</h3>
+<p>This will compute a string as a line of code (useful with <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Input</code>)</p>
+<h3 id="instring-">inString(</h3>
+<p>This is similar to the TI-BASIC command. This will return the
+location of a sub-string. The inputs are where to start searching
+and the string to search for: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">inString(SearchStart,SearchString</code></p>
+<p>So an example would be:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Lbl&nbsp;"DATA→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:inString(A,"How→B</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.DATA</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:HELLOHowdyWoRlD!</span></span></div></pre><p>The size of the input string is returned in <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Ɵ'</code> and if there was no
+match found, 0 is returned.</p>
+<h3 id="length-">length(</h3>
+<p>This will return the size of a variable (in RAM or Archive) as well
+as the pointer to the data in <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Ɵ'</code>. For example, to get the size of
+the appvar named <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Data</code>: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">length("UData→A</code></p>
+<p>If the var is not found, -1 is returned.</p>
+<h3 id="length-">length('</h3>
+<p>This is used to search for a line. For example, if you want to find
+a specific line number in a program, this is what you would use. The
+syntax: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">length('StartSearch,Size,LineNumber,[LineByte</code></p>
+<ul>
+<li>StartSearch is where to begin the search</li>
+<li>Size is how many bytes to search in. 0 will search all RAM.</li>
+<li>LineNumber is the line number you are looking for</li>
+<li>LineByte is an optional argument for what byte is considered a new line.</li>
+</ul>
+<p>The output is the location of the string and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Ɵ'</code> has the size of the
+string. If the line is not found, the last line is returned instead.</p>
+<h2 id="solve-">solve(</h2>
+<p>This is a command subset.</p>
+<h3 id="copyvar">CopyVar</h3>
+<ul>
+<li>solve(0,"VarName1","VarName2"[,size[,offset</li>
+</ul>
+<p>This will copy the program named by VarName1 from RAM or
+archive to a new program named by VarName2. If Varname2
+already exists, it will be overwritten. So for example,
+to copy Str6 to Str7: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">solve(0,"DStr6","DStr7</code></p>
+<p>This returns the pointer to the new var and the size of
+the var is in Ɵ'
+The last arguments are optional. Size lets you choose how many
+bytes are copied (instead of just copying the whole var). You can
+also add an offset argument to tell where to start reading from.</p>
+<h3 id="copydatai">CopyDataI</h3>
+<ul>
+<li>solve(1,loc i ,loc f ,size</li>
+</ul>
+<p>This copies data from <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">loc i</code> to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">loc f</code> . (Forward direction)</p>
+<h3 id="copydatad">CopyDataD</h3>
+<ul>
+<li>solve(2,loc i ,loc f ,size</li>
+</ul>
+<p>This copies data from <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">loc i</code> to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">loc f</code> . (Backward direction)</p>
+<h3 id="errorhandle">ErrorHandle</h3>
+<ul>
+<li>solve(3,Pointer</li>
+</ul>
+<p>This will allow your program to have a custom error
+handler. Pointer is 0 by default (meaning Grammer will
+handle it). Otherwise, set it to another value and Grammer
+will redirect the program to that location. The error code
+is returned in Ans. For Example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:solve(3,Lbl&nbsp;"ERR</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:&lt;&lt;code&gt;&gt;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.ERR</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;=1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Means&nbsp;there&nbsp;was&nbsp;a&nbsp;memory&nbsp;error</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div></pre><p>Ans and Ɵ' are put back to normal when the error handler
+completes.</p>
+<p>Errors:</p>
+<ul>
+<li>0=ON</li>
+<li>1=Memory</li>
+</ul>
+<h3 id="callerror">CallError</h3>
+<ul>
+<li>solve(4,Error#</li>
+</ul>
+<p>This will execute the error code of a Grammer error. For
+example, to make a Memory error: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">solve(4,1</code></p>
+<p>Using Error 2, you can input a string for a custom error: `solve(4,2,"Uh-Oh!</p>
+<h3 id="portwrite-">PortWrite(</h3>
+<ul>
+<li>solve(5,port#,value
+This writes to a port. Ports give information about peripherals. You can find ports documentation at <a href="http://wikiti.brandonw.net/index.php?title=Category:83Plus:Ports:By_Address">WikiTi</a></li>
+</ul>
+<h3 id="portread-">PortRead(</h3>
+<ul>
+<li>solve(6,port#
+Reads a byte from the port.</li>
+</ul>
+<p>solve(7       Copy Variables
+solve(8       Overwrites variables with new data</p>
+<h2 id="physics">Physics</h2>
+<h3 id="r-pr-">R▶Pr(</h3>
+<p>This will clear the particle buffer.</p>
+<h3 id="r-p-">R▶Pθ(</h3>
+<p>This will recalculate the particle positions and draw them. If you
+want to change the particle buffer, just add a pointer argument.
+If you want to use a program, for example, as a buffer:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Get("EBUF→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:R▶Pθ(A-2</span></span></div></pre><h3 id="p-rx-">P▶Rx(</h3>
+<p>This will add a particle to the buffer. Just use the pixel
+coordinate position. For example: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">P▶Rx(2,2</code></p>
+<h3 id="p-ry-">P▶Ry(</h3>
+<p>This will change the particle effect.</p>
+<ul>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code> is normal sand</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">1</code> is boiling</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">2</code> lets you put in a basic custom rule set.<ul>
+<li>If you want it to check Down, then Left/Right, then Up, use the following
+pattern: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0000 1000 0110 0001</code><sub>2</sub></li>
+</ul>
+</li>
+</ul>
+<p>That makes it first check down, and if it cannot go down, it then
+checks left or right, and if it cannot go left or right, it tests up.
+In decimal, that is 2145, so you would do: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">P▶Ry(2,2145</code>
+To make things easier, though, you can just use a string. This
+will achieve the same effect: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">P▶Ry(2,"D,LR,U</code>
+<strong>Note</strong> that you do need the actual string, not a pointer.</p>
+<h3 id="p-rx-">P▶Rx('</h3>
+<p>This will convert a rectangular region of the screen to particles.
+The inputs are <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">P▶Rx('Y,X,Height,Width</code></p>
+<p>This scans the area for pixels that are turned on and adds them to
+the current particle buffer.</p>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<h3 id="dms">&gt;DMS</h3>
+<p>Found in the angle menu, this is the "module" token. Modules allow you to extend Grammer's functionality. Grammer comes with a default module which must be included to use some functions (like the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Menu</code> command).</p>
+<p>Currently, you can have up to five other modules. For example, if you have a module packaged as an appvar called <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">MyModule</code>:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"5MyModule→&gt;DMS</code>
+In order to execute a function <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">MyFunc(</code> from one of the modules, use : <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">&gt;DMSMyFunc</code>.</p>
+<p>If you have the token hook enabled (from Grammer's main menu), it looks a little cleaner:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"5MyModule→$</code> and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">$MyFunc</code>, respectively.</p>
+<h3 id="conj-">conj(</h3>
+<p><strong>Warning:</strong> I have no knowledge of musical jargon, so excuse my mistakes.</p>
+<p>This is a sound command with three inputs. The syntax is <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">conj(Note,Octave,Duration</code>
+Notes are:</p>
+<ul>
+<li>0 =C</li>
+<li>1 =C#</li>
+<li>2 =D</li>
+<li>3 =D#</li>
+<li>4 =E</li>
+<li>5 =F</li>
+<li>6 =F#</li>
+<li>7 =G</li>
+<li>8 =G#</li>
+<li>9 =A</li>
+<li>10=A#</li>
+<li>11=B</li>
+</ul>
+<p>Octave is 0 to 6</p>
+<p>Duration is in 64th notes. So for example, a 32nd dot note uses 3/64th time. Duration is thus 3.</p>
+<h3 id="conj-">conj('</h3>
+<p>This sound routine has several inputs:</p>
+<ul>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">conj('Duration,'Period</code></li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">conj('Duration,DataLoc,Size</code></li>
+</ul>
+<p>This reads data for the period directly to save time (intead of
+converting numbers on the fly). Size is the size of the data in
+words, not bytes.</p>
+<h2 id="drawing-commands">Drawing Commands</h2>
+<p>These are the drawing commands. Some of these have alternate syntax that do
+very different things. This section alone is six pages.</p>
+<h3 id="dispgraph">DispGraph</h3>
+<p>Displays the graph screen. You can display another buffer by using
+a pointer. For example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">DispGraphπ9872</code></p>
+<h3 id="circle-">Circle(</h3>
+<p>The syntax is <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Circle(Y,X,R[,Method[,pattern[,buffer</code>.</p>
+<p>This draws a circle using Y and X as pixel coordinates and R as
+the radius of the circle in pixels. Method is how to draw the
+circle:</p>
+<ul>
+<li>1-Black border (Default)</li>
+<li>2-White border</li>
+<li>3-Inverted border</li>
+</ul>
+<p>Pattern is a number from 0 to 255 that will be used as a drawing
+pattern. For example, 85 is <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">01010101</code> in binary, so every other
+pixel will not be drawn. Use 0 for no pattern. If the bit is 0,
+the pixel will be drawn, if it is 1, it won't be drawn. Buffer is
+the buffer to draw to (useful with grayscale).</p>
+<h3 id="pt-off-">Pt-Off(</h3>
+<p>This is used to draw sprites to pixel coordinates. It is limited
+in some ways, compared to the Pt-On( command, but more flexible in
+others. The syntax is:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pt-Off(Method,DataPointer,Y,X,[Width,[Height[,Buffer</code></p>
+<ul>
+<li><p>Method is how the sprite is drawn:</p>
+<ul>
+<li>0-Overwrite<ul>
+<li>This overwrites the graph screen data this is drawn to.</li>
+</ul>
+</li>
+<li>1-AND<ul>
+<li>This draws the sprite with AND logic</li>
+</ul>
+</li>
+<li>2-XOR<ul>
+<li>This draws the sprite with XOR logic</li>
+</ul>
+</li>
+<li>3-OR<ul>
+<li>This draws the sprite with OR logic</li>
+</ul>
+</li>
+<li>5-Erase<ul>
+<li>Where there are normally pixels on for the sprite, this
+draws them as pixels off.
+*By adding 8 to the Method, the data will be read as hexadecimal</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>DataPointer is a pointer to the sprite data</p>
+</li>
+<li>Y is the pixel Y-coordinate</li>
+<li>X is the pixel X-coordinate</li>
+<li><p>Width is 1. More options may be due in the future, but for now,
+just put 1 :) The default is 1.</p>
+</li>
+<li><p>Height is the number of pixels tall the sprite is. 8 is default</p>
+</li>
+</ul>
+<h3 id="pt-on-">Pt-On(</h3>
+<p>This also draws sprites, but only to 12 columns (every 8 pixels).
+This is slightly faster than <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pt-Off(</code> and has the advantage of
+variable width. It also has the DataSwap option that isn't present
+with the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pt-Off(</code> command. Here is the syntax of the command:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pt-On(Method,DataPointer,Y,X,[Width,[Height[,Buffer</code></p>
+<ul>
+<li>Method-This is how the sprite is drawn:<ul>
+<li>0-Overwrite</li>
+<li>1-AND</li>
+<li>2-XOR</li>
+<li>3-OR</li>
+<li>4-DataSwap<ul>
+<li>This swaps the data on the graph screen with the sprite data. Doing this twice results in no change.</li>
+</ul>
+</li>
+<li>5-Erase</li>
+<li>6-Mask<ul>
+<li>This will display a masked sprite.</li>
+</ul>
+</li>
+<li>7-Gray<ul>
+<li>This draws a frame of a 3 level gray sprite
+*By adding 8 to the Method, the data will be read as hexadecimal</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DataPointer is a pointer to the sprite data</li>
+<li>Y is the pixel Y-coordinate</li>
+<li>X is a value from 0 to 11.</li>
+<li>Width is how wide the sprite is. 1=8 pixels, 2=16 pixels,.... Default is 1.</li>
+<li>Height is the number of pixels tall the sprite is. Default is 8.</li>
+</ul>
+<h3 id="line-">Line('</h3>
+<p>This is used to draw lines. The syntax for this command is <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Line('x1,y1,x2,y2[,Method[,Buffer</code>
+So it is two sets of pixel coordinates and then the Method:</p>
+<ul>
+<li>0=White</li>
+<li>1=Black</li>
+<li>2=Invert</li>
+</ul>
+<p>If Method is omitted, it uses <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">1</code> as the default.</p>
+<ul>
+<li>Buffer is the buffer to draw to.</li>
+</ul>
+<h3 id="text-">Text(</h3>
+<p>Text( has a lot of neat features in Grammer.
+By default, it uses a 4x6 fixed-width font, and can draw to 24 columns (much like the TI-BASIC <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(</code> command drawing to only 16 columns on the homescreen).
+Font settings can be modified using the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(</code> command, including loading custom fixed- and variable-width fonts, and selecting grid-aligned or pixel-aligned drawing.
+Another feature is that text wraps to the next line and if it goes off the bottom, it wraps to the top.</p>
+<p>To draw text, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(Y,X,"Text</code>. <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"Text"</code> can be a pointer to a string.</p>
+<p>To draw a number, use the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">'</code> modifier: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text('Y,X,99</code></p>
+<p>To draw numbers as signed values, set the mode flag with <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Fix or 32</code></p>
+<p>To draw a number in a specific base (use 2 to 32), add another argument: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text('Y,X,99,16</code></p>
+<p>To draw at the end of the last text drawn, use a degree symbol modifier, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">°</code> to replace coordinates: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(°"Text</code></p>
+<p>Likewise, you can do this with numbers: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text('°99,2</code> displays 99 in binary</p>
+<p>You can use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">/Text(</code> or <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(</code><sup><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">r</code></sup> for typewriter text mode (that is the superscript <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">r</code> found at [2nd][APPS]).
+This will display characters with a delay. The delay is chosen with <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">FixText(</code>.
+  This will even display the individual letters in a token as if it is being typed. Here is an example:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">/Text(Y,X,"HELLO</code><br>And you can use numbers and other operators, too!</p>
+<p>To display a char by number, use: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(Y,X,'#</code></p>
+<p>To draw text as an ASCII string (instead of TI tokens), use ° before the string. For example: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(Y,X,°"HIrandM(WORLD</code><br>That will display the text "HI WORLD" because <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">randM(</code> corresponds
+to the space char in the ASCII set.</p>
+<p>To display 32-bit numbers, the upper and lower 16-bits must
+be in a pVar. An example where B is the upper 16-bits and C' is
+the lower 16-bits: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">:Text('0,0,BC'</code></p>
+<p>Using the <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(</code> command with no arguments returns the X position
+in <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Ans</code> and the Y position in <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Ɵ'</code>.</p>
+<p>If you want to draw to coordinates based on the last drawn
+coordinates, you can do something like this: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(+3,+0,"Hello</code>.
+But instead of +0, just leave it empty like this: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Text(+3,,"Hello</code></p>
+<h3 id="line-">Line(</h3>
+<p>This is used to draw rectangles. The syntax for this command is:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Line(x,y,Height,Width,Method</code></p>
+<ul>
+<li>x is a value from 0 to 95 and is the x pixel coordinate to begin drawing at</li>
+<li>y is a value from 0 to 63 and is the y pixel coordinate to begin drawing at</li>
+<li>Height is a value from 1 to 64 is the number of pixels tall the box will be</li>
+<li>Width is a value from 1 to 96 is the number of pixels tall the box will be</li>
+<li>Method is what kind of fill you want:<ul>
+<li>0-White. This turns off all of the pixels of the rectangle</li>
+<li>1-Black. This turns on all of the pixels of the rectangle</li>
+<li>2-Invert. This inverts all of the pixels of the rectangle</li>
+<li>3-Black border. Draws a black perimeter not changing the inside</li>
+<li>4-White border. Draws a white perimeter not changing the inside</li>
+<li>5-Inverted border. Draws an inverted perimeter not changing the inside</li>
+<li>6-Black border, White inside.</li>
+<li>7-Black border, Inverted inside.</li>
+<li>8-White border, Black inside.</li>
+<li>9-White border, Inverted inside.</li>
+<li>10-Shifts the contents in that rectangle up</li>
+<li>11-Shifts the contents in that rectangle down</li>
+</ul>
+</li>
+</ul>
+<h3 id="pxl-on-">Pxl-On(</h3>
+<p>This turns a pixel on using coordinates (y,x). To draw to a
+specific buffer, add its pointer as a last argument.</p>
+<h3 id="pxl-off-">Pxl-Off(</h3>
+<p>This turns a pixel off using coordinates (y,x). To draw to a
+specific buffer, add its pointer as a last argument.</p>
+<h3 id="pxl-change-">Pxl-Change(</h3>
+<p>This inverts a pixel using coordinates (y,x). To draw to a
+specific buffer, add its pointer as a last argument.</p>
+<h3 id="pxl-test-">Pxl-Test(</h3>
+<p>This returns 0 if the pixel is off, 1 if the pixel is on.</p>
+<h3 id="clrdraw">ClrDraw</h3>
+<p>This clears the graph screen buffer and resets the text
+coordinates. Optionally, you can clear a specific buffer by
+putting its pointer directly after. For example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">ClrDrawπ9872</code></p>
+<h3 id="clrhome">ClrHome</h3>
+<p>This clears the home screen buffer and resets the cursor
+coordinates</p>
+<h3 id="shade-">Shade(</h3>
+<p>This sets the contrast to a value from 0 to 39. 24 is normal and
+this is not permanent. An example is <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Shade(30</code></p>
+<h3 id="horizontal">Horizontal</h3>
+<p>This draws a horizontal line on the graph. The syntax is
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Horizontal y[,method,[,Buffer</code></p>
+<ul>
+<li>y is a value from 0 to 63</li>
+<li>method is how to draw the line:<ul>
+<li>0=draws a white line</li>
+<li>1=draws a black line</li>
+<li>2=draws an inverted line</li>
+</ul>
+</li>
+<li>Buffer is the buffer to draw to.</li>
+</ul>
+<h3 id="vertical">Vertical</h3>
+<p>This draws a vertical line on the graph. The syntax is:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Vertical x[,method[,Buffer</code></p>
+<ul>
+<li>x is a value from 0 to 95</li>
+<li>method is how to draw the line:<ul>
+<li>0=draws a white line</li>
+<li>1=draws a black line</li>
+<li>2=draws an inverted line</li>
+</ul>
+</li>
+<li>Buffer is the buffer to draw to.</li>
+</ul>
+<h3 id="tangent-">Tangent(</h3>
+<p>This is used to shift the screen a number of pixels. The syntax is:
+Tangent(#ofShifts,Direction[,Buffer
+# of shifts is the number of pixels to shift the graph screen
+Direction is represented as a number:
+1 = Down
+2 = Right
+4 = Left
+8 = Up
+You can combine directions by adding the values. For example,
+Right and Up would be 10 because 2+8=10</p>
+<h3 id="disp">Disp</h3>
+<p>This will let you change the default graph buffer. For example, if
+you don't want to use the graph screen, you can put this at the
+start of the program:
+:Disp π9872
+Also, if you are using grayscale, you can use the following:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Disp '</code> will set the back buffer.
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Disp</code>will set the front buffer.</p>
+<h3 id="pt-change-">Pt-Change(</h3>
+<p>This command is used to draw tilemaps. There is currently one
+method, but more should be added in the future. Here is the
+syntax:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Pt-Change(0,MapData,TileData,MapWidth,MapXOffset,MapYOffset,TileMethod</code></p>
+<ul>
+<li>MapData is a pointer to the map data</li>
+<li>TileData is a pointer to the tile set</li>
+<li>MapWidth is the width of the map (at least 12)</li>
+<li>MapXOffset is the X offset into the map data</li>
+<li>MapYOffset is the Y offset into the map data</li>
+<li>TileMethod is how the sprite will be drawn (see Pt-On()</li>
+</ul>
+<h3 id="fill-">Fill(</h3>
+<p>  Stick around, this is a pretty full command list.</p>
+<ul>
+<li>0-Black<ul>
+<li>This fills the screen buffer with black pixels</li>
+</ul>
+</li>
+<li>1-Invert<ul>
+<li>This inverts the screen buffer</li>
+</ul>
+</li>
+<li>2-Checker1<ul>
+<li>This fills the screen buffer with a checkered pattern</li>
+</ul>
+</li>
+<li>3-Checker2<ul>
+<li>This fills the screen buffer with another checkered pattern</li>
+</ul>
+</li>
+<li>4,x-LoadBytePatternOR<ul>
+<li>copies a byte to every byte of the buffer data with OR logic</li>
+</ul>
+</li>
+<li>5,x-LoadBytePatternXOR<ul>
+<li>copies a byte to every byte of the buffer data with XOR logic</li>
+</ul>
+</li>
+<li>6,x-LoadBytePatternAND<ul>
+<li>copies a byte to every byte of the buffer data with AND logic</li>
+</ul>
+</li>
+<li>7,x-LoadBytePatternErase<ul>
+<li>copies a byte to every byte of the buffer data with Erase logic</li>
+</ul>
+</li>
+<li>8,x-BufCopy<ul>
+<li>x points to another buffer. The current buffer gets copied there</li>
+</ul>
+</li>
+<li>9,x-BufOR<ul>
+<li>x points to another buffer. This gets copied to the current buffer with OR logic.</li>
+</ul>
+</li>
+<li>10,x-BufAND<ul>
+<li>x points to another buffer. This gets copied to the current buffer with AND logic.</li>
+</ul>
+</li>
+<li>11,x-BufXOR<ul>
+<li>x points to another buffer. This gets copied to the current buffer with XOR logic.</li>
+</ul>
+</li>
+<li>12,x-BufErase<ul>
+<li>x points to another buffer. This gets copied to the current buffer by erasing.</li>
+</ul>
+</li>
+<li>13,x-BufSwap<ul>
+<li>x points to a buffer. This swaps the current buffer with the other.</li>
+</ul>
+</li>
+<li>14,x-CopyDownOR<ul>
+<li>The current buffer is copied x pixels down to itself with OR logic</li>
+</ul>
+</li>
+<li>15,x-CopyDownAND<ul>
+<li>The current buffer is copied x pixels down to itself with AND logic</li>
+</ul>
+</li>
+<li>16,x-CopyDownXOR<ul>
+<li>The current buffer is copied x pixels down to itself with XOR logic</li>
+</ul>
+</li>
+<li>17,x-CopyDownErase<ul>
+<li>The current buffer is copied x pixels down to itself with Erase logic</li>
+</ul>
+</li>
+<li>18,x-CopyUpOR<ul>
+<li>The current buffer is copied x pixels up to itself with OR logic</li>
+</ul>
+</li>
+<li>19,x-CopyUpAND<ul>
+<li>The current buffer is copied x pixels up to itself with AND logic</li>
+</ul>
+</li>
+<li>20,x-CopyUpXOR<ul>
+<li>The current buffer is copied x pixels up to itself with XOR logic</li>
+</ul>
+</li>
+<li>21,x-CopyUpErase<ul>
+<li>The current buffer is copied x pixels up to itself with Erase logic</li>
+</ul>
+</li>
+<li><del>22,type-FireCycle</del><ul>
+<li><del>This burns the contents if the screen for one cycle. If type is 0, white fire is used, if it is 1, black fire is used.</del></li>
+</ul>
+</li>
+<li><del>23,Type,Y,X,Width,Height-Fire Cycle 2</del><ul>
+<li><del>Type is the same as FireCycle and the other inputs are the same as Pt-On( where X and Width go by every 8 pixels.</del></li>
+</ul>
+</li>
+</ul>
+<h3 id="recallpic">RecallPic</h3>
+<p>This is used to copy a picture to the current buffer. As an example of its use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">RecallPic 0</code>. This works for pictures 0 to 255 and archived pics.</p>
+<h3 id="storepic">StorePic</h3>
+<p>This stores the contents of the current buffer to a picture. This automatically deletes a preexisting picture. You can use this to store to pictures 0 to 255.</p>
+<h2 id="data-structures">Data Structures</h2>
+<p>Grammer doesn't really have any data structures which is both good and bad.
+Bad because it makes you have to think a little more about how to approach a
+problem, but good in that it allows you to create precisely what you need. This is
+where you will need commands to create variables, insert or remove data, and edit
+the data. I will also try to explain how to create some basic data structures like
+arrays and matrices. First, here are the commands you have to work with:</p>
+<h2 id="memory-access">Memory Access</h2>
+<h3 id="get-">Get(</h3>
+<p>This uses a string for the name of an OS var and returns a pointer
+to its data.</p>
+<ul>
+<li>If the variable does not exist, this returns 0</li>
+<li>If it is archived, the value returned will be less than 32768</li>
+<li>Ɵ' contains the flash page the variable is on, if it is archived, otherwise Ɵ' is 0
+As an example, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Get("ESPRITES→A'</code> would return a pointer to the data
+of <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">prgmSPRITES</code> in <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">A'</code>.</li>
+</ul>
+<h3 id="-">(</h3>
+<p>Use this to read a byte of data from RAM</p>
+<h3 id="-">{</h3>
+<p>Use this two read a two byte value from RAM (little endian)</p>
+<h3 id="int-">int(</h3>
+<p>Use this to write a byte of data to RAM.</p>
+<h3 id="ipart-">iPart(</h3>
+<p>Use this to write a word of data to RAM, little-endian (a word is 2
+bytes). For example, to set the first two bytes to 0 in prgmHI:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Get("EHI→A</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:iPart(A,0</span></span></div></pre><h3 id="send-">Send(</h3>
+<p>Use this to create Appvars or programs of any size (so long as
+there is enough memory). For example, to create <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">prgmHI</code> with 768
+bytes: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Send(768,"EHI</code>.</p>
+<p>Programs must be prefixed with <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"E"</code>, protected programs <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"F"</code> and
+appvars <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">"U"</code>.</p>
+<p>Lowercase letters are allowed! :)</p>
+<h3 id="-and-"><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">[</code>, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">[[</code>, and <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">[(</code></h3>
+<p>This allows you to write multiple bytes to a RAM location. For
+example, to write some bytes to the address pointed to by A:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:A[1,2,3,4</span></span></div></pre><p>To store some values as words, you can use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">°</code> after the number.
+These will be stored little endian. For example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:A[1,2,3°,4</span></span></div></pre><p>In order to store all values as words, use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">[[</code> instead:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:A[[1,2,3,4</span></span></div></pre><p>To directly store hexadecimal, use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">[(</code>. For example:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:A[(3C7EFFFFFFFF7E3C</span></span></div></pre><h3 id="is-">IS&gt;(</h3>
+<p>This is used to read memory. The argument is one of the pointer
+vars. It reads the byte pointed to by the pvar and then the pvar is incremented (so consecutive uses will read consecutive bytes). For
+example, to display the hex of the first four bytes of a var:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Get("EPROG→Z</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text('0,0,IS&gt;(Z,16</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text('°IS&gt;(Z,16</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text('°IS&gt;(Z,16</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text('°IS&gt;(Z,16</span></span></div></pre><h3 id="archive">Archive</h3>
+<p>Follow this with a var name to archive the var. For example, to
+archive <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">prgmPROG</code>, do this: <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Archive "EPROG</code>.</p>
+<h3 id="unarchive">Unarchive</h3>
+<p>Use this like <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Archive</code>, except this unarchives the var</p>
+<h3 id="delvar">Delvar</h3>
+<p>Use this like <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Archive</code>, except this will delete a var</p>
+<h3 id="sub-">sub(</h3>
+<p>Use this to remove data from a variable. the syntax is:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">sub(#ofBytes,Offset,"Varname</code></p>
+<p>For example, to delete the first 4 bytes of program Alpha:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">sub(4,0,"EAlpha</code></p>
+<h3 id="augment-">augment(</h3>
+<p>This is used to insert data into a var. The syntax is:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">augment(#ofbytes,Offset,"VarName</code></p>
+<p>For example, to insert 4 bytes at the beginning of appvar <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Hello</code>:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">augment(4,0,"UHello</code></p>
+<h2 id="data-structures-continued">Data Structures, continued</h2>
+<p>Now let's make an array! First you need to know what you want. Do you want to
+have 2-byte pieces of data or 1-byte? I like using one byte, so here is what we do:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:.0:Return</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Send(256,"VDat→Z&nbsp;&nbsp;&nbsp;;We&nbsp;create&nbsp;a&nbsp;TempProg&nbsp;with&nbsp;256&nbsp;bytes&nbsp;of&nbsp;data&nbsp;called&nbsp;Dat.</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Z[rand,rand,rand&nbsp;&nbsp;&nbsp;;write&nbsp;3&nbsp;random&nbsp;bytes.</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:ClrDraw</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:For(3</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text('°Is&lt;(Z&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Display&nbsp;the&nbsp;value&nbsp;at&nbsp;byte&nbsp;Z.&nbsp;Also&nbsp;increments&nbsp;Z.</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text('°",</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:DispGraph</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Stop</span></span></div></pre><p>That didn't really need a 256-byte variable, but I figured I would show how to
+make one. Anyways, what that did was make a 256-byte tempprog (which the OS
+automatically deletes once control is returned to the OS and you are on the
+homescreen). Then, we stored 3 random values to the first three bytes, then we
+displayed those values with commas after each number. If you want to use that 256
+bytes for a matrix, instead, you can make it a 16x16 matrix and access elements
+using a formula. For example, to read (Y,X):
+:(Z+X+Y*16
+That means that the data is stored in rows. That is why we take the row number and
+multiply by 16 (that is the number of elements per row). This happens to be the
+syntax that tilemaps are stored (stored in rows).</p>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<h2 id="modes">Modes</h2>
+<h3 id="fix-text-">Fix Text(</h3>
+<p>  Use this to set the typewriter delay. The larger the number, the slower the typewriter text is displayed.</p>
+<h3 id="fix">Fix</h3>
+<p>Use this to set certain modes. For all the modes that you want to set, add
+the corresponding values together. For example, to enable inverse text
+and inverse pixels, use <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Fix 1+2</code> or simply <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Fix 3</code></p>
+<p>Here are the modes:</p>
+<ul>
+<li>1-Inverse text</li>
+<li><p>2-Inverse pixels. Now, on pixels mean white and off means black.
+In assembly terms, it reads from the buffer, inverts the data
+and sends it to the LCD.</p>
+</li>
+<li><p>4-Disable ON key. This will allow ON to be detected as a key, too</p>
+</li>
+<li>8-Hexadecimal Mode. (Numbers are read as hexadecimal)</li>
+<li>16-PixelTestOOB. Returns 1 for out of bounds pixel tests</li>
+<li>32 - Display numbers as signed values.</li>
+</ul>
+<p>If you want to use bit logic to set or obtain specific bits or info
+about the current modes, you can do things like this:</p>
+<p>Stores the current mode value:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Fix&nbsp;→A</span></span></div></pre><p>Set the first three modes without changing the rest:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Fix&nbsp;or&nbsp;7</span></span></div></pre><p>Toggles mode 4 (enable/disable [ON] key)</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Fix&nbsp;xor&nbsp;4</span></span></div></pre><h3 id="full">Full</h3>
+<p>This is used to set 15MHz mode. Alternatively, if you add a number to
+the end:</p>
+<ul>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Full0</code> sets 6MHz</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Full1</code> sets 15MHz</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Full2</code> toggles the speed</li>
+</ul>
+<p>15MHz is only set if it is possible for the calc. This returns <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">0</code> if the
+previous speed setting was 6MHz, <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">1</code> if it was 15MHz. This gives us a way to determine if 15MHz is possible:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Full&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;Sets&nbsp;15MHz&nbsp;if&nbsp;possible</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:If&nbsp;Full&nbsp;&nbsp;;Sets&nbsp;15MHz&nbsp;if&nbsp;possible,&nbsp;but&nbsp;also&nbsp;returns&nbsp;1&nbsp;if&nbsp;the&nbsp;previous&nbsp;`Full`&nbsp;was&nbsp;able&nbsp;to&nbsp;set&nbsp;15MHz</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Then</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text(0,0,"15MHz&nbsp;possible!</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Else</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:Text(0,0,"6MHz&nbsp;only&nbsp;:(</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>:End</span></span></div></pre><h3 id="output-">Output(</h3>
+<p>  This is used to change the font. The syntax is:</p>
+<ul>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(0</code> will change to the default 4x6 font.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(1</code> will change to the variable width font.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(2</code> will allow you to use the 4x6 font at pixel coordinates</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(3,font</code> will let use Omnicalc or BatLib styled fonts.</li>
+<li><code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(°,#</code> will change the draw logic.<ul>
+<li>0=Overwrite</li>
+<li>1=AND</li>
+<li>2=XOR</li>
+<li>3=OR</li>
+<li>4=DataSwap.......Does nothing</li>
+<li>5=Erase
+Adding another argument to the first three will allow you to choose
+your own custom fontset. The argument simply points to the start of the
+fontset.</li>
+</ul>
+</li>
+</ul>
+<p>The output is a pointer to the fontset (custom or standard set), which could be useful if you wanted to read or process the built-in set.</p>
+<p>For <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(3,</code> remember that Omnicalc's font data starts at an offset of</p>
+<ol start="11">
+<li>So if you have a font called <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">BOLD</code>, you would do:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">Output(3,11+Get("EBOLD</code></li>
+</ol>
+<h1 id="binary-lesson">Binary Lesson</h1>
+<p>This document was designed to explain the basics of Decimal (our number system),
+Hexadecimal (base16, the ASM number system), and binary (machine code, 0's and
+1's). Again, this is going to be very basic. Check the internet if you want to
+learn more.</p>
+<h2 id="converting-from-dec-to-hex-">Converting from Dec to Hex:</h2>
+<ol>
+<li><p>Divide the number by 16. The remainder is the first number. If it is 0 to 9,
+just keep that. If it is 10 to 15, use letters A to F.</p>
+</li>
+<li><p>If the number is 16 or larger, still, divide by 16.</p>
+</li>
+<li>Repeat step 1 and 2 until finished.</li>
+</ol>
+<p>Here is an example of 32173 converted to Hex:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>32173/16=&nbsp;2010&nbsp;13/16&nbsp;&nbsp;Remainder=13&nbsp;“D”</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>2010/16=&nbsp;125&nbsp;10/16&nbsp;&nbsp;&nbsp;&nbsp;Remainder=10&nbsp;“A”</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>125/16=&nbsp;7&nbsp;13/16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Remainder=13&nbsp;“D”</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>7/16=&nbsp;7/16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Remainder=7&nbsp;&nbsp;“7”</span></span></div></pre><p>So the number is 7DADh</p>
+<h2 id="converting-from-hex-to-dec-">Converting from Hex to Dec:</h2>
+<p>I will start this with an example of 731h:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>1*16^0&nbsp;=&nbsp;1</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>3*16^1&nbsp;=&nbsp;48</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>7*16^2&nbsp;=&nbsp;1792</span></span></div></pre><p>Add them all up to get 1841. Did you see the pattern with the 16<sup>n</sup>?</p>
+<h2 id="binary-">Binary.</h2>
+<p>Converting to and from binary is pretty similar. Just replace all the 16's with 2's
+and you will have it.</p>
+<h2 id="octal-">Octal.</h2>
+<p>Replace all the 16's with 8's.</p>
+<h2 id="other-bases">Other Bases</h2>
+<p>Replace the 16's with whatever number you want.</p>
+<p>Here is some cool knowledge for spriting. Each four binary digits represents one
+hexadecimal digit. For example:
+<code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">00110101</code> corresponds to <code style="font-family: Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace;">35</code> in hexadecimal. This makes it super easy to convert a sprite which is
+binary to hexadecimal! You only need the first 16 digits, so here you go:</p>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0000&nbsp;=&nbsp;0&nbsp;0100&nbsp;=&nbsp;4&nbsp;1000&nbsp;=&nbsp;8&nbsp;1100&nbsp;=&nbsp;C</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0001&nbsp;=&nbsp;1&nbsp;0101&nbsp;=&nbsp;5&nbsp;1001&nbsp;=&nbsp;9&nbsp;1101&nbsp;=&nbsp;D</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0010&nbsp;=&nbsp;2&nbsp;0110&nbsp;=&nbsp;6&nbsp;1010&nbsp;=&nbsp;A&nbsp;1110&nbsp;=&nbsp;E</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>0011&nbsp;=&nbsp;3&nbsp;0111&nbsp;=&nbsp;7&nbsp;1011&nbsp;=&nbsp;B&nbsp;1111&nbsp;=&nbsp;F</span></span></div></pre><h1 id="charts">Charts</h1>
+<h2 id="key-codes">Key Codes</h2>
+<p>You can use this as a guide to the key values output by getKey
+example, Clear=15</p>
+<p><img alt="Key Codes" src="/home/zeda/prog/Z80/asm/Grammer/Grammer2/docs/img/keycodes.png"></p>
+<p>Also, there are the diagonal directions:<br>5=Down+Left<br>6=Down+Right<br>7=Up+Left<br>8=Up+Right<br>16=All directions mashed</p>
+<h2 id="data-types">Data Types</h2>
+<pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>#&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;use:</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>00=Real&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(&nbsp;&nbsp;&nbsp;&nbsp;Real&nbsp;Format</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>01=List&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Real&nbsp;Format</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>02=Matrix&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Real&nbsp;Format</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>03=EQU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Symbol&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>04=String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Symbol&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>05=Program&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Named&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>06=ProtProg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Named&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>07=Picture&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Symbol&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>08=GDB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Symbol&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>09=Unknown&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>10=UnknownEqu&nbsp;&nbsp;&nbsp;J&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>11=New&nbsp;EQU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>12=Complex&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Real&nbsp;Format</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>13=Complex&nbsp;List&nbsp;M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Real&nbsp;Format</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>14=Undefined&nbsp;&nbsp;&nbsp;&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>15=Window&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>16=ZSto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>17=Table&nbsp;Range&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>18=LCD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>19=BackUp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>20=App&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not&nbsp;Supported</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>21=Appvar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Named&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>22=TempProg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Named&nbsp;Var</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>23=Group&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Named&nbsp;Var&nbsp;&nbsp;&nbsp;this&nbsp;can&nbsp;mess&nbsp;stuff&nbsp;up&nbsp;unless&nbsp;you&nbsp;*really*&nbsp;know&nbsp;what&nbsp;you&nbsp;are&nbsp;doing.</span></span></div></pre><p>Symbol Vars are compatible with each other.
+Named Vars are compatible with each other.
+Real Format variables are a special format generally not supported by Grammer.</p>
+<h1 id="examples">Examples</h1>
+<p>Here are some code examples to hopefully help you. Some are really short
+snippets of code, others are longer pieces.
+Movement
+Here is code that changes X and Y based on key presses.
+:X+getKey(3
+:min(-getKey(2,95→X
+:Y+getKey(1
+:min(-getKey(4,63→YParticles
+:.0:
+:0→X→Y
+:Repeat getKey(15
+:R▶Pθ(
+:If getKey(9
+:P▶Rx(Y,X
+:X+getKey(3
+:min(-getKey(2,95→X
+:Y+getKey(1
+:min(-getKey(4,63→Y
+:End
+:Stop</p>
+<h1 id="thanks">Thanks</h1>
+<p>I have to give special thanks to Yeongjin Nam for his work on writing a
+better tutorial for Grammer and as well Louis Becquey (persalteas) for his work on
+writing a french readme/tutorial. Both of them have also made many valuable
+suggestions that have helped make Grammer what it is right now. Thanks much!</p>
+<p>I also thank Hans Burch for reconstructing Grammer 2 after I lost my work. It must have been a tremendous amount of effort and tedium, and I greatly appreciate it.</p>
+<p>Finally, I would like to thank the sites that have let me get the word out about
+this project, especially <a href="https://www.omnimaga.org/index.php">Omnimaga</a> and <a href="https://www.cemetech.net/">Cemetech</a>.</p></body>
+</html>
