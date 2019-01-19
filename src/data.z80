@@ -431,7 +431,7 @@ StrGram:
 s_PkgNotFound:
   .db "PkgNotFound",0
 StrVersion:
- .db "Grammer v2.50.0.1",0
+ .db "Grammer v2.50.0.2",0
 ;Str8Space: .db "        ",0
 Str1Space: .db " ",0
 s_grampkg: .db 15h,"Grampkg",0
