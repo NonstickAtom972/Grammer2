@@ -168,8 +168,9 @@ InvertLCDFlag   =   1
 OnBlockFlag     =   2
 baseInput       =   3
 pxlBoundsRes    =   4
-;    =   5
+SignedText      =   5
 ;    =   6
+;    =   7
 
 ParticleFlag    = 35
 Xis0            = 0
