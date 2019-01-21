@@ -2796,24 +2796,27 @@ FindingTextStr:
   inc hl
   ld a,(hl)
   cp $AE
-  jr nz,$+12
+  jr nz,+_
   ld (parsePtr),hl
   call ParseNextFullArg
   ld a,c
   jp PutSC
+_:
   cp 11
-  jr nz,$+13
+  jr nz,+_
   ld (parsePtr),hl
   call ParseNextFullArg
   ld h,b \ ld l,c
   jp GPutS
+_:
   call ParseNextFullArg
   push bc
   set 0,(iy+ParticleFlag)
   cp 2Bh
-  jr nz,$+6
+  jr nz,+_
   call ParseNextFullArg
   xor a
+_:
   pop hl
   jr z,TokenTextLoop
 PutTokenText:
@@ -2823,13 +2826,16 @@ PutTokenText:
 TokenTextLoop:
   ld a,(hl)
   bit 0,(iy+ParticleFlag)
-  jr nz,$+11
+  jr nz,+_
+  or a
+  ret z
   cp 4
   ret z
   cp 3Fh
   ret z
   cp 2Ah
   ret z
+_:
   push  hl
   push bc
   bcall(_Get_Tok_Strng)
@@ -4615,7 +4621,6 @@ _:
   inc hl
   ret
 
-
 ;===============================================================
 GetGrammerText:
 ;===============================================================
@@ -4674,17 +4679,17 @@ TextConvertEnd:
   inc hl
   pop de
   ret
-;===============================================================
+;;===============================================================
 GetGrammerStr:
-;===============================================================
-;Input:
-;    HL points to the start of the string
-;Outputs:
-;     A is the value of the ending byte of the string
-;    BC is the size of the string
-;    HL points to the ending byte of the string
-;     z flag is set
-;===============================================================
+;;===============================================================
+;;Input:
+;;    HL points to the start of the string
+;;Outputs:
+;;     A is the value of the ending byte of the string
+;;    BC is the size of the string
+;;    HL points to the ending byte of the string
+;;     z flag is set
+;;===============================================================
   ld bc,0
 _:
   inc hl
@@ -5388,8 +5393,7 @@ GPutS:
 ;     DE
 ;===============================================================
   ld d,0    ;gotta keep this here for PutSS
-  ld b,d
-  ld c,d
+  ld bc,0
 _:
   ld a,(hl)
   cp d
@@ -5721,15 +5725,18 @@ _:
 bincompare = -_-RAMCodeStart+ramCode
   ld de,(parsePtr)
   out (6),a
+  .db $FE   ;start of cp *
 _:
+  inc de
   ld a,(de)
   cp (hl)
   jr nz,+_
   call isEOT
   jr z,+_
-  inc de
   inc l \ call z,incHLMem1
-  jr -_
+  ld a,(hl)
+  or a
+  jr nz,-_
 _:
   in a,(6)
   ld b,a
@@ -5744,11 +5751,8 @@ bincomparepagerestore = -_-RAMCodeStart+ramCode+1
 isEOT    = $-RAMCodeStart+ramCode
 ;End Of Token includes (, ' ', {, [, \n, :
   or a \ ret z
-  cp $3E \ ret z  ;:
-  cp $3F \ ret z  ;\n
   cp $10 \ ret z  ;(
-  cp $29 \ ret z  ;space
-  cp $3A \ ret    ;.
+  cp $29 \ ret  ;space
 RamCodeEnd:
 ;=============================================================================
 ConvOP1:
