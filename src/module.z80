@@ -17,20 +17,21 @@ module:
   ld a,(hl)
   or a
   jr z,no_module_loc
-  ld b,a
 _:
   inc hl
   ld e,(hl)
   inc hl
   ld d,(hl)
   push hl
-  push bc
+  push af
   ex de,hl
   call module_locate
-  pop bc
+  pop hl
+  ld a,h
   pop hl
   ret c
-  djnz -_
+  dec a
+  jr nz,-_
 no_module_loc:
   jp nc,ErrPkgNotFound
   ret
@@ -100,21 +101,17 @@ binsearchloop:
   ld de,(binmin)
   or a
   sbc hl,de
-  ld a,l
-  rr h
-  rra
-  rra
-  add a,a
-  ld l,a
-  or h
   jr z,nomatch
+  rr h
+  rr l
+  res 0,l
   add hl,de
   push hl
   ld e,(hl)
   inc hl
   ld d,(hl)
   ld a,d
-  
+
   rlca
   rlca
   and 3
@@ -133,6 +130,8 @@ _:
   jr z,binmatch
   pop hl
   jr c,+_
+  inc hl
+  inc hl
   ld (binmin),hl
   jr binsearchloop
 _:
