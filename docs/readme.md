@@ -226,25 +226,24 @@ used. This means you can preserve the graph screen. Alternatively, most drawing
 commands have an optional argument to draw to a specific buffer.
 
 ## Grayscale
-Grayscale is a nice little feature in Grammer that can be used if you do it
-correctly. Now that you know how buffers work, you can give this a try. First, you
-need two buffers-- the back buffer and the front buffer. Define these using `Disp `
+Grammer has grayscale support. Since the calculator is monochrome, this means alternating colors at the right frequency to achieve a gray-looking pixel. Knowing how buffers work, you can give this a try. First, you
+need two buffers-- the back buffer and the front buffer. Define these using `Disp °`
 and `Disp '`, respectively (both found in the Angle menu). For example, to add the
-gray buffer, use `Disp π9872` and now whenever you use `DispGraph`, it will update one
+back buffer, use `Disp °π9872` and now whenever you use `DispGraph`, it will update one
 cycle of gray. Because the LCD does not support grayscale naturally, you will need
 to update the LCD often and regularly.
 
 A pixel is seen as gray if it is ON in one of the buffers, but OFF in the other
-buffer. If a pixel is on in the front buffer, it will appear darker. Because
-grayscale is so important, I will give an example program that draws in grayscale:
+buffer. If a pixel is on in the front buffer, it will appear darker. Here is
+an example program that draws in grayscale:
 ```
 :.0:
 :π9872→Z
-:Disp° Z
+:Disp °Z
 :ClrDraw
 :ClrDrawZ
 :0→X→Y
-:Repeat getKey(15)
+:Repeat getKey(15
 :Pxl-Change(Y,X       ;Just drawing the cursor
 :Pxl-Change(Y,X,Z     ;Pixel changing it on both buffers
 :DispGraph
@@ -258,8 +257,7 @@ grayscale is so important, I will give an example program that draws in grayscal
 :Pxl-Off(Y,X
 :If getKey(9:+getkey(56   ;If [Enter] or [Del]
 :Pxl-Off(Y,X,Z
-:X+getKey(3
-:-getKey(2
+:X+getKey(3:-getKey(2
 :If <96
 :→X
 :Y+getKey(1
@@ -973,8 +971,8 @@ you don't want to use the graph screen, you can put this at the
 start of the program:
 :Disp π9872
 Also, if you are using grayscale, you can use the following:
-`Disp '` will set the back buffer.
-`Disp `will set the front buffer.
+`Disp '` will set the front buffer.
+`Disp °`will set the back buffer.
 
 ### Pt-Change(
 This command is used to draw tilemaps. There is currently one
