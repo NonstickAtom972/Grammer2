@@ -240,7 +240,7 @@ grayscale is so important, I will give an example program that draws in grayscal
 ```
 :.0:
 :π9872→Z
-:Disp o Z
+:Disp° Z
 :ClrDraw
 :ClrDrawZ
 :0→X→Y
@@ -987,6 +987,8 @@ syntax:
 * MapXOffset is the X offset into the map data
 * MapYOffset is the Y offset into the map data
 * TileMethod is how the sprite will be drawn (see Pt-On()
+
+Please note that the tile data and map data have to be raw bytes, as opposed to hexadecimal. There are some tools written in Grammer for creating sprite sets and tilemaps on TICalc or Omnimaga.
 
 ### Fill(
   Stick around, this is a pretty full command list.
