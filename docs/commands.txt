@@ -4,3 +4,11 @@ solve(5       Write to a port
 solve(6       Read from a port
 solve(7       Copy Variables
 solve(8       Overwrites variables with new data
+
+Look into little l
+There is now a mode for displaying signed numbers when using Text(
+The rectangle routine is now slightly faster, drawing about 1.75 more rectangles per second.
+Made the number conversion routine (for storing to OS real vars) smaller and faster. It now takes at most 666 cycles instead of 750.
+
+
+Document new error codes

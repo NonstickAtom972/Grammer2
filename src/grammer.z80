@@ -2064,6 +2064,18 @@ g_Rand:
 BBTokens:
   ld a,(hl)
   inc hl
+  cp $64    ;the G-T token
+  jr nz,+_
+  ;scf \ jr c,$
+  ld a,(hl)
+  ld bc,9340h
+  cp $AE
+  jr nz,$+6
+  inc hl
+  ld bc,9872h
+  ld (parsePtr),hl
+  ret
+_:
   ld (parsePtr),hl
   cp $B0
   jr c,length
@@ -6715,6 +6727,7 @@ TokenTable:
  .db $CE,1,8,"MakeVar("
  .db $D0,1,8,"FindVar("
  .db $7E,1,2,"2^"
+ .db $72,4,4,"gbuf"
  .db 0
 ;===================================================
 CommandJumpTable:

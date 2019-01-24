@@ -192,8 +192,7 @@ Drawing in Grammer has a few similarities to TI-BASIC, but not many. The
 first concept I want to tell you about is that of drawing buffers. These include
 the graph screen and other chunks of memory that you use like the graph screen. A
 drawing buffer is 768 bytes and there are two that do not use user RAM that you can
-use in Grammer. Their pointers are `π9872` and `π9340`. The first is called
-AppBackUpScreen by assembly programmers and the second is what we know as the graph
+use in Grammer. Their pointers are `π9872` and `π9340`, but you can also use `G-T`` and `G-T` respectively. The `G-T` token can be found in the [Mode] menu. The first is called appBackUpScreen by assembly programmers and the second is what we know as the graph
 screen. The graph screen is default. You can also use `π86EC`, but Grammer uses that
 for scratch work for a few commands as well. Now, to the actual drawing!
 In all cases, (0,0) is the upper left corner of the screen. If you want to
@@ -220,7 +219,7 @@ with `DispGraph` and this means that you can do a lot of drawing without showing
 users the behind the scenes stuff.
 
 Now let's say you want to draw to another buffer as default. This is
-where you use Disp: `Disp π9872`.
+where you use Disp: `Disp π9872` or `Disp G-T'`.
 Now, whenever you draw or update the LCD, that is the buffer that will be
 used. This means you can preserve the graph screen. Alternatively, most drawing
 commands have an optional argument to draw to a specific buffer.
@@ -238,7 +237,7 @@ buffer. If a pixel is on in the front buffer, it will appear darker. Here is
 an example program that draws in grayscale:
 ```
 :.0:
-:π9872→Z
+:G-T'→Z
 :Disp °Z
 :ClrDraw
 :ClrDrawZ
