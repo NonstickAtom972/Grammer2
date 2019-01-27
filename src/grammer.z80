@@ -6417,13 +6417,13 @@ GetvarInfo2:
 GetVarInfoVarFound:
   ex de,hl
   or a
-  jr nz,InfoIsArched
+  jr nz,+_
   ld c,(hl) \ inc hl
   ld b,(hl) \ inc hl
   ret
-InfoIsArched:
+_:
   add hl,bc
-  ld c,10
+  ld c,9
   add hl,bc
   bit 7,h
   jr z,+_
