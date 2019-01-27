@@ -417,7 +417,6 @@ vFont:
 .db $0,$0
 ;Char $100
 .db $0,$0
-.echo "vFont : ",$-vFont," bytes"
 GramTempName:
  .db 16h,"GramTemp"
 GVarData:

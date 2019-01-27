@@ -237,7 +237,7 @@ buffer. If a pixel is on in the front buffer, it will appear darker. Here is
 an example program that draws in grayscale:
 ```
 :.0:
-:G-T'→Z
+:G-T'→Z      ;G-T' is the pointer to 9872h, appBackUpScreen
 :Disp °Z
 :ClrDraw
 :ClrDrawZ

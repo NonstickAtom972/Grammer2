@@ -68,7 +68,6 @@ jumptable:
 .fill $4201-$,$40
 #endif
 #endif
-
 main:
   call SetUpData
   call StartMenu
@@ -78,11 +77,8 @@ _:
   call GetKey
   or a
   jr nz,-_
-  ld de,cmdShadow
-  ld hl,textShadow
-  ld bc,128
-  ldir    ;moves 128 bytes
-  .echo "main moves 128 bytes"
+	bcall(_clrTxtShd)
+  bcall(_saveCmdShadow)
   bcall(_JForceCmdNoChar)
 StartMenu:
   ld bc,0
@@ -304,7 +300,7 @@ NoInt:
   ld de,ParserNext
   push de
 ParseArg:
-  ld hl,(BufPtr)
+  ld hl,(BufPtr)        ;wtf is going on here?
   ld (BufPtr0e),hl
   ld hl,(parsePtr)
 ParseArg2:
@@ -573,7 +569,6 @@ _:
   ld de,smallEditRAM
 L46be:
   ld bc,108    ;=108, 2*54, 4*(26+1) ; could use 'call mov4 \ jp mov104's
-  .echo "solveset moves 108 bytes"
 ReadRAM:
   ldir
 EndSolveSet:
@@ -5734,6 +5729,56 @@ IncHLMem1 = -_-RAMCodeStart+ramCode
   ld h,40h
   ret
 _:
+call_previous_page = -_-RAMCodeStart+ramCode
+  ld (de_restore),de
+  ex (sp),hl
+  ld e,(hl)
+  inc hl
+  ld d,(hl)
+  inc hl      ;the return address
+  ld (page0_call),de
+  ex (sp),hl
+  push af
+  in a,(6)
+  inc a
+  out (6),a
+  pop af
+de_restore = $-RAMCodeStart+ramCode+1
+  ld de,0
+page0_call = $-RAMCodeStart+ramCode+1
+  call 0
+  push af
+  in a,(6)
+  dec a
+  out (6),a
+  pop af
+  ret
+_:
+call_next_page = -_-RAMCodeStart+ramCode
+  ld (de_restore_),de
+  ex (sp),hl
+  ld e,(hl)
+  inc hl
+  ld d,(hl)
+  inc hl      ;the return address
+  ld (page1_call),de
+  ex (sp),hl
+  push af
+  in a,(6)
+  dec a
+  out (6),a
+  pop af
+de_restore_ = $-RAMCodeStart+ramCode+1
+  ld de,0
+page1_call = $-RAMCodeStart+ramCode+1
+  call 0
+  push af
+  in a,(6)
+  inc a
+  out (6),a
+  pop af
+  ret
+_:
 bincompare = -_-RAMCodeStart+ramCode
   ld de,(parsePtr)
   out (6),a
@@ -7205,4 +7250,7 @@ menu:
 #include "routines.z80"
 #include "err.z80"
 #include "data.z80"
-.echo $8000-$-96," bytes remaining"
+.echo "Page 0: ",$8000-$," bytes remaining"
+
+;.fill $8000-$,255
+;#include "01.z80"

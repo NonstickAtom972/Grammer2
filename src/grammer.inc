@@ -1,3 +1,5 @@
+#define callp(x) call call_previous_page \ .dw x
+#define calln(x) call call_next_page \ .dw x
 _FindAlphaDn    = 4A47h
 _FindAlphaUp    = 4A44h
 _RclAns         = 4AD7h
@@ -24,6 +26,9 @@ _GetKeyRetOff   = 500Bh
 _RunIndicOff    = 4570h
 _DeleteTempPrograms = 5041h
 _MemChk         = 42E5h
+_clrTxtShd      = 454Ch
+_saveCmdShadow  = 4573h
+_PutS           = 450Ah
 appErr1         = 984Dh
 cxErrorEP       = 8595h
 curRow          = 844Bh

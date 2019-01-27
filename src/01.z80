@@ -1,0 +1,3 @@
+.org $4000
+
+.echo "Page 1: ",$8000-$," bytes remaining"
