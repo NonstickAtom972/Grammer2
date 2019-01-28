@@ -68,6 +68,7 @@ moduleExec = 86ECh
 ;      10 bytes for Status stored in iMathPtr1
 ;===============================================================
 smallEditRAM        = 90D3h  ;108 bytes
+pvars               = smallEditRAM
 iMathPtr1           = 84D3h  ;10 bytes
 iMathPtr2           = 84D5h
 iMathPtr3           = 84D7h
@@ -179,11 +180,13 @@ SignedText      =   5
 ;    =   7
 
 ParticleFlag    = 35
+InternalFlag2   = 35
 Xis0            = 0
 Xis95           = 1
 Yis0            = 2
 Yis63           = 3
 OffScrn         = 4
+usingfloat      = 5
 
 
 onFlags         = 9        ;on key flags

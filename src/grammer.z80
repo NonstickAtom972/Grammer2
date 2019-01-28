@@ -267,7 +267,7 @@ grazh:
   ld hl,BreakProgram
   push hl
 ParserNext:
-  bit 1,(iy+InternalFlag)
+  bit IntActiveFlag,(iy+InternalFlag)
   jr nz,NoInt
   ld hl,(IntLoc)
   ld a,h \ or l
@@ -282,7 +282,7 @@ ParserNext:
   ld hl,(parsePtr)
   push hl
   ld (parsePtr),de
-  set 1,(iy+InternalFlag)
+  set IntActiveFlag,(iy+InternalFlag)
   push bc
   call ParserNext
   pop bc
@@ -291,7 +291,7 @@ ParserNext:
   ld hl,(IntMax)
 NoFire:
   ld (IntCount),hl
-  res 1,(iy+InternalFlag)
+  res IntActiveFlag,(iy+InternalFlag)
 #endif
 NoInt:
   bit 2,(iy+UserFlags)
@@ -304,7 +304,7 @@ ParseArg:
   ld (BufPtr0e),hl
   ld hl,(parsePtr)
 ParseArg2:
-  bit 1,(iy+InternalFlag)
+  bit IntActiveFlag,(iy+InternalFlag)
   jr nz,$+3
   ei
   ld a,(hl)
@@ -2036,6 +2036,7 @@ RecallPicToken:
   pop bc
   pop de
   ex af,af'
+;'
   or a
   jp z,BufCopy+3
   ex de,hl
@@ -2098,7 +2099,7 @@ _:
   ld c,(hl)
   inc hl
   ld b,(hl)
-  set 5,(iy+InternalFlag)
+  set FactorialFlag,(iy+InternalFlag)
   ret
 length:
   cp 2Bh \ jr nz,inString
@@ -2702,11 +2703,11 @@ _:
   ld (ThetaPrimeVar),hl
   ret
 NoRC:
-  res 0,(iy+InternalFlag)
+  res SlowTextFlag,(iy+InternalFlag)
   cp 10
   jr nz,$+11
 SlowText:
-  set 0,(iy+InternalFlag)
+  set SlowTextFlag,(iy+InternalFlag)
   inc hl
   ld (parsePtr),hl
   ld a,(hl)
@@ -2893,13 +2894,13 @@ _:
 PtOff:
   call ParseFullArg
   ld a,c \ and 7
-  res 0,(iy+InternalFlag)
+  res SlowTextFlag,(iy+InternalFlag)
   bit 3,c
   jr z,$+6
-  set 0,(iy+InternalFlag)
+  set SlowTextFlag,(iy+InternalFlag)
   push af
   call ParseNextFullArg
-  bit 0,(iy+InternalFlag)
+  bit SlowTextFlag,(iy+InternalFlag)
   jr z,$+8
   call ConvHexTo86ECh
   ld bc,86ECh
@@ -3182,15 +3183,15 @@ L5971:
   ld a,c
 DrawLine:
   di
-  res 5,(iy+InternalFlag)
-  res 6,(iy+InternalFlag)
+  res FactorialFlag,(iy+InternalFlag)
+  res Mod2nd,(iy+InternalFlag)
   bit 2,a
   jr z,+_
-  set 5,(iy+InternalFlag)
+  set FactorialFlag,(iy+InternalFlag)
 _:
   bit 3,a
   jr z,+_
-  set 6,(iy+InternalFlag)
+  set Mod2nd,(iy+InternalFlag)
 _:
   and $f3
   ld bc,$A62F
@@ -3205,9 +3206,9 @@ _:
   ld ($8101),bc
   ld a,$ff
   ld ($811a),a
-  res 7,(iy+InternalFlag)
+  res grayMode,(iy+InternalFlag)
   ld a,(ix)
-  bit 6,(iy+InternalFlag)
+  bit Mod2nd,(iy+InternalFlag)
   jr nz,+_
   inc a
 _:
@@ -3310,7 +3311,7 @@ L5a45:
  ret
 
 L5a4b:
- bit 6,(iy+InternalFlag)
+ bit Mod2nd,(iy+InternalFlag)
  call nz,$8106
  exx
  add hl,de
@@ -3342,9 +3343,9 @@ _:
   ret
 
 L5a6f:
-  bit 5,(iy+InternalFlag)
+  bit FactorialFlag,(iy+InternalFlag)
   call nz,$8106
-  bit 7,(iy+InternalFlag)
+  bit grayMode,(iy+InternalFlag)
   ret nz
   push af
   ld a,l
@@ -3538,14 +3539,14 @@ EndToken:
   pop de
   ret
 ErrorJump:
-  bit 3,(iy+InternalFlag)
+  bit errorChecking,(iy+InternalFlag)
   ret nz
   push de
   push hl
   push bc
   ld hl,(parsePtr)
   ld (ErrorLoc),hl
-  set 3,(iy+InternalFlag)
+  set errorChecking,(iy+InternalFlag)
   ld hl,(parseError)
   ld a,h
   or l
@@ -3582,15 +3583,15 @@ L5c05:
 L5c06:
   pop hl
   pop de
-  res 3,(iy+InternalFlag)
+  res errorChecking,(iy+InternalFlag)
   ret
 PtOn:
   call ParseFullArg
   ld a,c \ and 7
-  res 0,(iy+InternalFlag)
+  res SlowTextFlag,(iy+InternalFlag)
   bit 3,c
   jr z,$+6
-  set 0,(iy+InternalFlag)
+  set SlowTextFlag,(iy+InternalFlag)
   push af
   cp 7 \ jr nz,$+9
   ld hl,flags+33
@@ -3598,7 +3599,7 @@ PtOn:
   xor (hl)
   ld (hl),a
   call ParseNextFullArg
-  bit 0,(iy+InternalFlag)
+  bit SlowTextFlag,(iy+InternalFlag)
   jr z,$+8
   call ConvHexTo86ECh
   ld bc,86ECh
@@ -3808,7 +3809,7 @@ MaskXxY:
   jr nz,$-17
   ret
 GrayXxY:
-  bit 4,(iy+InternalFlag)
+  bit grayFlag,(iy+InternalFlag)
   ld a,55h
   jr z,$+3
   rrca
@@ -3839,6 +3840,7 @@ GrayXxY:
   dec a
   jr nz,$-25
   ret
+;'
 ;===========================================================
 QuoteToken:
   push hl
@@ -4031,13 +4033,13 @@ VarToken:
   ld c,(hl)
   inc hl
   ld b,(hl)
-  set 5,(iy+InternalFlag)
+  set FactorialFlag,(iy+InternalFlag)
   ret
 ParseFullArg:
-  bit 5,(iy+InternalFlag)
+  bit FactorialFlag,(iy+InternalFlag)
   jr nz,$+5
   ld de,0
-  res 5,(iy+InternalFlag)
+  res FactorialFlag,(iy+InternalFlag)
   ld hl,(parsePtr)
   ld a,(hl)
   call EndOArg
@@ -4065,7 +4067,7 @@ GetNextVarNum:
   ld a,(hl)
   cp $AE
   jr nz,+_
-  set 6,(iy+InternalFlag)
+  set Mod2nd,(iy+InternalFlag)
   ret
 _:
   sub 3Ah
@@ -4096,7 +4098,7 @@ StoString:
   push de   ;D= Str Nr; E=AA
   call GetGrammerStr
   pop hl
-  bit 6,(iy+InternalFlag)
+  bit Mod2nd,(iy+InternalFlag)
   jr z,$+3
   inc bc
   push bc
@@ -4120,9 +4122,9 @@ StoString:
   pop bc
   pop hl
   ldir
-  bit 6,(iy+InternalFlag)
+  bit Mod2nd,(iy+InternalFlag)
   ret z
-  res 6,(iy+InternalFlag)
+  res Mod2nd,(iy+InternalFlag)
   dec de
   ld a,3Fh
   ld (de),a
@@ -4732,40 +4734,46 @@ VarPointer:
   ld a,(hl)
   sub 203
   ret nc
-  add a,16
-  sbc a,0    ;  jr nc,$+3 \ dec a
-  add a,11
-  or a
-  ret m
+  sub -16
+  adc a,10
+;  cp 26       ;to be safe, we could include this
+  ret nc
   add a,a
-  ld hl,9109h
+  ld hl,pvars+54
   add a,l
   ld l,a
+#if (pvars+54)&255>=204
+  jr nc,$+3
+  inc h
+#endif
   inc de
   scf
   ret
 NotBBVar:
-  cp 41h
+  cp 'A'
   ccf
   ret nc
-  cp 5Ch
+  cp 'Z'+2
   ret nc
-  sub 41h
+  sub 'A'
   rlca
-  ld d,90h
+  ld d,pvars>>8
   ld e,a
   ld a,(hl)
   cp $AE
-  jr nz,$+7
-  ld a,36h
+  jr nz,+_
+  ld a,54
   add a,e
   ld e,a
   inc hl
+_:
   ld a,e
-  add a,$D3
+  add a,pvars&255
+  ld e,a
+#if pvars&255>=202
   jr nc,$+3
   inc d
-  ld e,a
+#endif
   ex de,hl
   scf
   ret
@@ -5486,7 +5494,7 @@ PutFS:
   ld bc,060Ch
 ;==========================================
 ;Added in for slow text
-  bit 0,(iy+InternalFlag)
+  bit SlowTextFlag,(iy+InternalFlag)
   jr z,SkipSlow
   push bc
   push hl
@@ -7108,7 +7116,7 @@ Base2Loop:
   inc hl
   jp Base2Loop      ;It saves 2 cycles using JP D:
 ExitBase2Loop:
-  set 5,(iy+InternalFlag)
+  set FactorialFlag,(iy+InternalFlag)
   ld (parsePtr),hl
   ret
 LnToken:
