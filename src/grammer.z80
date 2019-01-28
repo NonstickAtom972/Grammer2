@@ -2061,7 +2061,6 @@ BBTokens:
   inc hl
   cp $64    ;the G-T token
   jr nz,+_
-  ;scf \ jr c,$
   ld a,(hl)
   ld bc,9340h
   cp $AE
@@ -4610,7 +4609,7 @@ FindElseEnd:
 ;     HL points to the byte after the proper Else or End token
 ;     A is the last token checked
   ld b,0
-_:
+FindElseEnd_:
   inc b
   inc hl
   ld a,(hl)
@@ -4621,9 +4620,9 @@ _:
   dec a \ jr z,-_   ;While
   dec a \ jr z,-_   ;Repeat
   dec a \ jr z,-_   ;For
-  dec a \ jr nz,-_+1
+  dec a \ jr nz,FindElseEnd_+1
 _:
-  djnz -_+1
+  djnz FindElseEnd_+1
   ld a,(hl)
   inc hl
   ret
@@ -5996,9 +5995,12 @@ SetUpData:
 #ifndef include_TSA
   ld hl,ReadArcData
   ld de,TSA
-  call mov11
-  call mov11
-  call mov11
+;mov 70 bytes
+  call mov14
+  call mov14
+  call mov14
+  call mov14
+  call mov14
   in a,(6)
   ld (page_restore),a
   ld (bincomparepagerestore),a
@@ -6155,46 +6157,18 @@ IsOP1GrammerProg:
   jp nc,isStartMenu_valid
   or 1
   ret
-ReadArc:
 #ifdef include_LoadTSA
+ReadArc:
   call LoadReadArc
-#endif
   jp TSA
+#else
+ReadArc = TSA
+#endif
 ReadArcData:
 #ifdef include_loadTSA
   .dw ReadArcEnd-ReadArc-2
 #endif
-  or a
-  jp z,ReadRAM
-#ifdef include_TSA
-  push af
-  in a,(6)
-  ld (page_restore),a
-  pop af
-#endif
-  out (6),a
-;  .db $CA     ;start of jp z,**, but z is reset
-#ifdef include_loadTSA
-ArcReadLoop       =$-ReadArcData+TSA-2
-#else:
-ArcReadLoop       =$-ReadArcData+TSA
-#endif
-  dec hl        ;I was worried about this at one point (suppose HL=4000h), so I'll worry later. Zeda, this is fine.
-  inc l \ call z,IncHLmem1
-  ldi
-  jp pe,ArcReadLoop
-  in a,(6)
-  ld b,a
-#ifdef include_loadTSA
-page_restore = $-ReadArcData+TSA-1
-#else:
-page_restore = $-ReadArcData+TSA+1
-#endif
-  ld a,0
-  out (6),a
-  ld a,b
-  ld b,c
-  ret
+#include "readarc.z80"
 ReadArcEnd:
 FindGVarData:
   ld hl,GVarData
