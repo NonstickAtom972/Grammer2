@@ -1,3 +1,9 @@
 .org $4000
-
+#define scrap 8000h
+#include "single/pushpop.z80"
+#include "single/single2str.z80"
+#include "single/mulSingle.z80"
+#include "single/divSingle.z80"
+#include "single/constants.z80"
+#include "single/lut.z80"
 .echo "Page 1: ",$8000-$," bytes remaining"

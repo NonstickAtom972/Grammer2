@@ -2705,12 +2705,13 @@ _:
 NoRC:
   res SlowTextFlag,(iy+InternalFlag)
   cp 10
-  jr nz,$+11
+  jr nz,+_
 SlowText:
   set SlowTextFlag,(iy+InternalFlag)
   inc hl
   ld (parsePtr),hl
   ld a,(hl)
+_:
   cp $AE
   jp nz,FindingTextStr
   inc hl
@@ -2802,6 +2803,20 @@ FindingTextStr:
   ret nz
   inc hl
   ld a,(hl)
+  cp 3Ah      ;. displays a float
+  jr nz,+_
+  ld (parsePtr),hl
+  call ParseNextFullArg
+  ld hl,single2str
+  ld (next_page_call_address),hl
+  ld h,b
+  ld l,c
+  ld bc,OP1
+  call next_page_call
+  ld h,b
+  ld l,c
+  jp GPutS
+_:
   cp $AE
   jr nz,+_
   ld (parsePtr),hl
@@ -4180,6 +4195,7 @@ StoToken:
   cp $AA \ jp z,StoString
   cp $DE \ jr z,StoDisp
   cp $01 \ jr z,StoModule
+  cp $3A \ jr z,StoFloat
   cp $2C \ jr nz,NotOSVar
   push bc
   ld a,(hl)
@@ -4204,6 +4220,17 @@ _:
 NotAVar:
   ld (parsePtr),hl
   ret
+StoFloat:
+  ld a,(hl)
+  call VarP
+  jr nc,NotAVar
+  ld (parsePtr),de
+  ld e,(hl)
+  inc hl
+  ld d,(hl)
+  ld h,b
+  ld l,c
+  jp mov4
 NotOSVar:
   call VarP
   jr nc,NotAVar
@@ -4400,12 +4427,40 @@ Squared:
   jr $+7
 Multiply:
   push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
   call ParseFullArg
   pop de
   call DE_Times_BC
   ld b,h
   ld c,l
   ld (ThetaPrimeVar),de
+  ret
+_:
+  call floatstackpush
+  push hl
+  call ParseNextFullArg
+  ld hl,mulSingle
+  ld (next_page_call_address),hl
+  ld d,b
+  ld e,c
+  pop bc
+  pop hl
+  jp next_page_call
+floatstackpush:
+  ld hl,(floatstack_ptr)
+  ld bc,4
+  add hl,bc
+  ld (floatstack_ptr),hl
+  ld a,l \ cp floatstack_top&255
+  ret nz
+#if (floatstack_top>>8)!=(floatstack_bottom>>8)
+  ld a,h \ cp floatstack_top>>8
+  ret nz
+#endif
+  ld hl,floatstack_bottom
+  ld (floatstack_ptr),hl
   ret
 Comment:
 SkipLine:
@@ -5786,6 +5841,33 @@ page1_call = $-RAMCodeStart+ramCode+1
   pop af
   ret
 _:
+next_page_call = -_-RAMCodeStart+ramCode
+  push af
+  in a,(6)
+  dec a
+  out (6),a
+  pop af
+next_page_call_address = $-RAMCodeStart+ramCode+1
+  call 0
+  push af
+  in a,(6)
+  inc a
+  out (6),a
+  pop af
+  ret
+_:
+prev_page_call = -_-RAMCodeStart+ramCode
+  push af
+  in a,(6)
+  inc a
+  out (6),a
+prev_page_call_address = $-RAMCodeStart+ramCode+1
+  call 0
+  in a,(6)
+  dec a
+  out (6),a
+  ret
+_:
 bincompare = -_-RAMCodeStart+ramCode
   ld de,(parsePtr)
   out (6),a
@@ -5818,6 +5900,7 @@ isEOT    = $-RAMCodeStart+ramCode
   cp $10 \ ret z  ;(
   cp $29 \ ret  ;space
 RamCodeEnd:
+.echo "RamCode : ",$-RamCodeStart
 ;=============================================================================
 ConvOP1:
   ld hl,OP1
@@ -6014,7 +6097,8 @@ SetUpData:
   ld (bincomparepagerestore),a
 #endif
 
-
+  ld hl,floatstack_bottom
+  ld (floatstack_ptr),hl
   ld hl,seed2+1
   set 6,(hl)
   dec l
@@ -7234,5 +7318,5 @@ menu:
 #include "data.z80"
 .echo "Page 0: ",$8000-$," bytes remaining"
 
-;.fill $8000-$,255
-;#include "01.z80"
+.fill $8000-$,255
+#include "01.z80"

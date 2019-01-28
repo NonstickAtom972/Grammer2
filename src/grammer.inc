@@ -136,13 +136,17 @@ module1     = module0+2
 module2     = module1+2
 module3     = module2+2
 module4     = module3+2
-vars        = module4+2
-vars_count  = vars+2
-size_of_buffer = vars_count+2
-start_of_prog = size_of_buffer+2
-end_of_prog = start_of_prog+2
-stack_top   = end_of_prog+2
-end_of_buffer = stack_top+2
+vars        = module4+2           ;used while compiling
+vars_count  = vars+2              ;
+size_of_buffer = vars_count+2     ;
+start_of_prog = size_of_buffer+2  ;
+end_of_prog = start_of_prog+2     ;
+stack_top   = end_of_prog+2       ;
+end_of_buffer = stack_top+2       ;
+
+floatstack_ptr    = vars
+floatstack_bottom = vars+2
+floatstack_top    = vars+10
 
 
 PBuf          = 9872h

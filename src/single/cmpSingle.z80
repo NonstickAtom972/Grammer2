@@ -1,0 +1,52 @@
+cmpSingle:
+;Input: DE points to float1, HL points to float2
+;Output:
+;      float1 >= float2 : nc
+;      float1 <  float2 : c,nz
+;      float1 == float2 : z
+;  There is a margin of error allowed in the lower 2 bits of the mantissa.
+;
+;Currently fails when both numbers have magnitude less than about 2^-106
+  push hl
+  push de
+  push bc
+  call +_
+  pop bc
+  pop de
+  pop hl
+  ret
+_:
+  inc de
+  inc de
+  inc de
+  ld a,(de)
+  inc hl
+  inc hl
+  inc hl
+  cp (hl)
+  jr nc,+_
+  ld a,(hl)
+_:
+  dec hl
+  dec hl
+  dec hl
+  dec de
+  dec de
+  dec de
+  push af
+  ld bc,scrap
+  call subSingle
+  ld a,(scrap+3)
+  pop bc
+  sub b
+  dec a
+  add a,22
+  jr nc,cmp_close
+  ld a,(scrap+2)
+  or 1    ;not equal, so reset z flag
+  rla     ;if negative, float1<float2, setting c flag as wanted, else nc.
+  ret
+cmp_close:
+  xor a
+  ret
+.echo "cmpSingle:",$-cmpSingle

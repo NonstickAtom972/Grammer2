@@ -1,0 +1,27 @@
+randSingle:
+    push af
+    push hl
+    push de
+    push bc
+    call rand
+;ADECHL
+    ld a,b
+    ld b,7Fh
+    or a
+    jp m,$+15
+    dec b \ add hl,hl \ rl c \ rl e \ rl d \ adc a,a \ jp p,$-9
+    pop hl
+    ld (hl),e
+    ld e,b
+    ld b,h
+    ld c,l
+    inc hl
+    ld (hl),d \ inc hl
+    and 7Fh
+    ld (hl),a \ inc hl
+    ld (hl),e
+    pop de
+    pop hl
+    pop af
+    ret
+.echo "randSingle:",$-randSingle
