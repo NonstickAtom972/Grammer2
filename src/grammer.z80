@@ -4230,7 +4230,7 @@ StoFloat:
   ld d,(hl)
   ld h,b
   ld l,c
-  jp mov4
+  jp mov4_page0
 NotOSVar:
   call VarP
   jr nc,NotAVar
@@ -4328,6 +4328,8 @@ Number:
 Math:
 Sqrt:
   ld a,(hl)
+  cp 3Ah
+  jr z,+_
   inc hl
   cp $AE
   push af
@@ -4336,7 +4338,7 @@ Sqrt:
   call ParseFullArg
   ld h,b
   ld l,c
-  call sqrtHL
+  call sqrtHL_page0
   ld (ThetaPrimeVar),de
   ld c,l
   ld b,h
@@ -4348,13 +4350,37 @@ Sqrt:
   ret nc
   inc bc
   ret
+_:
+  ld hl,sqrtSingle
+  jr float_stepin_1
+sinefloat:
+  pop af
+  ld hl,sinSingle
+  jr float_stepin_1
+_:
+  ld hl,cosSingle
+float_stepin_1:
+  ld (next_page_call_address),hl
+  call floatstackpush
+  push hl
+  call ParseNextFullArg
+  ld h,b
+  ld l,c
+  pop bc
+  jp next_page_call
 Cos:
+  ld a,(hl)
+  cp 3Ah
+  jr z,-_
   ld a,64
   or a
   .db 38h
 Sin:
   xor a
   push af
+  ld a,(hl)
+  cp 3Ah
+  jr z,sinefloat
   call ParseFullArg
   pop af
   add a,c
@@ -4380,18 +4406,34 @@ _:
   sub b
   ld b,a
   ret
+_:
+  ld hl,absSingle
+  jp float_stepin_1
 absToken:
+  ld a,(hl)
+  cp 3Ah
+  jr z,-_
   call ParseFullArg
   bit 7,b
   ret z
-  jr Negative+3
+  jr negateBC
 Negative:
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
   call ParseFullArg
+negateBC:
   xor a \ sub c \ ld c,a
   sbc a,a \ sub b \ ld b,a
   ret
+_:
+  ld hl,negSingle
+  jp float_stepin_1
 Add:
   push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
   call ParseFullArg
   pop hl
   xor a
@@ -4403,8 +4445,14 @@ Add:
   ld l,a
   ld (ThetaPrimeVar),hl
   ret
-Subtract:
+_:
+  ld hl,addSingle
+  jp float_stepin
+SubtractToken:
   push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
   call ParseFullArg
   pop hl
   xor a
@@ -4415,16 +4463,19 @@ Subtract:
   ld l,a
   ld (ThetaPrimeVar),hl
   ret
+_:
+  ld hl,subSingle
+  jp float_stepin
 Cubed:
   ld d,b
   ld e,c
   call DE_Times_BC
   ex de,hl
-  jr Multiply+5
+  jr mul_stepin
 Squared:
   ld d,b
   ld e,c
-  jr $+7
+  jr mul_stepin
 Multiply:
   push bc
   ld a,(hl)
@@ -4432,17 +4483,19 @@ Multiply:
   jr z,+_
   call ParseFullArg
   pop de
+mul_stepin:
   call DE_Times_BC
   ld b,h
   ld c,l
   ld (ThetaPrimeVar),de
   ret
 _:
+  ld hl,mulSingle
+float_stepin:
+  ld (next_page_call_address),hl
   call floatstackpush
   push hl
   call ParseNextFullArg
-  ld hl,mulSingle
-  ld (next_page_call_address),hl
   ld d,b
   ld e,c
   pop bc
@@ -4517,6 +4570,9 @@ _:
   ret
 Divide:
   push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
   call ParseFullArg
   pop hl
   call HL_Div_BC
@@ -4524,6 +4580,9 @@ Divide:
   ld c,l
   ld (ThetaPrimeVar),de
   ret
+_:
+  ld hl,divSingle
+  jp float_stepin
 Logic:
 Equals:
   push bc
@@ -5619,7 +5678,7 @@ _:
   ld b,a
   djnz PutRight
   ret
-sqrtHL:
+sqrtHL_page0:
 ;returns HL as the sqrt, DE as the remainder
 	ld	a,l
 	ld	l,h
@@ -6959,7 +7018,7 @@ CommandJumpTable:
  .dw MoreOrEqual      ; $6E
  .dw NotEqual         ; $6F
  .dw Add              ; $70
- .dw Subtract         ; $71
+ .dw SubtractToken    ; $71
  .dw AnsToken         ; $72
  .dw FixToken         ; $73
  .dw ErrBadToken      ; $74

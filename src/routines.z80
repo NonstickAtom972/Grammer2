@@ -20,7 +20,7 @@ mov8: ;138cc
   ldi
   ldi
   ldi
-mov4: ;74cc
+mov4_page0: ;74cc
   ldi
 mov3: ;58cc
   ldi
