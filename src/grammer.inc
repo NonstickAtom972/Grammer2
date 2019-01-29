@@ -146,7 +146,7 @@ end_of_buffer = stack_top+2       ;
 
 floatstack_ptr    = vars
 floatstack_bottom = vars+2
-floatstack_top    = vars+10
+floatstack_top    = vars+2+32     ;Give room for 8 floats. I am a generous god.
 
 
 PBuf          = 9872h

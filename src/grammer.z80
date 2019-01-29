@@ -4360,13 +4360,16 @@ sinefloat:
 _:
   ld hl,cosSingle
 float_stepin_1:
-  ld (next_page_call_address),hl
-  call floatstackpush
-  push hl
+  push hl     ;the call to make
   call ParseNextFullArg
-  ld h,b
-  ld l,c
-  pop bc
+  push bc     ;the second argument
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop de
+  pop hl
+  ld (next_page_call_address),hl
+  ex de,hl
   jp next_page_call
 Cos:
   ld a,(hl)
@@ -4492,13 +4495,15 @@ mul_stepin:
 _:
   ld hl,mulSingle
 float_stepin:
-  ld (next_page_call_address),hl
-  call floatstackpush
   push hl
   call ParseNextFullArg
-  ld d,b
-  ld e,c
-  pop bc
+  push bc
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop de
+  pop hl
+  ld (next_page_call_address),hl
   pop hl
   jp next_page_call
 floatstackpush:
