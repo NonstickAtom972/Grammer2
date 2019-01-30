@@ -1,9 +1,9 @@
 # Commands and Tutorial
 ```
-Author........Zeda Elnara
+Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.0.2
+Version.......2.50.1.0
 Last Update...01 March 2012
 Language......English
 Programming...Assembly
