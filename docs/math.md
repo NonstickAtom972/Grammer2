@@ -73,7 +73,11 @@ Here are the math operations currently available.
 | a≤b     | ≤     | ≤       | If a is less than or equal to b, this returns 1, else it returns 0. |
 
 ## Floating Point
-As of version 2.5.1.0, Grammer is beginning to have support for floating point numbers. In general, float commands are signified by an operations followed by a `.`.
+As of version 2.5.1.0, Grammer is beginning to have support for floating point numbers. Grammer was originally only intended to have 16-bit integer math support. As a consequence, many useful tokens were already in use, making float support convoluted. I want to reinforce this idea, though: Grammer is a 16-bit integer-centric language.
+
+You will have to interface with floats via pointers. Internally, there is a special floating-point storage that holds a few elements for intermediate processing. If this storage gets full, it wraps around and starts overwriting old items. In particular, this can happen in expressions with many operations. For example, `3.14159+.6.789` will overwrite three values-- two for the numbers 3.14159, 6.789, and one for the sum. At the time of this writing, it can hold 8 floats. In the future this might change, but if you need long-term storage, you will need to copy the 4-byte float to somewhere safe. With that in mind, Grammer now supports a special-purpose move operator `→.` that takes a pointer on the left side, `x` and a pointer *var* on the right side, `Y` and copies the 4 bytes at `x` to the memory at `Y`. Floats must start with a number: `.367` will be interpreted as a comment (float support was added on top of the existing Grammer framework), whereas `0.367` is interpreted as a float, and returns a pointer to its converted value.
+
+In general, float commands are signified by an operations followed by a `.`. As of this writing, there are a handful of known bugs, so don't count on this for your math homework yet!
 
 | Example | Token | Grammer | Description                                      |
 |:------- |:----- |:------- |:------------------------------------------------ |
@@ -83,7 +87,21 @@ As of version 2.5.1.0, Grammer is beginning to have support for floating point n
 | A*.B    | *.    | *.      | Multiplies the floats at A and B, returns a pointer. |
 | A/.B    | /.    | /.      | Divides the floats at A and B, returns a pointer. |
 | √(.B    | √(.   | √(.     | Computes the square root of the float at A, returns a pointer. |
+| Text(x,y,`.`A |    |    | Displays a float located at A. |
 
+Examples. The following two codes produce the same result, but the first one uses temporary storage that may get overwritten later, an the second one copies values to less volatile storage:
+```
+3.1415926→X     ;Notice it is just storing a pointer, not copying actual data!
+1.2345678→Y
+Text(0,0,.X+.Y
+```
+
+```
+G-T'→X+4→Y      ;Instead of grayscale graphics, we'll use the back buffer as safe storage. No grayscale quadratic formula program here, apparently.
+3.1415926→.X    ;Now we are copying the float from temp storage to safe storage
+1.2345678→.Y
+Text(0,0,.X+.Y
+```
 
 ## Number System
 Grammer's number system works like this: Numbers are integers 0 to 65535. This means no fractions, or decimals, though are a few commands that handle larger numbers.
