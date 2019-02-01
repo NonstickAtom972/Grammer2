@@ -294,7 +294,7 @@ NoFire:
   res IntActiveFlag,(iy+InternalFlag)
 #endif
 NoInt:
-  bit 2,(iy+UserFlags)
+  bit OnBlockFlag,(iy+UserFlags)
   call z,CheckStatus
   call z,ONErr
   ld de,ParserNext
@@ -2136,11 +2136,13 @@ inString:
   call ParseNextFullArg
   push bc
   call ParseNextFullArg
-  cp 2Bh
+  cp 2Bh        ;If there is another argument, then it is to put a limit on how mnay bytes to compare
   ld h,b \ ld l,c
-  push hl \ push af
+  push hl
+  jr z,+_
   call nz,GetGrammerStr
-  pop af
+  cp a
+_:
   call z,ParseNextFullArg
   ld (ThetaPrimeVar),bc
   pop de
@@ -2148,8 +2150,9 @@ inString:
   push bc
   call SearchString
   pop bc
-  jr c,$+4
+  jr c,+_
   ld h,b \ ld l,c
+_:
   or a \ sbc hl,bc
   ld b,h \ ld c,l
   ret
@@ -2592,28 +2595,28 @@ PxlTestToken:
   pop de
 PlotPixel:
   call GetPixelLoc
-  bit 4,(iy+UserFlags)
   ld bc,0
-  jr c,$+6
-  jr z,$+3
+  jr c,+_
+  bit pxlBoundsRes,(iy+UserFlags)
+  ret z
   inc c
   ret
-
+_:
   ld e,a
   and (hl)
-  jr z,$+4
-  ld c,1
-  ld a,e
+  jr z,+_
+  inc c
+_:
   dec d
-  jr nz,$+5
-  or (hl) \ ld (hl),a
-  ret
+  jr nz,+_
+  ld a,e \ or (hl) \ ld (hl),a \ ret
+_:
   dec d
-  jr nz,$+6
-  cpl \ and (hl) \ ld (hl),a
-  ret
+  jr z,+_
   dec d
   ret nz
+  ld a,e
+_:
   xor (hl) \ ld (hl),a \ ret
 PxlTestBox:
 prgmToken:
@@ -2730,7 +2733,7 @@ _:
   ld (TempWord1),hl
   pop de
   pop hl
-  bit 5,(iy+UserFlags)
+  bit SignedText,(iy+UserFlags)
   jr z,DrawNumber
   bit 7,h
   jr z,DrawNumber
@@ -4956,7 +4959,7 @@ ConvRStr:
 ;       at most 691 cycles for any 16-bit decimal value
 ;===============================================================
   dec hl
-  bit 3,(iy+UserFlags)
+  bit baseInput,(iy+UserFlags)
   jp nz,ConvHexStr
   ex de,hl
   ld hl,0
@@ -5149,7 +5152,7 @@ row:
   xor (hl)
   add hl,de
   add ix,de
-  bit 1,(iy+UserFlags)
+  bit InvertLCDFlag,(iy+UserFlags)
   jr z,$+3
   cpl
   ex af,af'
@@ -5639,7 +5642,7 @@ PutLeft:
   and 15
   ld (hl),a
   ld a,(de)
-  bit 0,(iy+UserFlags)
+  bit InvertTextFlag,(iy+UserFlags)
   jr z,+_
   cpl
 _:
@@ -5664,7 +5667,7 @@ PutRight:
   and $F0
   ld (hl),a
   ld a,(de)
-  bit 0,(iy+UserFlags)
+  bit InvertTextFlag,(iy+UserFlags)
   jr z,+_
   cpl
 _:
@@ -6276,10 +6279,10 @@ _:
   ld bc,4
   call TSA
   ld hl,cmdShadow+2
-  bit 2,(iy+UserFlags)   ;ASM only
+  bit OnBlockFlag,(iy+UserFlags)   ;ASM only
   jp nz,asm_header_only
 ;non-ASM and ASM alike
-  bit 3,(iy+UserFlags)
+  bit baseInput,(iy+UserFlags)
   ret z   ;doesn't have any special filters
 ;must be a Grammer Var
 ;header is either $BB,$6D,$55,$C9 or $3A,$30,$3E
@@ -6297,7 +6300,7 @@ asm_header_only:
 ;
   ld a,(hl) \ cp $BB \ ret nz
   inc hl \ ld a,(hl) \ cp $6D \ ret nz
-  bit 3,(iy+UserFlags)
+  bit baseInput,(iy+UserFlags)
   ret z
 ;next two bytes must be $55,$C9
 ;
