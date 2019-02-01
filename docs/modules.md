@@ -31,7 +31,7 @@ Another issue to take into account is that the code is copied to saveSScreen. Fi
 
 So for example, let's look at this super complicated piece of code and make it even more complicated:
 ```
-func0: .db "XXX",$10 .dw funco_end-func0_start
+func0: .db "XXX",$10 .dw func0_end-func0_start
 func0_start:
   call label
   ret
