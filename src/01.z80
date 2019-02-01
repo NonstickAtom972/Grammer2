@@ -11,6 +11,7 @@
 #include "single/absSingle.z80"
 #include "single/negSingle.z80"
 #include "single/sqrtSingle.z80"
+#include "single/str2single.z80"
 #include "single/constants.z80"
 #include "single/lut.z80"
 .echo "Page 1: ",$8000-$," bytes remaining"
