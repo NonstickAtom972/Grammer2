@@ -18,7 +18,7 @@ InputToken:
   ld c,e
 SetInputStr:
   ld (TempWord5),bc
-  ld hl,966Eh
+  ld hl,cmdShadow
   ld bc,128
 g_Input:
   res 0,(iy+35)
@@ -101,7 +101,7 @@ DispInputString:
   ld a,1
   xor (iy+34)
   ld (iy+34),a
-  ld hl,(textRow)         
+  ld hl,(textRow)
   push hl
   bit 0,(iy+35)
   jr z,NoDelToken
@@ -138,7 +138,7 @@ NoDelToken:
 EnterP:
   ld hl,(TempWord2)
   ld (TextRow),hl
-  ld hl,($84b0)
+  ld hl,cmdShadow
   call TokenTextLoop
   ld bc,(TempWord3)
   sbc hl,bc
