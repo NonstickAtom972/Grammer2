@@ -4963,6 +4963,7 @@ ConvRStr:
   jp nz,ConvHexStr
   ex de,hl
   ld hl,0
+  push de   ;save in case we encounter a float
 ConvLoop:
   ld a,(de)
   sub 30h
@@ -4981,9 +4982,36 @@ ConvLoop:
   inc h
   jp ConvLoop
 Convtd:
+  jr z,+_   ;means it was a decimal point
+  pop bc
   ld (parsePtr),de
   ld b,h
   ld c,l
+  ret
+_:
+  pop hl
+  ;HL points to the string
+  dec hl
+  ld a,(hl)
+  cp $B0     ;neg sign token
+  jr nz,+_
+  ;Need to pop off the return address; not returning to the neg routine
+  pop de
+  pop de
+  .db $FE   ;start of cp *, causes the inc hl to be ignored
+_:
+  inc hl
+  ;HL points to the float
+  push hl
+  call floatstackpush
+  ld b,h
+  ld c,l
+  ld hl,str2single
+  ld (next_page_call_address),hl
+  pop hl
+  call next_page_call
+  ld hl,(scrap+30)
+  ld (parsePtr),hl
   ret
 ;===============================================================
 HL_Times_BC:
