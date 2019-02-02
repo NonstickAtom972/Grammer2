@@ -3443,7 +3443,9 @@ iPart:
 int:
 ;Write byte
   ld a,(hl)
-  cp $ae
+  cp $3A
+  jr z,intf
+  cp $AE      ;checks for '
   push af
   call ParseFullArg
   push bc
@@ -3462,6 +3464,16 @@ _:
   ld (hl),c
   ld c,e
   ld b,$00
+  ret
+intf:
+  call ParseNextFullArg
+  ld hl,singleTo_int16
+  ld (next_page_call_address),hl
+  ld h,b
+  ld l,c
+  call next_page_call
+  ld b,h
+  ld c,l
   ret
 GetToken:
   ld a,(hl)
@@ -4593,6 +4605,9 @@ _:
   jp float_stepin
 Logic:
 Equals:
+  ld a,(hl)
+  cp $3A
+  jr z,feq
   push bc
 factorialStepIn:
   call ParseFullArg
@@ -4601,9 +4616,24 @@ factorialStepIn:
   sbc hl,bc
   ld b,a
   ld c,a
-  jr nz,$+3
+  ret nz
   inc c
   ret
+feq:
+  call fcmp
+  ld bc,0
+  ret nz
+  inc c
+  ret
+fcmp:
+  push bc
+  call ParseNextFullArg
+  ld hl,cmpSingle
+  ld (next_page_call_address),hl
+  pop hl
+  ld d,b
+  ld e,c
+  jp next_page_call
 moreLogic:
   push af
   push bc
@@ -4632,14 +4662,26 @@ xorLogic:
   ld a,l \ xor c \ ld c,a
   ret
 Less:
+  ld a,(hl)
+  cp $3A
+  jr z,flt
   call MoreLogic
   xor a
   sbc hl,bc
   ld b,a
   adc a,a
   ld c,a
+  ret
+flt:
+  call fcmp
+  ld bc,0
+  ret nc
+  inc c
   ret
 Greater:
+  ld a,(hl)
+  cp $3A
+  jr z,fgt
   call MoreLogic
   xor a
   scf
@@ -4648,8 +4690,18 @@ Greater:
   ld b,a
   adc a,a
   ld c,a
+  ret
+fgt:
+  call fcmp
+  ld bc,0
+  ret z
+  ret c
+  inc c
   ret
 LessOrEqual:
+  ld a,(hl)
+  cp $3A
+  jr z,fle
   call MoreLogic
   xor a
   scf
@@ -4658,7 +4710,17 @@ LessOrEqual:
   adc a,a
   ld c,a
   ret
+fle:
+  call fcmp
+  ld bc,1
+  ret c
+  ret z
+  dec c
+  ret
 MoreOrEqual:
+  ld a,(hl)
+  cp $3A
+  jr z,fge
   call MoreLogic
   xor a
   sbc hl,bc
@@ -4667,7 +4729,16 @@ MoreOrEqual:
   adc a,a
   ld c,a
   ret
+fge:
+  call fcmp
+  ld bc,0
+  ret c
+  inc c
+  ret
 NotEqual:
+  ld a,(hl)
+  cp $3A
+  jr z,fne
   call MoreLogic
   xor a
   sbc hl,bc
@@ -4676,6 +4747,12 @@ NotEqual:
   ret z
   inc c
 Exit:
+  ret
+fne:
+  call fcmp
+  ld bc,0
+  ret z
+  inc c
   ret
 EndOfCommand:
   ld hl,(parsePtr)

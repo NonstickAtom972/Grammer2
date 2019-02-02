@@ -87,7 +87,14 @@ In general, float commands are signified by an operations followed by a `.`. As 
 | A*.B    | *.    | *.      | Multiplies the floats at A and B, returns a pointer. |
 | A/.B    | /.    | /.      | Divides the floats at A and B, returns a pointer. |
 | √(.B    | √(.   | √(.     | Computes the square root of the float at A, returns a pointer. |
-| Text(x,y,`.`A |    |    | Displays a float located at A. |
+| Text(x,y,`.`A |      |    | Displays a float located at A. |
+| A=.B    | =.    |         | Returns an 1 if float A equals float B, else 0. |
+| A≠.B    | =.    |         | Returns an 1 if float A is not equal to float B, else 0. |
+| A>.B    | =.    |         | Returns an 1 if float A is greater than float B, else 0. |
+| A≥.B    | =.    |         | Returns an 1 if float A is greater than or equal to float B, else 0. |
+| A<.B    | =.    |         | Returns an 1 if float A is less than float B, else 0. |
+| A≤.B    | =.    |         | Returns an 1 if float A is less than or equal to float B, else 0. |
+| int(.A  | int(. |         | Converts  a float to a signed integer. |
 
 Examples. The following two codes produce the same result, but the first one uses temporary storage that may get overwritten later, an the second one copies values to less volatile storage:
 ```
