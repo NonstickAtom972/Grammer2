@@ -18,6 +18,7 @@
   jp GetKey
   jp GetGrammerText
   jp GetGrammerText_DE
+  jp GetGrammerStr
 ;Original jump table
 ;  jp ParserNext
 ;  jp ParseArg
