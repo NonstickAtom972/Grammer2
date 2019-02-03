@@ -4168,35 +4168,43 @@ StoDisp:
   ld h,b
   ld l,b
   sub 6
-  jr nc,$+4
+  jr nc,+_
   ld a,c
   inc b
+_:
   ld c,1
   or a
-  jr nz,$+4
+  jr nz,+_
   dec hl
   dec c
+_:
   dec a
-  jr nz,$+6
+  jr nz,+_
   dec c
   ld hl,%1010101010101010
+_:
   dec a
-  jr nz,$+5
+  jr nz,+_
   ld hl,%1001001001001001
+_:
   dec a
-  jr nz,$+5
+  jr nz,+_
   ld hl,%1000100010001000
+_:
   dec a
-  jr nz,$+5
+  jr nz,+_
   ld hl,%1000001000001000
+_:
   dec a
-  jr nz,$+5
+  jr nz,+_
   ld hl,%1000000000001000
+_:
   dec b
-  jr z,$+6
+  jr nz,+_
   scf
   ex de,hl
   sbc hl,de
+_:
   ld (GrayMask),hl
   ld hl,GrayRotate
   ld a,(hl)
@@ -4254,9 +4262,10 @@ NotOSVar:
   ex de,hl
   inc hl
   call VarP
-  jr c,$+5
+  jr c,+_
   dec hl
   ex de,hl \ pop hl
+_:
   ld (hl),c
   inc hl
   ld (hl),b
