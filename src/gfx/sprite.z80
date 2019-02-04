@@ -32,11 +32,11 @@ sprite:
   xor a
   ld c,a
 _:
-  sub 64
-  jr c,+_
-  ;need to reduce height by A
-  sub h
-  neg
+;Next check h+c<=64
+  ld a,64
+  sub c
+  cp h
+  jr nc,+_
   ld h,a
 _:
 ;Next check if the sprite is on-screen in the vertical direction
@@ -54,6 +54,7 @@ _:
   ld (TempWord1),hl   ;height
   ld (TempWord2),de   ;sprite pointer
   ld (TempWord3),bc   ;x,y
+  ld a,b
   and 7
   ld de,spritemask
   add a,e
@@ -293,7 +294,6 @@ _:
   inc hl
   cp 96
   jr nc,+_
-  ld a,(sprite_mask1)
   ld a,(hl)
   and e
   ld (hl),a
