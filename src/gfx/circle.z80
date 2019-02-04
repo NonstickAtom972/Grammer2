@@ -1,0 +1,71 @@
+;===============================================================
+FastCircle:
+;===============================================================
+  ld l,a
+  ld h,-1
+  ld (TempWord1),hl
+Circle:
+;===============================================================
+;Input:
+;     D = center_x
+;     E = center_y
+;     C = radius
+;     A = method
+;Outputs:
+;===============================================================
+  di
+  ld a,c
+  or a
+  ret z
+  ret m
+  ld h,c     ;h is radius
+  ld l,0
+  ld b,-1
+  ld (TempWord3),de
+DrawLoop:
+  ex af,af'
+  ld a,(TempWord1+1)
+  rlca
+  ld (TempWord1+1),a
+  jr c,$+8
+  call Plot4Pix
+  call Plot4Pix
+  ex af,af'
+  inc l
+  inc b \ inc b
+  sub b
+  jr nc,+_
+  add a,c
+  add a,c
+  dec h
+  inc b
+_:
+  ld d,a
+  ld a,h
+  sub l
+  ld a,d
+  jr nc,DrawLoop
+  ret
+Plot4Pix:
+  ld de,(TempWord3)
+  ld a,h \ ld h,l \ ld l,a
+  ld a,d \ add a,h \ ld d,a
+  ld a,e \ add a,l \ ld e,a
+  call PixelSet
+  push de
+  ld a,d \ sub h \ sub h \ ld d,a
+  call PixelSet
+  ld a,e \ sub l \ sub l \ ld e,a
+  call PixelSet
+  pop de
+  ld a,e \ sub l \ sub l \ ld e,a
+PixelSet:
+;     DE = (x,y)
+  ld a,(TempWord1)
+  push de
+  exx
+  pop bc
+  ld d,a
+  call PlotPixel
+  exx
+  ret
