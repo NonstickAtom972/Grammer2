@@ -1,5 +1,6 @@
-#define sprite_mask0 TempWord4
-#define sprite_mask1 TempWord4+1
+#define spritetmp 8000h
+#define sprite_mask0 spritetmp+6
+#define sprite_mask1 spritetmp+7
 sprite:
 ;Inputs:
 ;     A is the method:
@@ -51,9 +52,9 @@ _:
   ld a,h
   or a
   ret z
-  ld (TempWord1),hl   ;height
-  ld (TempWord2),de   ;sprite pointer
-  ld (TempWord3),bc   ;x,y
+  ld (spritetmp),hl   ;height
+  ld (spritetmp+2),de   ;sprite pointer
+  ld (spritetmp+4),bc   ;x,y
   ld a,b
   and 7
   ld de,spritemask
@@ -94,11 +95,11 @@ _:
 ;
 ;
   and 7
-  ld a,(TempWord1+1)
+  ld a,(spritetmp+1)
   ld b,a
   ;B is height
-  ld de,(TempWord2)
-  ld a,(TempWord1)
+  ld de,(spritetmp+2)
+  ld a,(spritetmp)
   dec a
   jp z,spriteloop_AND
   dec a
@@ -113,7 +114,7 @@ spriteloop_Overwrite:
   ld a,(de)
   ld d,a
   ld e,0
-  ld a,(TempWord3+1)
+  ld a,(spritetmp+5)
   ld c,a
   and 7
   jr z,+_
@@ -153,7 +154,7 @@ spriteloop_OR:
   ld a,(de)
   ld d,a
   ld e,0
-  ld a,(TempWord3+1)
+  ld a,(spritetmp+5)
   ld c,a
   and 7
   jr z,+_
@@ -192,7 +193,7 @@ spriteloop_XOR:
   ld a,(de)
   ld d,a
   ld e,0
-  ld a,(TempWord3+1)
+  ld a,(spritetmp+5)
   ld c,a
   and 7
   jr z,+_
@@ -231,7 +232,7 @@ spriteloop_AND:
   ld a,(de)
   ld d,a
   ld e,-1
-  ld a,(TempWord3+1)
+  ld a,(spritetmp+5)
   ld c,a
   and 7
   jr z,+_
@@ -272,7 +273,7 @@ spriteloop_Erase:
   cpl
   ld d,a
   ld e,-1
-  ld a,(TempWord3+1)
+  ld a,(spritetmp+5)
   ld c,a
   and 7
   jr z,+_
@@ -307,3 +308,6 @@ _:
   ret
 spritemask:
   .db $00,$80,$C0,$E0,$F0,$F8,$FC,$FE
+#undefine spritetmp
+#undefine sprite_mask0
+#undefine sprite_mask1

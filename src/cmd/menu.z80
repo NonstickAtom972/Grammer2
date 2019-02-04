@@ -182,21 +182,15 @@ _: ;all rows
  ld (TempWord1),bc
  pop bc
  ld (TempWord4),hl
- ld bc,(TempWord2)
-
  ld hl,(TempWord3)
 ;6*l+c->c
-
  ld a,l  ;0..7
  add a,a ;*2
  add a,l ;*3
  add a,a ;*6
-
-
  ld bc,(TempWord2)
  add a,c
  ld c,a
-
 MenuDraw:
   ei
 _:
