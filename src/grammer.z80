@@ -2911,17 +2911,17 @@ _:
 ;===============================================================
 PtOff:
   call ParseFullArg
-  ld a,c \ and 7
-  res SlowTextFlag,(iy+InternalFlag)
+  ld a,c
+  and 7
+  push af
   bit 3,c
-  jr z,$+6
-  set SlowTextFlag,(iy+InternalFlag)
   push af
   call ParseNextFullArg
-  bit SlowTextFlag,(iy+InternalFlag)
-  jr z,$+8
+  pop af
+  jr z,+_
   call ConvHexTo86ECh
   ld bc,86ECh
+_:
   push bc
   call ParseNextFullArg
   push bc
@@ -2937,37 +2937,17 @@ PtOff:
   call z,ParseNextFullArg
   ld l,1
   ld h,c
-  pop bc
-  ld a,c \ cp 64 \ jp nc,Pop2Exit
-  add a,h \ dec a \ sub 64
-  jr c,HeightIsFinePtOff
-  ld d,a \ ld a,h \ sub d \ ld h,a \ dec h
-HeightIsFinePtOff:
-  pop de
-  ld a,b
-  sub 97 \ jr nc,BadSprite
-  ld a,l \ add a,a \ rlca \ rla ;hehe
-  add a,b \ sub 97
-  jr nc,BadSprite
-  pop af
   push hl
-  push af
-  push de
-  push bc
   ld hl,(parsePtr)
   ld a,(hl)
   cp $2b
   call ParseNextFullArg_BC
+  pop hl
   pop bc
   pop de
   pop af
-  pop hl
   ;carry flag is reset
   ;jr DrawPixelCoordSprite
-  .db $DA   ;start of jp c,**, saves 1 byte, 2cc
-BadSprite:
-  pop af
-  ret
 ;===============================================================
 DrawPixelCoordSprite:
 ;===============================================================
@@ -2985,160 +2965,8 @@ DrawPixelCoordSprite:
 ;     H is the height
 ;     L is the width     ;not added yet
 ;===============================================================
+#include "gfx/sprite.z80"
 
-  ld ix,(BufPtr0e)
-  di
-  ex af,af'
-  push hl
-  ld a,b
-  ld b,0
-  ld h,b \ ld l,c
-  add hl,hl \ add hl,bc
-  add hl,hl \ add hl,hl
-  push hl
-  ld c,a
-  srl c \ srl c \ srl c
-  ld b,0
-  add ix,bc
-  pop bc
-  add ix,bc
-  push ix
-  and 7
-  ld (TempWord1),a
-  exx
-  pop hl
-  ld bc,11
-  exx
-  pop bc
-  ex af,af'
-;===============================================================
-;HL'=location to draw to
-;B=height
-;C is not needed
-;A=method
-;DE=sprite location
-
-  or a
-  jr nz,DrawSpriteAND-3
-DrawSpriteOverwrite:
-  exx
-  ld de,$FF00
-  call ShiftDE
-  ld (TempWord3),de
-  exx
-DrawSpriteOverwriteLoop:
-  ld a,(de)
-  inc de
-  exx
-  ld d,0 \ ld e,a
-  call ShiftDE
-  push de
-  ld de,(TempWord3)
-  ld a,(hl)
-  and e
-  pop de
-  or e \ ld (hl),a
-  inc hl
-
-  push de
-  ld de,(TempWord3)
-  ld a,(hl)
-  and d
-  pop de
-
-  or d \ ld (hl),a
-  add hl,bc
-  exx
-  djnz DrawSpriteOverWriteLoop
-  ret
-
-  dec a
-  jr nz,DrawSpriteXOR-3
-DrawSpriteAND:
-  ld a,(de)
-  inc de
-  exx
-  ld d,255 \ ld e,a
-  call ShiftDE
-  ld a,e
-  and (hl) \ ld (hl),a
-  inc hl
-  ld a,d
-  and (hl) \ ld (hl),a
-  add hl,bc
-  exx
-  djnz DrawSpriteAND
-  ret
-  dec a
-  jr nz,DrawSpriteOR-3
-DrawSpriteXOR:
-  ld a,(de)
-  inc de
-  exx
-  ld d,0 \ ld e,a
-  call ShiftDE
-  ld a,e
-  xor (hl) \ ld (hl),a
-  inc hl
-  ld a,d
-  xor (hl) \ ld (hl),a
-  add hl,bc
-  exx
-  djnz DrawSpriteXOR
-  ret
-
-  dec a
-  jr nz,DrawSpriteSwap-3
-DrawSpriteOR:
-  ld a,(de)
-  inc de
-  exx
-  ld d,0 \ ld e,a
-  call ShiftDE
-  ld a,e
-  or (hl) \ ld (hl),a
-  inc hl
-  ld a,d
-  or (hl) \ ld (hl),a
-  add hl,bc
-  exx
-  djnz DrawSpriteOR
-  ret
-  dec a
-  jr nz,DrawSpriteErase
-DrawSpriteSwap:
-  ret
-DrawSpriteErase:
-  ld a,(de)
-  cpl
-  inc de
-  exx
-  ld d,255
-  ld e,a
-  call ShiftDE
-  ld a,e
-  and (hl)
-  ld (hl),a
-  inc hl
-  ld a,d
-  and (hl)
-  ld (hl),a
-  add hl,bc
-  exx
-  djnz DrawSpriteErase
-  ret
-ShiftDE:
-  ld a,(TempWord1)
-  or a
-  ret z
-  ld b,a
-_:
-  rr e
-  rr d
-  jr nc,$+4
-  set 7,e
-  djnz -_
-  ret
 LineToken:
   ld a,(hl)
   cp $ae
@@ -3674,7 +3502,7 @@ HeightIsFinePtOn:
   pop hl
   add hl,de
   pop de
-  ld a,(TempWord2) \ inc a \ sub 64 \ jp nc,BadSprite
+  ld a,(TempWord2) \ inc a \ sub 64 \ jp nc,pop1exit
   pop af
 ;===========================================================
 DrawSpriteXxY:
