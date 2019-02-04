@@ -15,7 +15,7 @@ startmenu__:
   call SetSpeed
   call sortVAT
   ld hl,saveSScreen
-  ld (BufPtr0e),hl
+  ld (gbuf_temp),hl
   ld (BufPtr),hl
   ld (GrayBufPtr),hl
   call ZeroMem768
@@ -127,7 +127,7 @@ main_menu_loop:
   ld de,$4010
   ld a,2
   call DrawRectToGraph
-  
+
 main_menu_ui_loop:
   call GetKeyDebounce
   or a

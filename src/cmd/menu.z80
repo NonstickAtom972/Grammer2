@@ -1,6 +1,6 @@
 ;Menu:
   ld hl,(BufPtr)
-  ld (BufPtr0e),hl
+  ld (gbuf_temp),hl
   call ParseFullArg
   push bc
   call ParseNextFullArg
@@ -195,7 +195,7 @@ _: ;all rows
 
  ld bc,(TempWord2)
  add a,c
- ld c,a 
+ ld c,a
 
 MenuDraw:
   ei

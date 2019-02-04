@@ -14,7 +14,7 @@ sprite:
 ;     DE points to the sprite
 ;     H is the height
 ;     L is the width     ;not added yet
-;(TempWord5) is the buffer to which to draw
+;     (gbuf_temp) is the buffer to which to draw
   ld l,a
 ;First check if the sprite is on-screen in the horizontal direction
   ld a,c
@@ -89,7 +89,7 @@ _:
   sra c
   sra c
   add hl,bc
-  ld bc,(BufPtr0e)
+  ld bc,(gbuf_temp)
   add hl,bc
 ;
 ;
