@@ -14,3 +14,4 @@ GetKey              = $4047
 GetGrammerText      = $404A
 GetGrammerText_DE   = $404D
 GetGrammerStr       = $4050
+GetKeyDebounce      = $4053
