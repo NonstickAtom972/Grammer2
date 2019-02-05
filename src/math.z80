@@ -1,0 +1,412 @@
+Sqrt:
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
+  inc hl
+  cp $AE
+  push af
+  jr nz,$+5
+  ld (parsePtr),hl
+  call ParseFullArg
+  ld h,b
+  ld l,c
+  call sqrtHL_page0
+  ld (ThetaPrimeVar),de
+  ld c,l
+  ld b,h
+  pop af
+  ret nz
+  ;if HL-DE<0, increment BC
+  or a
+  sbc hl,de
+  ret nc
+  inc bc
+  ret
+_:
+  ld hl,sqrtSingle
+  jr float_stepin_1
+sinefloat:
+  pop af
+  ld hl,sinSingle
+  jr float_stepin_1
+_:
+  ld hl,cosSingle
+float_stepin_1:
+  push hl     ;the call to make
+  call ParseNextFullArg
+  push bc     ;the second argument
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop de
+  pop hl
+  ld (next_page_call_address),hl
+  ex de,hl
+  jp next_page_call
+Cos:
+  ld a,(hl)
+  cp 3Ah
+  jr z,-_
+  ld a,64
+  or a
+  .db 38h
+Sin:
+  xor a
+  push af
+  ld a,(hl)
+  cp 3Ah
+  jr z,sinefloat
+  call ParseFullArg
+  pop af
+  add a,c
+  ld d,a
+Sine:
+  bit 6,a
+  jr z,+_
+  cpl
+  xor 80h
+_:
+  and 63
+  ld c,a
+  ld hl,sinTable
+  ld b,0
+  add hl,bc
+  ld c,(hl)
+  rlc d
+  ret nc
+  xor a
+  sub c
+  ld c,a
+  sbc a,a
+  sub b
+  ld b,a
+  ret
+_:
+  ld hl,absSingle
+  jp float_stepin_1
+absToken:
+  ld a,(hl)
+  cp 3Ah
+  jr z,-_
+  call ParseFullArg
+  bit 7,b
+  ret z
+  jr negateBC
+Negative:
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
+  call ParseFullArg
+negateBC:
+  xor a \ sub c \ ld c,a
+  sbc a,a \ sub b \ ld b,a
+  ret
+_:
+  ld hl,negSingle
+  jp float_stepin_1
+Add:
+  push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
+  call ParseFullArg
+  pop hl
+  xor a
+  add hl,bc
+  ld b,h
+  ld c,l
+  ld h,a
+  adc a,a
+  ld l,a
+  ld (ThetaPrimeVar),hl
+  ret
+_:
+  ld hl,addSingle
+  jp float_stepin
+SubtractToken:
+  push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
+  call ParseFullArg
+  pop hl
+  xor a
+  sbc hl,bc
+  ld b,h
+  ld c,l
+  ld h,a
+  ld l,a
+  ld (ThetaPrimeVar),hl
+  ret
+_:
+  ld hl,subSingle
+  jp float_stepin
+Cubed:
+  ld d,b
+  ld e,c
+  call DE_Times_BC
+  ex de,hl
+  jr mul_stepin
+Squared:
+  ld d,b
+  ld e,c
+  jr mul_stepin
+Multiply:
+  push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
+  call ParseFullArg
+  pop de
+mul_stepin:
+  call DE_Times_BC
+  ld b,h
+  ld c,l
+  ld (ThetaPrimeVar),de
+  ret
+_:
+  ld hl,mulSingle
+float_stepin:
+  push hl
+  call ParseNextFullArg
+  push bc
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop de
+  pop hl
+  ld (next_page_call_address),hl
+  pop hl
+  jp next_page_call
+floatstackpush:
+  ld hl,(floatstack_ptr)
+  ld bc,4
+  add hl,bc
+  ld (floatstack_ptr),hl
+  ld a,l \ cp floatstack_top&255
+  ret nz
+#if (floatstack_top>>8)!=(floatstack_bottom>>8)
+  ld a,h \ cp floatstack_top>>8
+  ret nz
+#endif
+  ld hl,floatstack_bottom
+  ld (floatstack_ptr),hl
+  ret
+Comment:
+SkipLine:
+  call EndOfLine
+  jp ParseArg2
+  ld a,(hl)
+  cp 93h \ jp z,SlowText
+  cp 83h
+  jr z,SkipLine
+  cp 29h
+  jr nz,Divide
+  push bc
+  call ParseNextFullArg
+  pop hl
+;1366cc+6cc for every 0 bit in the result (up to +90cc
+;+48cc unless HL and BC are both positive
+;min: 1366cc
+;max: 1504cc
+;avg: 1447cc
+  ld a,h
+  xor b
+  push af
+  xor b
+  jp p,+_
+  xor a
+  sub l
+  ld l,a
+  sbc a,a
+  sub h
+  ld h,a
+_:
+  xor b
+  jp p,+_
+  xor a
+  sub c
+  ld c,a
+  sbc a,a
+  sub b
+  ld b,a
+_:
+  call HL_Div_BC
+  pop af
+  jp p,+_
+  xor a
+  sub l
+  ld l,a
+  sbc a,a
+  sub h
+  ld h,a
+_:
+  ld b,h
+  ld c,l
+  ld (ThetaPrimeVar),de
+  ret
+Divide:
+  push bc
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
+  call ParseFullArg
+  pop hl
+  call HL_Div_BC
+  ld b,h
+  ld c,l
+  ld (ThetaPrimeVar),de
+  ret
+_:
+  ld hl,divSingle
+  jp float_stepin
+Logic:
+Equals:
+  ld a,(hl)
+  cp $3A
+  jr z,feq
+  push bc
+factorialStepIn:
+  call ParseFullArg
+  pop hl
+  xor a
+  sbc hl,bc
+  ld b,a
+  ld c,a
+  ret nz
+  inc c
+  ret
+feq:
+  call fcmp
+  ld bc,0
+  ret nz
+  inc c
+  ret
+fcmp:
+  push bc
+  call ParseNextFullArg
+  ld hl,cmpSingle
+  ld (next_page_call_address),hl
+  pop hl
+  ld d,b
+  ld e,c
+  jp next_page_call
+moreLogic:
+  push af
+  push bc
+  call ParseFullArg
+  pop hl
+  pop af
+  ret
+notLogic:
+  call MoreLogic
+  ld a,b \ cpl \ ld b,a
+  ld a,c \ cpl \ ld c,a
+  ret
+andLogic:
+  call MoreLogic
+  ld a,h \ and b \ ld b,a
+  ld a,l \ and c \ ld c,a
+  ret
+orLogic:
+  call MoreLogic
+  ld a,h \ or b \ ld b,a
+  ld a,l \ or c \ ld c,a
+  ret
+xorLogic:
+  call MoreLogic
+  ld a,h \ xor b \ ld b,a
+  ld a,l \ xor c \ ld c,a
+  ret
+Less:
+  ld a,(hl)
+  cp $3A
+  jr z,flt
+  call MoreLogic
+  xor a
+  sbc hl,bc
+  ld b,a
+  adc a,a
+  ld c,a
+  ret
+flt:
+  call fcmp
+  ld bc,0
+  ret nc
+  inc c
+  ret
+Greater:
+  ld a,(hl)
+  cp $3A
+  jr z,fgt
+  call MoreLogic
+  xor a
+  scf
+  sbc hl,bc
+  ccf
+  ld b,a
+  adc a,a
+  ld c,a
+  ret
+fgt:
+  call fcmp
+  ld bc,0
+  ret z
+  ret c
+  inc c
+  ret
+LessOrEqual:
+  ld a,(hl)
+  cp $3A
+  jr z,fle
+  call MoreLogic
+  xor a
+  scf
+  sbc hl,bc
+  ld b,a
+  adc a,a
+  ld c,a
+  ret
+fle:
+  call fcmp
+  ld bc,1
+  ret c
+  ret z
+  dec c
+  ret
+MoreOrEqual:
+  ld a,(hl)
+  cp $3A
+  jr z,fge
+  call MoreLogic
+  xor a
+  sbc hl,bc
+  ccf
+  ld b,a
+  adc a,a
+  ld c,a
+  ret
+fge:
+  call fcmp
+  ld bc,0
+  ret c
+  inc c
+  ret
+NotEqual:
+  ld a,(hl)
+  cp $3A
+  jr z,fne
+  call MoreLogic
+  xor a
+  sbc hl,bc
+  ld b,a
+  ld c,a
+  ret z
+  inc c
+  ret
+fne:
+  call fcmp
+  ld bc,0
+  ret z
+  inc c
+  ret

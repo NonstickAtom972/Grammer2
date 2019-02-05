@@ -2734,16 +2734,16 @@ _:
   pop de
   pop hl
   bit SignedText,(iy+UserFlags)
-  jr z,DrawNumber
+  jr z,+_
   bit 7,h
-  jr z,DrawNumber
+  jr z,+_
   ld a,l \ cpl \ ld l,a
   ld a,h \ cpl \ ld h,a
   inc hl
   push de \ push hl \ push bc
   ld a,1Ah \ call PutSC
   pop bc \ pop hl \ pop de
-DrawNumber:
+_:
   dec c
   ret z
   inc c
@@ -3288,7 +3288,6 @@ GetToken:
   ld a,(hl)
   cp $AE
   jp z,GetByte
-NotGetByte:
   call GetVarName
   ex de,hl
   ld de,OP1
@@ -3407,12 +3406,12 @@ ErrorJump:
   ld hl,(qmarkVar)
   ld (parsePtr),hl
   cp $11
-  jr nz,L5bfd
+  jr nz,+_
   pop hl
   pop hl
   pop hl
   jr L5c06
-L5bfd:
+_:
   pop hl
   ld (Ans),hl
   pop hl
@@ -3429,19 +3428,22 @@ PtOn:
   ld a,c \ and 7
   res SlowTextFlag,(iy+InternalFlag)
   bit 3,c
-  jr z,$+6
+  jr z,+_
   set SlowTextFlag,(iy+InternalFlag)
+_:
   push af
-  cp 7 \ jr nz,$+9
+  cp 7 \ jr nz,+_
   ld hl,flags+33
   ld a,16
   xor (hl)
   ld (hl),a
+_:
   call ParseNextFullArg
   bit SlowTextFlag,(iy+InternalFlag)
-  jr z,$+8
+  jr z,+_
   call ConvHexTo86ECh
-  ld bc,86ECh
+  ld bc,saveScreen
+_:
   push bc
   call ParseNextFullArg
   ld (TempWord2),bc
@@ -3521,6 +3523,7 @@ OverwriteXxY:
   or a
   jr nz,ANDXxY
   ex af,af'
+_:
   ex de,hl
   push bc
   ldi
@@ -3530,12 +3533,13 @@ OverwriteXxY:
   add hl,bc
   pop bc
   dec a
-  jr nz,$-11
+  jr nz,-_
   ret
 ANDXxY:
   dec a
   jr nz,XORXxY
   ex af,af'
+_:
   push bc
   push af
   ld a,(de)
@@ -3548,12 +3552,13 @@ ANDXxY:
   pop af
   pop bc
   dec a
-  jr nz,$-13
+  jr nz,-_
   ret
 XORXxY:
   dec a
   jr nz,ORXxY
   ex af,af'
+_:
   push bc
   push af
   ld a,(de)
@@ -3566,12 +3571,13 @@ XORXxY:
   pop af
   pop bc
   dec a
-  jr nz,$-13
+  jr nz,-_
   ret
 ORXxY:
   dec a
   jr nz,SwapXxY
   ex af,af'
+_:
   push bc
   push af
   ld a,(de)
@@ -3584,13 +3590,14 @@ ORXxY:
   pop af
   pop bc
   dec a
-  jr nz,$-13
+  jr nz,-_
   ret
 SwapXxY:
   dec a
   jr nz,EraseXxY
   ex af,af'
   ld c,12
+_:
   push bc
   push af
   ld a,(de)
@@ -3603,7 +3610,7 @@ SwapXxY:
   pop af
   pop bc
   dec a
-  jr nz,$-14
+  jr nz,-_
   ret
 EraseXxY:
   dec a
@@ -3623,12 +3630,13 @@ _:
   pop af
   pop bc
   dec a
-  jr nz,$-14
+  jr nz,-_-2
   ret
 MaskXxY:
   dec a
   jr nz,GrayXxY
   ex af,af'
+_:
   push bc
   push af
   ex de,hl
@@ -3645,7 +3653,7 @@ MaskXxY:
   pop af
   pop bc
   dec a
-  jr nz,$-17
+  jr nz,-_
   ret
 GrayXxY:
   bit grayFlag,(iy+InternalFlag)
@@ -3653,6 +3661,7 @@ GrayXxY:
   jr z,$+3
   rrca
   ex af,af'
+_:
   push bc
   push af
   ex af,af'
@@ -3677,7 +3686,7 @@ GrayXxY:
   pop af
   pop bc
   dec a
-  jr nz,$-25
+  jr nz,-_
   ret
 ;'
 ;===========================================================
@@ -4150,434 +4159,11 @@ DispGraph:
   ld a,(hl)
   ld hl,(BufPtr)
   call EndOArg
-  jr z,$+7
+  jp z,GraphToLCD+3
   call ParseFullArg
   ld h,b
   ld l,c
   jp GraphToLCD+3
-Number:
-  jp ConvRStr
-Math:
-Sqrt:
-  ld a,(hl)
-  cp 3Ah
-  jr z,+_
-  inc hl
-  cp $AE
-  push af
-  jr nz,$+5
-  ld (parsePtr),hl
-  call ParseFullArg
-  ld h,b
-  ld l,c
-  call sqrtHL_page0
-  ld (ThetaPrimeVar),de
-  ld c,l
-  ld b,h
-  pop af
-  ret nz
-  ;if HL-DE<0, increment BC
-  or a
-  sbc hl,de
-  ret nc
-  inc bc
-  ret
-_:
-  ld hl,sqrtSingle
-  jr float_stepin_1
-sinefloat:
-  pop af
-  ld hl,sinSingle
-  jr float_stepin_1
-_:
-  ld hl,cosSingle
-float_stepin_1:
-  push hl     ;the call to make
-  call ParseNextFullArg
-  push bc     ;the second argument
-  call floatstackpush
-  ld b,h
-  ld c,l
-  pop de
-  pop hl
-  ld (next_page_call_address),hl
-  ex de,hl
-  jp next_page_call
-Cos:
-  ld a,(hl)
-  cp 3Ah
-  jr z,-_
-  ld a,64
-  or a
-  .db 38h
-Sin:
-  xor a
-  push af
-  ld a,(hl)
-  cp 3Ah
-  jr z,sinefloat
-  call ParseFullArg
-  pop af
-  add a,c
-  ld d,a
-Sine:
-  bit 6,a
-  jr z,+_
-  cpl
-  xor 80h
-_:
-  and 63
-  ld c,a
-  ld hl,sinTable
-  ld b,0
-  add hl,bc
-  ld c,(hl)
-  rlc d
-  ret nc
-  xor a
-  sub c
-  ld c,a
-  sbc a,a
-  sub b
-  ld b,a
-  ret
-_:
-  ld hl,absSingle
-  jp float_stepin_1
-absToken:
-  ld a,(hl)
-  cp 3Ah
-  jr z,-_
-  call ParseFullArg
-  bit 7,b
-  ret z
-  jr negateBC
-Negative:
-  ld a,(hl)
-  cp 3Ah
-  jr z,+_
-  call ParseFullArg
-negateBC:
-  xor a \ sub c \ ld c,a
-  sbc a,a \ sub b \ ld b,a
-  ret
-_:
-  ld hl,negSingle
-  jp float_stepin_1
-Add:
-  push bc
-  ld a,(hl)
-  cp 3Ah
-  jr z,+_
-  call ParseFullArg
-  pop hl
-  xor a
-  add hl,bc
-  ld b,h
-  ld c,l
-  ld h,a
-  adc a,a
-  ld l,a
-  ld (ThetaPrimeVar),hl
-  ret
-_:
-  ld hl,addSingle
-  jp float_stepin
-SubtractToken:
-  push bc
-  ld a,(hl)
-  cp 3Ah
-  jr z,+_
-  call ParseFullArg
-  pop hl
-  xor a
-  sbc hl,bc
-  ld b,h
-  ld c,l
-  ld h,a
-  ld l,a
-  ld (ThetaPrimeVar),hl
-  ret
-_:
-  ld hl,subSingle
-  jp float_stepin
-Cubed:
-  ld d,b
-  ld e,c
-  call DE_Times_BC
-  ex de,hl
-  jr mul_stepin
-Squared:
-  ld d,b
-  ld e,c
-  jr mul_stepin
-Multiply:
-  push bc
-  ld a,(hl)
-  cp 3Ah
-  jr z,+_
-  call ParseFullArg
-  pop de
-mul_stepin:
-  call DE_Times_BC
-  ld b,h
-  ld c,l
-  ld (ThetaPrimeVar),de
-  ret
-_:
-  ld hl,mulSingle
-float_stepin:
-  push hl
-  call ParseNextFullArg
-  push bc
-  call floatstackpush
-  ld b,h
-  ld c,l
-  pop de
-  pop hl
-  ld (next_page_call_address),hl
-  pop hl
-  jp next_page_call
-floatstackpush:
-  ld hl,(floatstack_ptr)
-  ld bc,4
-  add hl,bc
-  ld (floatstack_ptr),hl
-  ld a,l \ cp floatstack_top&255
-  ret nz
-#if (floatstack_top>>8)!=(floatstack_bottom>>8)
-  ld a,h \ cp floatstack_top>>8
-  ret nz
-#endif
-  ld hl,floatstack_bottom
-  ld (floatstack_ptr),hl
-  ret
-Comment:
-SkipLine:
-  call EndOfLine
-  jp ParseArg2
-  ld a,(hl)
-  cp 93h \ jp z,SlowText
-  cp 83h
-  jr z,SkipLine
-  cp 29h
-  jr nz,Divide
-  push bc
-  call ParseNextFullArg
-  pop hl
-;1366cc+6cc for every 0 bit in the result (up to +90cc
-;+48cc unless HL and BC are both positive
-;min: 1366cc
-;max: 1504cc
-;avg: 1447cc
-  ld a,h
-  xor b
-  push af
-  xor b
-  jp p,+_
-  xor a
-  sub l
-  ld l,a
-  sbc a,a
-  sub h
-  ld h,a
-_:
-  xor b
-  jp p,+_
-  xor a
-  sub c
-  ld c,a
-  sbc a,a
-  sub b
-  ld b,a
-_:
-  call HL_Div_BC
-  pop af
-  jp p,+_
-  xor a
-  sub l
-  ld l,a
-  sbc a,a
-  sub h
-  ld h,a
-_:
-  ld b,h
-  ld c,l
-  ld (ThetaPrimeVar),de
-  ret
-Divide:
-  push bc
-  ld a,(hl)
-  cp 3Ah
-  jr z,+_
-  call ParseFullArg
-  pop hl
-  call HL_Div_BC
-  ld b,h
-  ld c,l
-  ld (ThetaPrimeVar),de
-  ret
-_:
-  ld hl,divSingle
-  jp float_stepin
-Logic:
-Equals:
-  ld a,(hl)
-  cp $3A
-  jr z,feq
-  push bc
-factorialStepIn:
-  call ParseFullArg
-  pop hl
-  xor a
-  sbc hl,bc
-  ld b,a
-  ld c,a
-  ret nz
-  inc c
-  ret
-feq:
-  call fcmp
-  ld bc,0
-  ret nz
-  inc c
-  ret
-fcmp:
-  push bc
-  call ParseNextFullArg
-  ld hl,cmpSingle
-  ld (next_page_call_address),hl
-  pop hl
-  ld d,b
-  ld e,c
-  jp next_page_call
-moreLogic:
-  push af
-  push bc
-  call ParseFullArg
-  pop hl
-  pop af
-  ret
-notLogic:
-  call MoreLogic
-  ld a,b \ cpl \ ld b,a
-  ld a,c \ cpl \ ld c,a
-  ret
-andLogic:
-  call MoreLogic
-  ld a,h \ and b \ ld b,a
-  ld a,l \ and c \ ld c,a
-  ret
-orLogic:
-  call MoreLogic
-  ld a,h \ or b \ ld b,a
-  ld a,l \ or c \ ld c,a
-  ret
-xorLogic:
-  call MoreLogic
-  ld a,h \ xor b \ ld b,a
-  ld a,l \ xor c \ ld c,a
-  ret
-Less:
-  ld a,(hl)
-  cp $3A
-  jr z,flt
-  call MoreLogic
-  xor a
-  sbc hl,bc
-  ld b,a
-  adc a,a
-  ld c,a
-  ret
-flt:
-  call fcmp
-  ld bc,0
-  ret nc
-  inc c
-  ret
-Greater:
-  ld a,(hl)
-  cp $3A
-  jr z,fgt
-  call MoreLogic
-  xor a
-  scf
-  sbc hl,bc
-  ccf
-  ld b,a
-  adc a,a
-  ld c,a
-  ret
-fgt:
-  call fcmp
-  ld bc,0
-  ret z
-  ret c
-  inc c
-  ret
-LessOrEqual:
-  ld a,(hl)
-  cp $3A
-  jr z,fle
-  call MoreLogic
-  xor a
-  scf
-  sbc hl,bc
-  ld b,a
-  adc a,a
-  ld c,a
-  ret
-fle:
-  call fcmp
-  ld bc,1
-  ret c
-  ret z
-  dec c
-  ret
-MoreOrEqual:
-  ld a,(hl)
-  cp $3A
-  jr z,fge
-  call MoreLogic
-  xor a
-  sbc hl,bc
-  ccf
-  ld b,a
-  adc a,a
-  ld c,a
-  ret
-fge:
-  call fcmp
-  ld bc,0
-  ret c
-  inc c
-  ret
-NotEqual:
-  ld a,(hl)
-  cp $3A
-  jr z,fne
-  call MoreLogic
-  xor a
-  sbc hl,bc
-  ld b,a
-  ld c,a
-  ret z
-  inc c
-Exit:
-  ret
-fne:
-  call fcmp
-  ld bc,0
-  ret z
-  inc c
-  ret
-EndOfCommand:
-  ld hl,(parsePtr)
-  inc hl
-  ld a,(hl) \ call EndOArg
-  jr nz,EndOfCommand+3
-  ld (parsePtr),hl
-  ret
 EndOArg:
   cp 4 \ ret z  ;->
 EndOArgNotSto:
@@ -4587,13 +4173,6 @@ EndOArgNotSto:
   cp 2Bh \ ret z ;,
   or a
   ret
-;====================================
-;====================================
-;This section contains calls and data
-;used by Grammer.
-;====================================
-;====================================
-;
 ;===============================================================
 FindEndToken:
 ;===============================================================
@@ -4858,11 +4437,11 @@ ConvRStr:
   ex de,hl
   ld hl,0
   push de   ;save in case we encounter a float
-ConvLoop:
+_:
   ld a,(de)
   sub 30h
   cp 10
-  jr nc,Convtd
+  jr nc,+_
   inc de
   ld b,h
   ld c,l
@@ -4872,10 +4451,10 @@ ConvLoop:
   add hl,hl
   add a,l
   ld l,a
-  jr nc,ConvLoop
+  jr nc,-_
   inc h
-  jp ConvLoop
-Convtd:
+  jp -_
+_:
   jr z,+_   ;means it was a decimal point
   pop bc
   ld (parsePtr),de
@@ -5386,172 +4965,6 @@ Is_Var_Name:
   add a,2 \ ret z
   inc a \ ret z
   inc a \ ret
-RAMCodeStart:
-  push af
-  nop
-  or (hl)
-  ld (hl),a
-  pop af
-  ret
-L7151:
-  push hl
-  push af
-  ld a,0
-  dec a
-  jr L7171
-L7158:
-  ld a,$80
-  xor (iy+InternalFlag)
-  ld (iy+InternalFlag),a
-  ld hl,$811a
-_:
-  ld a,(ix-1)
-  inc a
-  jr nz,+_
-  ld (hl),0
-  jr -_
-_:
-  dec (hl)
-  dec a
-  jr z,L7158
-L7171:
-  ld ($8109),a
-  pop af
-  pop hl
-  ret
-;SetLinePixCode:
-; push af   ; Saving A
-; ld a,(ix+0)
-; cpl
-; xor c   ; Writing pixel to current position
-; nop
-; ld (ix+0),a
-; pop af   ; Recalling A
-; ret
-
-_:
-IncHLMem1 = -_-RAMCodeStart+ramCode
-  inc h
-  ret po
-  ld h,a
-  in a,(6)
-  inc a
-  out (6),a
-  ld a,h
-  ld h,40h
-  ret
-_:
-call_previous_page = -_-RAMCodeStart+ramCode
-  ld (de_restore),de
-  ex (sp),hl
-  ld e,(hl)
-  inc hl
-  ld d,(hl)
-  inc hl      ;the return address
-  ld (page0_call),de
-  ex (sp),hl
-  push af
-  in a,(6)
-  inc a
-  out (6),a
-  pop af
-de_restore = $-RAMCodeStart+ramCode+1
-  ld de,0
-page0_call = $-RAMCodeStart+ramCode+1
-  call 0
-  push af
-  in a,(6)
-  dec a
-  out (6),a
-  pop af
-  ret
-_:
-call_next_page = -_-RAMCodeStart+ramCode
-  ld (de_restore_),de
-  ex (sp),hl
-  ld e,(hl)
-  inc hl
-  ld d,(hl)
-  inc hl      ;the return address
-  ld (page1_call),de
-  ex (sp),hl
-  push af
-  in a,(6)
-  dec a
-  out (6),a
-  pop af
-de_restore_ = $-RAMCodeStart+ramCode+1
-  ld de,0
-page1_call = $-RAMCodeStart+ramCode+1
-  call 0
-  push af
-  in a,(6)
-  inc a
-  out (6),a
-  pop af
-  ret
-_:
-next_page_call = -_-RAMCodeStart+ramCode
-  push af
-  in a,(6)
-  dec a
-  out (6),a
-  pop af
-next_page_call_address = $-RAMCodeStart+ramCode+1
-  call 0
-  push af
-  in a,(6)
-  inc a
-  out (6),a
-  pop af
-  ret
-_:
-prev_page_call = -_-RAMCodeStart+ramCode
-  push af
-  in a,(6)
-  inc a
-  out (6),a
-prev_page_call_address = $-RAMCodeStart+ramCode+1
-  call 0
-  in a,(6)
-  dec a
-  out (6),a
-  ret
-_:
-bincompare = -_-RAMCodeStart+ramCode
-  ld de,(parsePtr)
-  out (6),a
-  .db $FE   ;start of cp *
-_:
-  inc de
-  ld a,(de)
-  cp (hl)
-  jr nz,+_
-  call isEOT
-  jr z,+_
-  inc l \ call z,incHLMem1
-  ld a,(hl)
-  or a
-  jr nz,-_
-_:
-  in a,(6)
-  ld b,a
-;  push af
-_:
-bincomparepagerestore = -_-RAMCodeStart+ramCode+1
-  ld a,0
-  out (6),a
-;  pop af
-  ld a,b
-  ret
-isEOT    = $-RAMCodeStart+ramCode
-;End Of Token includes (, ' ', {, [, \n, :
-  or a \ ret z
-  cp $10 \ ret z  ;(
-  cp $29 \ ret  ;space
-RamCodeEnd:
-.echo "RamCode : ",$-RamCodeStart
-;=============================================================================
 ConvOP1:
   ld hl,OP1
 convFloat:
@@ -6491,271 +5904,6 @@ TokenTable:
  .db $72,4,4,"gbuf"
  .db 0
 ;===================================================
-CommandJumpTable:
- .dw ErrBadToken      ; $00
- .dw module           ; $01 ;>DMS
- .dw ErrBadToken      ; $02
-#ifdef include_prime
- .dw FracToken        ; $03
-#else
-  .dw ErrBadToken     ; $03
-#endif
- .dw StoToken         ; $04
- .dw ErrBadToken      ; $05
- .dw SetData          ; $06
- .dw ExecLine_        ; $07
- .dw LeftBracket      ; $08
- .dw Ret              ; $09
- .dw ErrBadToken      ; $0A
- .dw ErrBadToken      ; $0B
- .dw ErrBadToken      ; $0C
- .dw Squared          ; $0D
- .dw ErrBadToken      ; $0E
- .dw ErrBadToken      ; $0F
- .dw LeftParantheses  ; $10
- .dw Ret              ; $11
- .dw ErrBadToken      ; $12
- .dw PxlTestToken     ; $13
- .dw Augment          ; $14
- .dw ErrBadToken      ; $15
- .dw ErrBadToken      ; $16
- .dw ErrBadToken      ; $17
- .dw ErrBadToken      ; $18
- .dw MaxToken         ; $19
- .dw MinToken         ; $1A
- .dw RToPr            ; $1B
- .dw RToPTheta        ; $1C
- .dw PToRX            ; $1D
- .dw PToRy            ; $1E
- .dw ErrBadToken      ; $1F
- .dw ErrBadToken      ; $20
- .dw ErrBadToken      ; $21
- .dw SolveSet         ; $22
- .dw ErrBadToken      ; $23
- .dw ErrBadToken      ; $24
- .dw ErrBadToken      ; $25
- .dw ErrBadToken      ; $26
- .dw ErrBadToken      ; $27
- .dw ErrBadToken      ; $28
- .dw Incptr           ; $29
- .dw QuoteToken       ; $2A
- .dw Ret              ; $2B
- .dw OSVarToken       ; $2C
- .dw factorialToken   ; $2D
- .dw ErrBadToken      ; $2E
- .dw ErrBadToken      ; $2F
- .dw ConvRStr         ; $30
- .dw ConvRStr         ; $31
- .dw ConvRStr         ; $32
- .dw ConvRStr         ; $33
- .dw ConvRStr         ; $34
- .dw ConvRStr         ; $35
- .dw ConvRStr         ; $36
- .dw ConvRStr         ; $37
- .dw ConvRStr         ; $38
- .dw ConvRStr         ; $39
- .dw SkipLine         ; $3A
- .dw Base2Num         ; $3B
- .dw orLogic          ; $3C
- .dw xorLogic         ; $3D
- .dw Ret              ; $3E
- .dw NewLine          ; $3F
- .dw andLogic         ; $40
- .dw VarToken         ; $41
- .dw VarToken         ; $42
- .dw VarToken         ; $43
- .dw VarToken         ; $44
- .dw VarToken         ; $45
- .dw VarToken         ; $46
- .dw VarToken         ; $47
- .dw VarToken         ; $48
- .dw VarToken         ; $49
- .dw VarToken         ; $4A
- .dw VarToken         ; $4B
- .dw VarToken         ; $4C
- .dw VarToken         ; $4D
- .dw VarToken         ; $4E
- .dw VarToken         ; $4F
- .dw VarToken         ; $50
- .dw VarToken         ; $51
- .dw VarToken         ; $52
- .dw VarToken         ; $53
- .dw VarToken         ; $54
- .dw VarToken         ; $55
- .dw VarToken         ; $56
- .dw VarToken         ; $57
- .dw VarToken         ; $58
- .dw VarToken         ; $59
- .dw VarToken         ; $5A
- .dw VarToken         ; $5B
- .dw VarName          ; $5C
- .dw VarName          ; $5D
- .dw VarName          ; $5E
- .dw prgmToken        ; $5F
- .dw VarName          ; $60
- .dw VarName          ; $61
- .dw VarName          ; $62
- .dw ErrBadToken      ; $63
- .dw ErrBadToken      ; $64
- .dw ErrBadToken      ; $65
- .dw ErrBadToken      ; $66
- .dw ErrBadToken      ; $67
- .dw ErrBadToken      ; $68
- .dw ErrBadToken      ; $69
- .dw Equals           ; $6A
- .dw Less             ; $6B
- .dw Greater          ; $6C
- .dw LessOrEqual      ; $6D
- .dw MoreOrEqual      ; $6E
- .dw NotEqual         ; $6F
- .dw Add              ; $70
- .dw SubtractToken    ; $71
- .dw AnsToken         ; $72
- .dw FixToken         ; $73
- .dw ErrBadToken      ; $74
- .dw FullToken        ; $75
- .dw FuncToken        ; $76
- .dw ErrBadToken      ; $77
- .dw ErrBadToken      ; $78
- .dw ErrBadToken      ; $79
- .dw ErrBadToken      ; $7A
- .dw ErrBadToken      ; $7B
- .dw ErrBadToken      ; $7C
- .dw ErrBadToken      ; $7D
- .dw ErrBadToken      ; $7E
- .dw ErrBadToken      ; $7F
- .dw ErrBadToken      ; $80
- .dw ErrBadToken      ; $81
- .dw Multiply         ; $82
- .dw Skipline+6       ; $83
- .dw ErrBadToken      ; $84
- .dw ClrDrawToken     ; $85
- .dw ErrBadToken      ; $86
- .dw ErrBadToken      ; $87
- .dw ErrBadToken      ; $88
- .dw ErrBadToken      ; $89
- .dw ErrBadToken      ; $8A
- .dw ErrBadToken      ; $8B
- .dw ErrBadToken      ; $8C
- .dw ErrBadToken      ; $8D
- .dw ErrBadToken      ; $8E
- .dw ErrBadToken      ; $8F
- .dw ErrBadToken      ; $90
- .dw ErrBadToken      ; $91
- .dw ErrBadToken      ; $92
- .dw TextToken        ; $93
- .dw ErrBadToken      ; $94
-#ifdef include_ncr
- .dw nCrToken         ; $95
-#else
- .dw ErrBadToken      ; $95
-#endif
- .dw ErrBadToken      ; $96
- .dw ErrBadToken      ; $97
- .dw StorePicToken    ; $98
- .dw RecallPicToken   ; $99
- .dw ErrBadToken      ; $9A
- .dw ErrBadToken      ; $9B
- .dw LineToken        ; $9C
- .dw VerticalToken    ; $9D
- .dw PtOn             ; $9E
- .dw PtOff            ; $9F
- .dw PtChange         ; $A0
- .dw PxlTokens        ; $A1
- .dw PxlTokens        ; $A2
- .dw PxlTokens        ; $A3
- .dw ShadeToken       ; $A4
- .dw CircleToken      ; $A5
- .dw HorizontalToken  ; $A6
- .dw TangentToken     ; $A7
- .dw ErrBadToken      ; $A8
- .dw ErrBadToken      ; $A9
- .dw VarName          ; $AA
- .dw RandToken        ; $AB
- .dw PiToken          ; $AC
- .dw GetKeyToken      ; $AD
- .dw Incptr           ; $AE
- .dw VarToken         ; $AF
- .dw Negative         ; $B0
- .dw int              ; $B1
- .dw absToken         ; $B2
- .dw ErrBadToken      ; $B3
- .dw ErrBadToken      ; $B4
- .dw ErrBadToken      ; $B5
- .dw ErrBadToken      ; $B6
- .dw ErrBadToken      ; $B7
- .dw notLogic         ; $B8
- .dw iPart            ; $B9
- .dw ErrBadToken      ; $BA
- .dw BBTokens         ; $BB
- .dw Sqrt             ; $BC
- .dw ErrBadToken      ; $BD
- .dw LnToken          ; $BE
- .dw PowerOf2         ; $BF
- .dw ErrBadToken      ; $C0
- .dw ErrBadToken      ; $C1
- .dw Sin              ; $C2
- .dw ErrBadToken      ; $C3
- .dw Cos              ; $C4
- .dw ErrBadToken      ; $C5
- .dw ErrBadToken      ; $C6
- .dw ErrBadToken      ; $C7
- .dw ErrBadToken      ; $C8
- .dw ErrBadToken      ; $C9
- .dw ErrBadToken      ; $CA
- .dw ErrBadToken      ; $CB
- .dw ErrBadToken      ; $CC
- .dw ErrBadToken      ; $CD
- .dw IfToken          ; $CE
- .dw ParserNext       ; $CF
- .dw ElseToken        ; $D0
- .dw WhileToken       ; $D1
- .dw RepeatToken      ; $D2
- .dw ForToken         ; $D3
- .dw EndToken         ; $D4
- .dw Return           ; $D5
- .dw LblToken         ; $D6
- .dw GotoToken        ; $D7
- .dw PauseToken       ; $D8
- .dw StopToken        ; $D9
- .dw ISToken          ; $DA
- .dw ErrBadToken      ; $DB
- .dw InputToken       ; $DC
- .dw ErrBadToken      ; $DD
- .dw DispToken        ; $DE
- .dw DispGraph        ; $DF
- .dw OutputToken      ; $E0
- .dw ClrHomeToken     ; $E1
- .dw FillToken        ; $E2
- .dw ErrBadToken      ; $E3
- .dw ErrBadToken      ; $E4
- .dw ErrBadToken      ; $E5
- .dw Menu             ; $E6
- .dw SendToken        ; $E7
- .dw GetToken         ; $E8
- .dw ErrBadToken      ; $E9
- .dw ErrBadToken      ; $EA
- .dw ExecLine         ; $EB
- .dw Byte             ; $EC
- .dw Word             ; $ED
- .dw ErrBadToken      ; $EE
- .dw ErrBadToken      ; $EF
- .dw ErrBadToken      ; $F0
- .dw ErrBadToken      ; $F1
- .dw ErrBadToken      ; $F2
- .dw ErrBadToken      ; $F3
- .dw ErrBadToken      ; $F4
- .dw ErrBadToken      ; $F5
- .dw ErrBadToken      ; $F6
- .dw ErrBadToken      ; $F7
- .dw ErrBadToken      ; $F8
- .dw ErrBadToken      ; $F9
- .dw ErrBadToken      ; $FA
- .dw ErrBadToken      ; $FB
- .dw ErrBadToken      ; $FC
- .dw ErrBadToken      ; $FD
- .dw ErrBadToken      ; $FE
- .dw ErrBadToken      ; $FF
 ExecLine_:
   ld a,(hl)
   inc hl
@@ -6837,19 +5985,19 @@ Base2Num:
   ld bc,0
   ld d,b
   ld e,c
-Base2Loop:
+_:
   ld a,(hl)
   sub '2'
   add a,2
-  jr nc,ExitBase2Loop
+  jr nc,+_
   rrca
   rl c
   rl b
   rl e
   rl d
   inc hl
-  jp Base2Loop      ;It saves 2 cycles using JP D:
-ExitBase2Loop:
+  jp -_      ;It saves 2 cycles using JP D:
+_:
   set FactorialFlag,(iy+InternalFlag)
   ld (parsePtr),hl
   ret
@@ -6964,9 +6112,12 @@ menu:
 #include "startmenu.z80"
 #include "isort.z80"
 #include "routines.z80"
+#include "math.z80"
+#include "ramcode.z80"
 #include "gfx/text.z80"
 #include "gfx/circle.z80"
 #include "gfx/gbufToLCD.z80"
+#include "commandtable.z80"
 #include "err.z80"
 #include "data.z80"
 .echo "Page 0: ",$8000-$," bytes remaining"
