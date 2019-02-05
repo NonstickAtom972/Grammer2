@@ -192,15 +192,6 @@ _: ;all rows
  add a,c
  ld c,a
 MenuDraw:
-  ei
-_:
-  halt
-  xor a
-  out (1),a
-  in a,(1)
-  inc a
-  jr nz,-_ ;port 1 ready loop
-  di
   push hl
   ld de,(TempWord1) ;width, height
   push bc ;start_coord
@@ -215,7 +206,7 @@ _:
   ld a,2
   call DrawRectToGraph
 _:  ;Test Enter, auf, ab
-  call GetKey
+  call GetKeyDebounce
   or a
   jr z,-_
   pop bc
