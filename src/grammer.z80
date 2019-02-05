@@ -3874,10 +3874,17 @@ VarToken:
   ld b,(hl)
   set FactorialFlag,(iy+InternalFlag)
   ret
+ParseNextFullArg:
+  ld hl,(parsePtr)
+ParseNextFullArg_Inc:
+  inc hl
+ParseNextFullArg_HL:
+  ld (parsePtr),hl
 ParseFullArg:
   bit FactorialFlag,(iy+InternalFlag)
-  jr nz,$+5
+  jr nz,+_
   ld de,0
+_:
   res FactorialFlag,(iy+InternalFlag)
   ld hl,(parsePtr)
   ld a,(hl)
@@ -3887,20 +3894,13 @@ ParseFullArg:
   ret z
   call ParseArg
   jr ParseFullArg
-ParseNextFullArg:
-  ld hl,(parsePtr)
-ParseNextFullArg_Inc:
-  inc hl
-ParseNextFullArg_HL:
-  ld (parsePtr),hl
-  jr ParseFullArg
 ParseCondition:
   call ParseArg
   ld hl,(parsePtr)
   ld a,3Fh
   cp (hl)
-  ret z
-  jr ParseCondition
+  jr nz,ParseCondition
+  ret
 GetNextVarNum:
   inc hl
   ld a,(hl)
@@ -3910,7 +3910,6 @@ GetNextVarNum:
   ret
 _:
   sub 3Ah
-  ret nc
   add a,10
   ret nc
   ld a,d
