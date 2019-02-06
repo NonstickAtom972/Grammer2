@@ -35,7 +35,7 @@
 ;#define include_prime
 ;#define include_ncr
 ;#define include_LoadTSA
-#define include_interrupt
+;#define include_interrupt
 
 .org $4000
 .db $80,$0F, 0,0,0,0
@@ -58,7 +58,7 @@ jumptable:
 .echo "no interrupt table"
 #else
 .fill $4100-$,255
-.fill $4201-$,$42
+.fill $4201-$,$81
 #endif
 #endif
 main:
@@ -87,15 +87,6 @@ _:
   bcall(_SetParserHook)
   jp startmenu__
 
-#ifdef include_interrupt
-.echo "  ",$4242-$," bytes before interrupt"
-#if $4242<$
-.echo "Alert!!! Interrupt is in the wrong place!"
-#else
-.fill $4242-$,255
-#endif
-#include "interrupt.z80"
-#endif
 SelectedProg:
 
   ld de,OP1
@@ -4648,6 +4639,10 @@ SetUpData:
   in a,(6)
   ld (page_restore),a
   ld (bincomparepagerestore),a
+#ifdef include_interrupt
+  dec a
+  ld (interrupt_page),a
+#endif
 #endif
 
   ld hl,floatstack_bottom

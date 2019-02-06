@@ -7,14 +7,14 @@
 
 
 #ifdef include_interrupt
-.echo "  ",$4100-$," bytes before interrupt jump on second page"
+.echo "  ",$4100-$," bytes before interrupt table second page"
 #if $4100<$
 ;need to shorten interrupt, possibly put in a jp instead of actual code
 .echo "Alert!!! Interrupt table is in the wrong place on second page!"
 .echo "no interrupt table"
 #else
 .fill $4100-$,255
-.fill $4201-$,$42
+.fill $4201-$,$81
 #endif
 #endif
 
@@ -22,17 +22,8 @@
 
 
 #ifdef include_interrupt
-.echo "  ",$4242-$," bytes before interrupt"
-#if $4242<$
-.echo "Alert!!! Interrupt is in the wrong place!"
-#else
-.fill $4242-$,255
-#endif
 #include "interrupt.z80"
 #endif
-
-
-
 
 #include "single/single2str.z80"
 #include "single/mulSingle.z80"

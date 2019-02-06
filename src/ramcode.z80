@@ -52,56 +52,8 @@ IncHLMem1 = -_-RAMCodeStart+ramCode
   ld a,h
   ld h,40h
   ret
-_:
-call_previous_page = -_-RAMCodeStart+ramCode
-  ld (de_restore),de
-  ex (sp),hl
-  ld e,(hl)
-  inc hl
-  ld d,(hl)
-  inc hl      ;the return address
-  ld (page0_call),de
-  ex (sp),hl
-  push af
-  in a,(6)
-  inc a
-  out (6),a
-  pop af
-de_restore = $-RAMCodeStart+ramCode+1
-  ld de,0
-page0_call = $-RAMCodeStart+ramCode+1
-  call 0
-  push af
-  in a,(6)
-  dec a
-  out (6),a
-  pop af
-  ret
-_:
-call_next_page = -_-RAMCodeStart+ramCode
-  ld (de_restore_),de
-  ex (sp),hl
-  ld e,(hl)
-  inc hl
-  ld d,(hl)
-  inc hl      ;the return address
-  ld (page1_call),de
-  ex (sp),hl
-  push af
-  in a,(6)
-  dec a
-  out (6),a
-  pop af
-de_restore_ = $-RAMCodeStart+ramCode+1
-  ld de,0
-page1_call = $-RAMCodeStart+ramCode+1
-  call 0
-  push af
-  in a,(6)
-  inc a
-  out (6),a
-  pop af
-  ret
+
+
 _:
 next_page_call = -_-RAMCodeStart+ramCode
 ;121cc
@@ -158,9 +110,27 @@ bincomparepagerestore = -_-RAMCodeStart+ramCode+1
 ;  pop af
   ld a,b
   ret
+
+#ifdef include_interrupt
+.fill $8181-$+RAMCodeStart-ramCode,0
+interrupt_main = $-RAMCodeStart+ramCode
+  push af
+  in a,(6)
+  ld (interrupt_return_page),a
+interrupt_page = $-RAMCodeStart+ramCode+1
+  ld a,0
+  out (6),a
+  call Interrupt
+interrupt_return_page = $-RAMCodeStart+ramCode+1
+  ld a,0
+  out (6),a
+  pop af
+  ret
+#endif
 isEOT    = $-RAMCodeStart+ramCode
 ;End Of Token includes (, ' ', {, [, \n, :
   or a \ ret z
   cp $10 \ ret z  ;(
   cp $29 \ ret  ;space
+
 RamCodeEnd:
