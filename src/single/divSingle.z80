@@ -29,7 +29,6 @@ inv_inject:
     ex de,hl    ; |Get exponent
     sub (hl)    ; |
     ex de,hl    ; |
-.echo "Need to check overflow/underflow for divSingle"
 ;    jp pe,divunderflow   ; |Actually this needs to be handled as either over or underflow
     xor 80h     ; |
     jr z,divunderflow  ;/
@@ -138,4 +137,3 @@ divsub1:
     ret c
     inc b \ sbc hl,de \ sbc a,c
     ret
-.echo "divSingle:",$-divSingle

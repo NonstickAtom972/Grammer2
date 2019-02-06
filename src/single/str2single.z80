@@ -300,4 +300,3 @@ strToSingle_inf:
   ld hl,const_NegInf
   pop de
   jp mov4
-.echo "str2Single: ",$-str2single

@@ -1,19 +1,52 @@
 .org $4000
 #define scrap 8000h
+
+#include "gfx/bigtile.z80"
 #include "single/pushpop.z80"
+#include "single/subSingle.z80"
+
+
+#ifdef include_interrupt
+.echo "  ",$4100-$," bytes before interrupt jump on second page"
+#if $4100<$
+;need to shorten interrupt, possibly put in a jp instead of actual code
+.echo "Alert!!! Interrupt table is in the wrong place on second page!"
+.echo "no interrupt table"
+#else
+.fill $4100-$,255
+.fill $4201-$,$42
+#endif
+#endif
+
+#include "single/cmpSingle.z80"
+
+
+#ifdef include_interrupt
+.echo "  ",$4242-$," bytes before interrupt"
+#if $4242<$
+.echo "Alert!!! Interrupt is in the wrong place!"
+#else
+.fill $4242-$,255
+#endif
+#include "interrupt.z80"
+#endif
+
+
+
+
 #include "single/single2str.z80"
 #include "single/mulSingle.z80"
 #include "single/divSingle.z80"
 #include "single/addSingle.z80"
-#include "single/subSingle.z80"
 #include "single/sinSingle.z80"
 #include "single/cosSingle.z80"
 #include "single/absSingle.z80"
 #include "single/negSingle.z80"
-#include "single/cmpSingle.z80"
 #include "single/sqrtSingle.z80"
 #include "single/str2single.z80"
 #include "single/constants.z80"
 #include "single/singleTo_int16.z80"
+#include "isort.z80"
+#include "gfx/drawrect.z80"
 #include "single/lut.z80"
 .echo "Page 1: ",$8000-$," bytes remaining"

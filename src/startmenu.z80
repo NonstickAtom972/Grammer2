@@ -13,7 +13,9 @@ startmenu__:
   bcall(_DeleteTempPrograms)
   ld c,1
   call SetSpeed
-  call sortVAT
+  ld hl,sortVAT
+  ld (next_page_call_address),hl
+  call next_page_call
   ld hl,saveSScreen
   ld (gbuf_temp),hl
   ld (BufPtr),hl

@@ -360,4 +360,3 @@ copyS:
 str_zero:   .db "0",0
 str_NAN:    .db "NaN",0
 str_inf     .db "INF",0
-.echo "single2str:",$-single2str

@@ -107,12 +107,6 @@ next_page_call = -_-RAMCodeStart+ramCode
 ;121cc
   push af
   in a,(6)
-  inc a
-  out (6),a
-  pop af
-
-  push af
-  in a,(6)
   dec a
   out (6),a
   pop af
@@ -170,5 +164,3 @@ isEOT    = $-RAMCodeStart+ramCode
   cp $10 \ ret z  ;(
   cp $29 \ ret  ;space
 RamCodeEnd:
-.echo "RamCode : ",$-RamCodeStart
-;=============================================================================
