@@ -1,9 +1,9 @@
 RAMCodeStart:
-  push af
+pix_plot = $-RamCodeStart+ramCode
+pix_method = $-RamCodeStart+ramCode
   nop
   or (hl)
   ld (hl),a
-  pop af
   ret
 L7151:
   push hl
