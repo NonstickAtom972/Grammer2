@@ -20,6 +20,7 @@
   jp GetGrammerText_DE
   jp GetGrammerStr
   jp GetKeyDebounce
+  jp SearchString
 ;Original jump table
 ;  jp ParserNext
 ;  jp ParseArg
