@@ -3,11 +3,11 @@
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.1.0
-Last Update...01 March 2012
+Version.......2.50.1.5
+Last Update...11 February 2018
 Language......English
 Programming...Assembly
-Size..........1-Page app
+Size..........2-Page app
 ```
 To follow the progress of Grammer, check out [Omnimaga](https://www.omnimaga.org/grammer/), [Cemetech](http://www.cemetech.net/forum/viewforum.php?f=71) or [GitHub](https://github.com/Zeda/Grammer2), where development is most active.
 
