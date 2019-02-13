@@ -446,9 +446,9 @@ solveSet:
   ld hl,(parsePtr)
   inc hl \ ld (parsePtr),hl
   call GetVarInfo
-  jr c,$+5
+  jr c,+_
   bcall(_DelVarArc)
-
+_:
   ld hl,(parsePtr)
   ld a,2Bh \ cp (hl)
   pop bc
@@ -465,7 +465,7 @@ solveSet:
 
 
   ld a,(OP1)
-  and 1fh
+  and $1F
   bcall(_EnoughMem)
   jp c,ErrMEM
   ex de,hl
@@ -572,8 +572,9 @@ ISToken:
   ld (parsePtr),de
 g_ReadByte:
   ld e,(hl) \ inc (hl) \ inc hl \ ld d,(hl)
-  jr nz,$+3
+  jr nz,+_
   inc (hl)
+_:
   ex de,hl
   ld c,(hl)
   ld b,0
@@ -606,8 +607,9 @@ PutHexFromDE:
   cp 3Fh
   ret z
   cp 3Ah
-  jr c,$+4
+  jr c,+_
   sub 7
+_:
   rld
   ret
 SetData:
@@ -615,13 +617,16 @@ SetData:
   ld a,(hl)
   cp 16
   jr z,CopyHex      ;[(
-  ld e,-1
   cp 6
-  jr nz,$+5         ;[[
-  inc e \ jr $+6
+  jr z,+_           ;[[
   dec hl
   ld (parsePtr),hl
+  scf
+_:
+  sbc a,a
+  ld e,a
   ld h,b \ ld l,c
+
 _:
   push hl
   push de
@@ -835,22 +840,22 @@ ParticleDrawLoop:
   ld a,b
   or a
   jr nz,PLeft
-  set 0,(iy+ParticleFlag)
+  set Xis0,(iy+ParticleFlag)
   jr PUpDown
 PLeft:
   sub 95
   jr c,PUpDown
-  set 1,(iy+ParticleFlag)
+  set Xis95,(iy+ParticleFlag)
 PUpDown:
   ld a,c
   or a
   jr nz,PDown
-  set 2,(iy+ParticleFlag)
+  set Yis0,(iy+ParticleFlag)
   jr PPPp
 PDown:
   sub 63
   jr c,PPPp
-  set 3,(iy+ParticleFlag)
+  set Yis63,(iy+ParticleFlag)
 PPPp:
   pop bc
   ld c,0
@@ -861,9 +866,9 @@ ParticleTestLoop:
   and (ix-12)
   jr nz,CheckPRight
   ld c,8
-  bit 2,(iy+ParticleFlag)
+  bit Yis0,(iy+ParticleFlag)
   jr z,$+6
-  set 4,(iy+ParticleFlag)
+  set OffScrn,(iy+ParticleFlag)
 CheckPRight:
   add hl,hl
   jr nc,CheckPLeft
@@ -881,9 +886,9 @@ CheckPRight:
   bit 4,a
   jr nz,$+4
   ld c,4
-  bit 1,(iy+ParticleFlag)
+  bit Xis95,(iy+ParticleFlag)
   jr z,$+6
-  set 4,(iy+ParticleFlag)
+  set OffScrn,(iy+ParticleFlag)
 CheckPLeft:
   add hl,hl
   jr nc,CheckPDown
@@ -901,9 +906,9 @@ CheckPLeft:
   bit 4,a
   jr nz,$+4
   ld c,2
-  bit 0,(iy+ParticleFlag)
+  bit Xis0,(iy+ParticleFlag)
   jr z,$+6
-  set 4,(iy+ParticleFlag)
+  set OffScrn,(iy+ParticleFlag)
 CheckPDown:
   add hl,hl
   jr nc,PChecked
@@ -917,9 +922,9 @@ CheckPDown:
   bit 4,a
   jr nz,$+4
   ld c,1
-  bit 3,(iy+ParticleFlag)
+  bit Yis63,(iy+ParticleFlag)
   jr z,$+6
-  set 4,(iy+ParticleFlag)
+  set OffScrn,(iy+ParticleFlag)
 PChecked:
   ld a,c
   or a
@@ -936,7 +941,7 @@ MoveP:
   cpl
   and (ix)
   ld (ix),a
-  bit 4,(iy+ParticleFlag)
+  bit OffScrn,(iy+ParticleFlag)
   jr nz,RemoveParticle
   ld a,b
   rrc c
@@ -983,7 +988,7 @@ RemoveParticle:
 ;TempWord2 contains the number of particles left in the buffer
 ;TempWord3 points to the last particle
 ;TempWord4 points to the particle size bytes
-  res 4,(iy+ParticleFlag)
+  res OffScrn,(iy+ParticleFlag)
   ld bc,(TempWord2)
   cpi
   ex de,hl
@@ -2596,7 +2601,7 @@ _:
   jr nz,g_Call
   inc hl
   ld (qmarkVar),hl
-  jr $+4
+  .db $C2   ;start of jp nz,*, basically skips the 'or 1'
 g_Call:
   or 1
   push af
@@ -2794,7 +2799,7 @@ _:
 _:
   call ParseNextFullArg
   push bc
-  set 0,(iy+ParticleFlag)
+  set Xis0,(iy+ParticleFlag)
   cp 2Bh
   jr nz,+_
   call ParseNextFullArg
@@ -2804,11 +2809,11 @@ _:
   jr z,TokenTextLoop
 PutTokenText:
 ;    HL points to the string
-  res 0,(iy+ParticleFlag)
+  res Xis0,(iy+ParticleFlag)
   ld bc,-1
 TokenTextLoop:
   ld a,(hl)
-  bit 0,(iy+ParticleFlag)
+  bit Xis0,(iy+ParticleFlag)
   jr nz,+_
   or a
   ret z
@@ -2835,8 +2840,9 @@ _:
   push hl
   ld a,(de)
   call Is_2_Byte
-  jr nz,$+3
+  jr nz,+_
   inc de
+_:
   push de
   ld hl,OP3
   call PutSM
@@ -3285,30 +3291,37 @@ CheckKey:
 ;     BC is 1 if the key is pressed, 0 if it is not
 ;     z if the key is pressed, nz if not
   cp 41 ;on-key
-  jr nz,$+7
-  call CheckStatus
-  jr +_
+  jr z,check_for_ON_key
+_:
   dec a \ and 63
   ld b,a
   and 7
-  rr b \ rr b \ rr b
+  srl b \ srl b \ srl b
   inc b \ inc a
   ld c,a
   ld a,7Fh
+_:
   rlca
-  djnz $-1
+  djnz -_
   out (1),a
   ld b,c
   ld a,7Fh
+_:
   rlca
-  djnz $-1
+  djnz -_
   ld c,a
   in a,(1)
   cp c
-_:
+CheckKey_End:
   ld c,b
   ret nz
-  ld c,1
+  inc c
+  ret
+check_for_ON_key:
+  call CheckStatus
+  ld bc,0
+  ret nz
+  inc c
   ret
 GetKeyDebounce:
   ei
