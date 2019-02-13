@@ -199,7 +199,7 @@ CommandJumpTable:
  .dw ErrBadToken      ; $BD
  .dw LnToken          ; $BE
  .dw PowerOf2         ; $BF
- .dw ErrBadToken      ; $C0
+ .dw logToken         ; $C0
  .dw ErrBadToken      ; $C1
  .dw Sin              ; $C2
  .dw ErrBadToken      ; $C3
@@ -247,7 +247,7 @@ CommandJumpTable:
  .dw Word             ; $ED
  .dw ErrBadToken      ; $EE
  .dw ErrBadToken      ; $EF
- .dw ErrBadToken      ; $F0
+ .dw PowToken         ; $F0
  .dw ErrBadToken      ; $F1
  .dw ErrBadToken      ; $F2
  .dw ErrBadToken      ; $F3

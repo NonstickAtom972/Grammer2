@@ -2043,12 +2043,6 @@ RecallPicToken:
   dec a
   jp z,BufErase+3
   ret
-RandToken:
-g_Rand:
-  call prng16
-  ld b,h
-  ld c,l
-  ret
 BBTokens:
   ld a,(hl)
   inc hl
@@ -2439,9 +2433,7 @@ BBLCM:
 LCM_BC_DE:
   push de
   call DE_Times_BC
-  pop de
-  push hl
-  ex de,hl
+  ex (sp),hl
   call GCDHL_BC
   pop hl
   call HL_Div_BC
@@ -2455,35 +2447,10 @@ BBGCD:
   push bc
   call ParseNextFullArg
   pop hl
-;===============================================================
 GCDHL_BC:
-;===============================================================
-;Inputs:
-;     hl,bc
-;Outputs:
-;     a is 0
-;     bc is the Greatest Common Divisor
-;     de is 0
-;Destroys:
-;     hl
-;===============================================================
-  or a
-  sbc hl,bc
-  ret z
-  add hl,bc
-  jr nc,$+8
-  ld a,h
-  ld h,b
-  ld b,a
-  ld a,l
-  ld l,c
-  ld c,a
-_:
-  call HL_Div_BC
-  or d \ or e \ ret z
-  ld h,b \ ld l,c
-  ld b,d \ ld c,e
-  jr -_
+  ld d,b
+  ld e,c
+#include "math/gcdHL_DE.z80"
 CircleToken:
   call ParseFullArg
   push bc
@@ -2944,30 +2911,49 @@ LineToken:
   ld a,(hl)
   cp $AE
   jp z,gfx_line
+
+
+;     A is the type of rectangle to draw
+;        0 =White
+;        1 =Black
+;        2 =XOR
+;        3 =Black border
+;        4 =White border
+;        5 =XOR border
+;        6 =Black border, white inside
+;        7 =Black border, XOR inside
+;        8 =White border, black inside
+;        9 =White border, XOR inside
+;        10=Shift Up
+;        11=Shift Down
+;     B is the height
+;     C is the Y pixel coordinate
+;     D is the width in pixels
+;     E is is the X pixel coordinate
+
+;So we get E,C,B,D,A
   call ParseFullArg
   push bc
   call ParseNextFullArg
   push bc
   call ParseNextFullArg
   pop hl
-  pop de
   ld h,c
-  push de
   push hl
   call ParseNextFullArg
-  pop hl
-  pop de
-  ld d,c
-  push de
-  push hl
-  call ParseNextFullArg
-  cp $2b
-  ld a,c
-  push af
+  push bc
+  cp 2Bh
+  ld c,1
+  call z,ParseNextFullArg
+  push bc
+  cp 2Bh
   call ParseNextFullArg_BC
-  pop af
+  pop bc    ;method in C
+  ld a,c
+  pop hl    ;L is what needs to be the D value
   pop bc
   pop de
+  ld d,l
   jp DrawRectToGraph
 gfx_line:
 ;x1,y1,x2,y2[,method[,buffer
@@ -4364,6 +4350,11 @@ SetUpData:
 #endif
 #endif
 
+;initialize the float rand routine
+  ld hl,randinit
+  ld (next_page_call_address),hl
+  call next_page_call
+
   ld hl,floatstack_bottom
   ld (floatstack_ptr),hl
   ld hl,seed2+1
@@ -5085,28 +5076,6 @@ Word:
   inc hl
   ld (parsePtr),hl
   ret
-PowerOf2:
-  call ParseFullArg
-  ld a,c
-  ld hl,0
-  ld d,h
-  ld e,h
-  cp 32
-  jr nc,Po2End
-  inc l
-  or a
-  jr z,Po2End
-  ld b,a
-_:
-  add hl,hl
-  rl e
-  rl d
-  djnz -_
-Po2End:
-  ld b,h
-  ld c,l
-  ret
-
 Base2Num:
   ld bc,0
   ld d,b
@@ -5127,8 +5096,13 @@ _:
   set FactorialFlag,(iy+InternalFlag)
   ld (parsePtr),hl
   ret
+_:
+  ld hl,lnSingle
+  jp float_stepin_1
 LnToken:
   ld a,(hl)
+  cp 3Ah
+  jr z,-_
   cp $B0
   push bc
   jr z,JumpBack

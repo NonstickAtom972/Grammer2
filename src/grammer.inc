@@ -147,7 +147,8 @@ end_of_buffer = stack_top+2       ;
 floatstack_ptr    = vars
 floatstack_bottom = vars+2
 floatstack_top    = vars+2+32     ;Give room for 8 floats. I am a generous god.
-
+seedsingle0 = floatstack_top
+seedsingle1 = seedsingle0+4
 
 PBuf          = 9872h
 ramCode       = 8100h

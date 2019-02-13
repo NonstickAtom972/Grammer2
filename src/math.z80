@@ -34,6 +34,7 @@ _:
 float_stepin_1:
   push hl     ;the call to make
   call ParseNextFullArg
+float_stepin_1_:
   push bc     ;the second argument
   call floatstackpush
   ld b,h
@@ -104,6 +105,28 @@ negateBC:
 _:
   ld hl,negSingle
   jp float_stepin_1
+logToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  call ParseNextFullArg
+  cp 2Bh
+  jr z,+_
+  ld hl,log10Single
+  push hl
+  jr float_stepin_1_
+_:
+  push bc
+  call ParseNextFullArg
+  push bc
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop de
+  ld hl,logSingle
+  ld (next_page_call_address),hl
+  pop hl
+  jp next_page_call
 Add:
   push bc
   ld a,(hl)
@@ -260,6 +283,42 @@ Divide:
 _:
   ld hl,divSingle
   jp float_stepin
+PowToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadTOken
+  push bc
+  ld hl,powSingle
+  jp float_stepin
+
+_:
+  ld hl,pow2Single
+  jp float_stepin_1
+PowerOf2:
+  ld a,(hl)
+  cp 3Ah
+  jr z,-_
+  call ParseFullArg
+  ld a,c
+  ld hl,0
+  ld d,h
+  ld e,h
+  cp 32
+  jr nc,Po2End
+  inc l
+  or a
+  jr z,Po2End
+  ld b,a
+_:
+  add hl,hl
+  rl e
+  rl d
+  djnz -_
+Po2End:
+  ld b,h
+  ld c,l
+  ret
+
 Logic:
 Equals:
   ld a,(hl)
@@ -410,3 +469,24 @@ fne:
   ret z
   inc c
   ret
+
+RandToken:
+  ld a,(hl)
+  cp 3Ah
+  jr z,+_
+  call prng16
+  ld b,h
+  ld c,l
+  ret
+_:
+  inc hl
+  ld (parsePtr),hl
+  ld hl,randSingle
+float_stepin_0:
+  push hl
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop hl
+  ld (next_page_call_address),hl
+  jp next_page_call
