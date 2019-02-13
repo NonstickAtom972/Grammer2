@@ -3,8 +3,8 @@
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.1.5
-Last Update...11 February 2018
+Version.......2.50.1.6
+Last Update...13 February 2018
 Language......English
 Programming...Assembly
 Size..........2-Page app
