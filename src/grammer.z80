@@ -297,8 +297,9 @@ ParseArg:
   ld hl,(parsePtr)
 ParseArg2:
   bit IntActiveFlag,(iy+InternalFlag)
-  jr nz,$+3
+  jr nz,+_
   ei
+_:
   ld a,(hl)
   inc hl
   ld (parsePtr),hl
@@ -307,8 +308,9 @@ ParseArg2:
   add a,a
   ld l,a
   rra
-  jr nc,$+3
+  jr nc,+_
   inc h
+_:
 #else
   ld e,a
   ld hl,CommandJumpTable
@@ -355,8 +357,9 @@ _:
   and 3
   bit 0,a
   ld bc,vFont
-  jr nz,$+5
+  jr nz,+_
   ld bc,FontSet
+_:
   rlca
   rlca \ rlca
   or (hl)
@@ -399,9 +402,10 @@ InsertData:
 ;de is the number of bytes to insert
   push de \ push hl
   ld a,h \ or l
-  jr z,$+6
+  jr z,+_
   ex de,hl
   bcall(_InsertMem)
+_:
   ld hl,(parsePtr)
   ld (parsePtr),hl
   pop hl \ pop bc
@@ -517,9 +521,10 @@ CallError:
   ld hl,13
   or a
   sbc hl,bc
-  jr nc,$+5
+  jr nc,+_
 CustomError:
   ld bc,13
+_:
   ex de,hl
   ld de,appErr1
   ldir
@@ -627,23 +632,26 @@ _:
   ld e,a
   ld h,b \ ld l,c
 
-_:
+SetData_loop:
   push hl
   push de
   call ParseNextFullArg
   pop de
   rlc e
-  jr nc,$+7
+  jr nc,+_
   dec hl
   ld a,(hl)
   cp 11
   inc hl
+_:
   ld a,(hl)
   pop hl
   ld (hl),c \ inc hl
-  jr nz,$+4
+  jr nz,+_
   ld (hl),b \ inc hl
-  cp 2Bh \ jr z,-_
+_:
+  cp 2Bh
+  jr z,SetData_loop
   ld b,h
   ld c,l
   ret
@@ -730,32 +738,38 @@ ConvRuleLoop:
   inc bc
   ld a,(bc)
   call EndOArg
-  jr nz,$+25
+  jr nz,more_rules
   cp 2Bh
-  jr z,$+17
+  jr z,more_rule_args
+_:
   ld a,h \ and $F0
-  jr nz,$+8
+  jr nz,+_
   add hl,hl
   add hl,hl
   add hl,hl
   add hl,hl
-  jr $-9
+  jr -_
+_:
   ld (PBufRule),hl
   ret
-
+more_rule_args:
   add hl,hl
   add hl,hl
   add hl,hl
   add hl,hl
+more_rules:
   cp 'U'
-  jr nz,$+4
+  jr nz,+_
   set 3,l
+_:
   cp 'R'
-  jr nz,$+4
+  jr nz,+_
   set 2,l
+_:
   cp 'L'
-  jr nz,$+4
+  jr nz,+_
   set 1,l
+_:
   cp 'D'
   jr nz,ConvRuleLoop
   set 0,l
@@ -796,11 +810,13 @@ DefaultBuffer:
   ld a,(PBufType)
   ld de,(PBufRule)
   or a
-  jr nz,$+5
+  jr nz,+_
   ld de,%0001011000000000
+_:
   dec a
-  jr nz,$+5
+  jr nz,+_
   ld de,%0001011010000000
+_:
   ld (TempWord1),de
 ;RuleSet=DE
   inc hl
@@ -867,7 +883,7 @@ ParticleTestLoop:
   jr nz,CheckPRight
   ld c,8
   bit Yis0,(iy+ParticleFlag)
-  jr z,$+6
+  jr z,CheckPRight
   set OffScrn,(iy+ParticleFlag)
 CheckPRight:
   add hl,hl
@@ -876,18 +892,20 @@ CheckPRight:
   rrca
   jr c,$+7
   and (ix)
-  jr $+5
+  jr +_
   and (ix+1)
+_:
   jr nz,CheckPLeft
   ld a,c
   or a
   jr z,$+8
   ld a,r
   bit 4,a
-  jr nz,$+4
+  jr nz,+_
   ld c,4
+_:
   bit Xis95,(iy+ParticleFlag)
-  jr z,$+6
+  jr z,CheckPLeft
   set OffScrn,(iy+ParticleFlag)
 CheckPLeft:
   add hl,hl
@@ -896,18 +914,20 @@ CheckPLeft:
   rlca
   jr c,$+7
   and (ix)
-  jr $+5
+  jr +_
   and (ix-1)
+_:
   jr nz,CheckPDown
   ld a,c
   or a
   jr z,$+8
   ld a,r
   bit 4,a
-  jr nz,$+4
+  jr nz,+_
   ld c,2
+_:
   bit Xis0,(iy+ParticleFlag)
-  jr z,$+6
+  jr z,CheckPDown
   set OffScrn,(iy+ParticleFlag)
 CheckPDown:
   add hl,hl
@@ -920,10 +940,11 @@ CheckPDown:
   jr z,$+8
   ld a,r
   bit 4,a
-  jr nz,$+4
+  jr nz,+_
   ld c,1
+_:
   bit Yis63,(iy+ParticleFlag)
-  jr z,$+6
+  jr z,PChecked
   set OffScrn,(iy+ParticleFlag)
 PChecked:
   ld a,c
@@ -945,11 +966,12 @@ MoveP:
   jr nz,RemoveParticle
   ld a,b
   rrc c
-  jr nc,$+11
+  jr nc,+_
   or (ix+12)
   ld (ix+12),a
   inc (hl)
   jr MovedP
+_:
   rrc c
   jr nc,$+23
   rlca
@@ -968,9 +990,10 @@ MoveP:
   jr nc,$+10
   or (ix+1)
   ld (ix+1),a
-  jr $+8
+  jr +_
   or (ix)
   ld (ix),a
+_:
   inc hl
   inc (hl)
   jr MovedP+1
@@ -1141,12 +1164,13 @@ OSVarToken:
   ld (OP1+2),hl
   ld (OP1+1),a
   rst rFindSym
-  jr nc,$+6
-  ld bc,0
-  ret
+  jr c,return_BC_0
   ex de,hl
   call convFloat
   ld b,d \ ld c,e
+  ret
+return_BC_0:
+  ld bc,0
   ret
 TangentToken:
   call ParseFullArg
@@ -1255,8 +1279,9 @@ ShiftRight64:
   ld hl,(TempWord1)
   ld a,l
   sub 9
-  jr nc,$+3
+  jr nc,+_
   dec h
+_:
   ld l,a
   ld a,4
   jr ShiftRight8OrMore
@@ -1264,8 +1289,9 @@ ShiftRight32:
   ld hl,(TempWord1)
   ld a,l
   sub 5
-  jr nc,$+3
+  jr nc,+_
   dec h
+_:
   ld l,a
   ld a,8
   jr ShiftRight8OrMore
@@ -1296,49 +1322,56 @@ SR8OMLoop:
   lddr
   ld bc,(TempWord2)
   xor a
+_:
   ld (de),a
   dec de
   dec hl
-  djnz $-3
+  djnz -_
   pop bc
   djnz SR8OMLoop
   ret
 ShiftRight8:
   ld hl,(TempWord1)
   ld d,64
+ShiftRight8_loop:
   xor a
   ld b,12
+_:
   ld c,(hl)
   ld (hl),a
   inc hl
   ld a,c
-  djnz $-4
+  djnz -_
   dec d
-  jr nz,$-10
+  jr nz,ShiftRight8_loop
   ret
 ShiftRight2:
   call ShiftRight1
 ShiftRight1:
   ld hl,(TempWord1)
   ld c,64
+ShiftRight1_loop:
   xor a
   ld b,12
+_:
   rr (hl)
   inc hl
-  djnz $-3
+  djnz -_
   dec c
-  jr nz,$-9
+  jr nz,ShiftRight1_loop
   ret
 ShiftRight4:
   ld hl,(TempWord1)
   ld c,64
+ShiftRight4_loop:
   xor a
   ld b,12
+_:
   rrd
   inc hl
-  djnz $-3
+  djnz -_
   dec c
-  jr nz,$-9
+  jr nz,ShiftRight4_loop
   ret
 ShiftGraphLeftA:
   rrca
@@ -1371,8 +1404,9 @@ ShiftLeft64:
   ld hl,(TempWord1)
   ld a,8
   add a,l
-  jr c,$+3
+  jr c,+_
   inc hl
+_:
   ld l,a
   ld a,4
   jr ShiftLeft8OrMore
@@ -1401,10 +1435,11 @@ SL8OMLoop:
   ldir
   ld bc,(TempWord2)
   xor a
+_:
   ld (de),a
   inc de
   inc hl
-  djnz $-3
+  djnz -_
   pop bc
   djnz SL8OMLoop
   ret
@@ -1413,15 +1448,17 @@ ShiftLeft8:
   inc h \ inc h \ inc h
   dec hl
   ld d,64
+ShiftLeft8_loop:
   xor a
   ld b,12
+_:
   ld c,(hl)
   ld (hl),a
   dec hl
   ld a,c
-  djnz $-4
+  djnz -_
   dec d
-  jr nz,$-10
+  jr nz,ShiftLeft8_loop
   ret
 ShiftLeft2:
   call ShiftLeft1
@@ -1432,26 +1469,30 @@ ShiftLeft1:
   inc h
   dec hl
   ld c,64
+ShiftLeft1_loop:
   xor a
   ld b,12
+_:
   rl (hl)
   dec hl
-  djnz $-3
+  djnz -_
   dec c
-  jr nz,$-9
+  jr nz,ShiftLeft1_loop
   ret
 ShiftLeft4:
   ld hl,(TempWord1)
   inc h \ inc h \ inc h
   dec hl
   ld c,64
+ShiftLeft4_loop:
   xor a
   ld b,12
+_:
   rld
   dec hl
-  djnz $-3
+  djnz -_
   dec c
-  jr nz,$-9
+  jr nz,ShiftLeft4_loop
   ret
 ShiftGraphDownA:
   ld e,a
@@ -1577,11 +1618,11 @@ SetSpeed:
   in a,(20h)
   ld b,a
   bit 1,c
-  jr z,$+6
+  jr z,+_
   cpl
   and 1
   ld c,a
-
+_:
   in a,(2)
   rlca
   and c
@@ -1635,17 +1676,19 @@ g_max:
   sbc hl,bc
   add hl,bc
   bit 0,a
-  jr nz,$+3
+  jr nz,+_
   ccf
+_:
   ret c
   ld b,h
   ld c,l
   ret
 factorialToken:
   ld a,(hl)
-  call IsConditional \ jr z,$+9
+  call IsConditional \ jr z,+_
   ld de,0 \ push de
   jp factorialStepIn
+_:
   set invlogic,(iy+gflags)
   ret
 FillToken:
@@ -1656,28 +1699,35 @@ FillToken:
   ld e,-1
 FillBufOR:
   or a \ jr nz,FillBufInv
+_:
   ld a,e \ or (hl) \ ld (hl),a
   cpi
-  jp pe,$-5
+  jp pe,-_
   ret
 FillBufInv:
   dec a \ jr nz,Checker1
+_:
   ld a,e \ xor (hl) \ ld (hl),a
   cpi
-  jp pe,$-5
+  jp pe,-_
   ret
 Checker1:
   dec a \ jr nz,Checker2
   ld a,$AA
+Checker:
   ld c,64
-  ld b,12 \ ld (hl),a \ inc hl
-  djnz $-2
+Checker1_loop:
+  ld b,12
+_:
+  ld (hl),a
+  inc hl
+  djnz -_
   cpl \ dec c
-  jr nz,$-8
+  jr nz,Checker1_loop
   ret
 Checker2:
   dec a \ jr nz,LoadBytePatternOR
-  ld a,55h \ jr Checker1+5
+  ld a,55h \ jr Checker
 LoadBytePatternOR:
   cp 22 \ jr nc,NotArg
   push af \ push bc \ push hl
@@ -1751,36 +1801,40 @@ CopyDown:
   pop hl
 CopyDownOR:
   dec a \ jr nz,CopyDownAND
+_:
   ld a,(de)
   or (hl)
   ld (hl),a
   dec de \ cpd
-  jp pe,$-6
+  jp pe,-_
   ret
 CopyDownAND:
   dec a \ jr nz,CopyDownXOR
+_:
   ld a,(de)
   and (hl)
   ld (hl),a
   dec de \ cpd
-  jp pe,$-6
+  jp pe,-_
   ret
 CopyDownXOR:
   dec a \ jr nz,CopyDownErase
+_:
   ld a,(de)
   xor (hl)
   ld (hl),a
   dec de \ cpd
-  jp pe,$-6
+  jp pe,-_
   ret
 CopyDownErase:
   dec a \ jr nz,CopyUp
+_:
   ld a,(de)
   cpl
   and (hl)
   ld (hl),a
   dec de \ cpd
-  jp pe,$-7
+  jp pe,-_
   ret
 CopyUp:
 ;If Copy Up
@@ -1803,27 +1857,30 @@ CopyUp:
   ex de,hl
 CopyUpOR:
   dec a \ jr nz,CopyUpAND
+_:
   ld a,(de)
   or (hl)
   ld (hl),a
   inc de \ cpi
-  jp pe,$-6
+  jp pe,-_
   ret
 CopyUpAND:
   dec a \ jr nz,CopyUpXOR
+_:
   ld a,(de)
   and (hl)
   ld (hl),a
   inc de \ cpi
-  jp pe,$-6
+  jp pe,-_
   ret
 CopyUpXOR:
   dec a \ jr nz,CopyUpErase
+_:
   ld a,(de)
   xor (hl)
   ld (hl),a
   inc de \ cpi
-  jp pe,$-6
+  jp pe,-_
   ret
 CopyUpErase:
 #ifdef include_fire
@@ -1831,12 +1888,13 @@ CopyUpErase:
 #else
   dec a \ ret nz
 #endif
+_:
   ld a,(de)
   cpl
   and (hl)
   ld (hl),a
   inc de \ cpi
-  jp pe,$-7
+  jp pe,-_
   ret
 _:
 #ifdef include_fire
@@ -1878,14 +1936,14 @@ HorizontalToken:
 SetSmallMem:
   ld (hl),a
   inc hl
-  djnz $-2
+  djnz SetSmallMem
   ret
 InvertMem:
   ld a,(hl)
   cpl
   ld (hl),a
   inc hl
-  djnz $-4
+  djnz InvertMem
   ret
 VerticalToken:
   call ParseFullArg
@@ -1895,9 +1953,10 @@ VerticalToken:
   and 7
   ld b,a
   ld a,80h
-  jr nz,$+5
+  jr nz,+_
   rrca
   djnz $-1
+_:
   srl c \ srl c \ srl c
   push af
   push bc
@@ -1926,36 +1985,40 @@ VerticalToken:
   ld de,12
 DrawVertOn:
   dec a \ jr nz,DrawVertInv
+_:
   ld a,c
   or (hl)
   ld (hl),a
   add hl,de
-  djnz $-4
+  djnz -_
   ret
 DrawVertInv:
   dec a \ jr nz,DrawVertOff
+_:
   ld a,c
   xor (hl)
   ld (hl),a
   add hl,de
-  djnz $-4
+  djnz -_
   ret
 DrawVertOff:
   ld a,c
   cpl
   ld c,a
+_:
   ld a,c
   and (hl)
   ld (hl),a
   add hl,de
-  djnz $-4
+  djnz -_
   ret
 ShadeToken:
   call ParseFullArg
   ld a,c
   add a,$D9
-  jr nc,$+3
+  jr nc,+_
   xor a
+_:
   dec a
   out (16),a
   ret
@@ -1973,8 +2036,9 @@ StorePicToken:
   xor a
   ld (OP1+3),a
   rst rFindSym
-  jr c,$+5
+  jr c,+_
   bcall(_DelVarArc)
+_:
   ld hl,768
   ld a,7
   bcall(_CreateVar)   ;_CreatePict only stores 756 bytes.
@@ -2022,8 +2086,9 @@ RecallPicToken:
   ld a,b
   inc bc
   sub 3
-  jr c,$+5
+  jr c,+_
   ld bc,768
+_:
   pop af
   ld de,saveSScreen
   push bc
@@ -2052,24 +2117,26 @@ BBTokens:
   ld a,(hl)
   inc hl
   cp $64    ;the G-T token
-  jr nz,+_
+  jr nz,lowercasetokens
   ld a,(hl)
   ld bc,9340h
   cp $AE
-  jr nz,$+6
+  jr nz,+_
   inc hl
   ld bc,9872h
+_:
   ld (parsePtr),hl
   ret
-_:
+lowercasetokens:
   ld (parsePtr),hl
   cp $B0
   jr c,length
   cp $CB
   jr nc,length
   cp $BB
-  jr c,$+3
+  jr c,+_
   dec a
+_:
   sub $AC
   add a,a
   inc a
@@ -2278,8 +2345,9 @@ DelGoodSize:
   pop de
   push hl
   ld a,d \ or e
-  jr z,$+5
+  jr z,+_
   bcall(_DelMem)
+_:
   ld hl,(parsePtr)
 ;  ld (parsePtr),hl   ;seems redundant, I probably messed up when I was cleaning the code.
   pop bc
@@ -2350,15 +2418,17 @@ StartASMProg:
   bcall(_InsertMem)
   pop de \ pop bc \ pop hl
   ld a,(TempWord3) \ or a
-  jr nz,$+3
+  jr nz,+_
   add hl,bc
+_:
   push bc
   call ReadArc
   pop de
-  jr CallProg-7
+  jr +_
 CheckUnsquishedHex:
   cp 6Ch \ jr nz,NotASMHeader
   jr NotASMHeader
+_:
   ld hl,(parsePtr)
   add hl,de
   ld (parsePtr),hl
@@ -2488,18 +2558,18 @@ PauseToken:
   push bc
   jr nz,NotBASICPause
   ld h,9
-
+_:
   ld bc,1
   call g_Pause
   ld a,h
   call CheckKey
-  jr z,$-10
-
+  jr z,-_
+_:
   ld bc,1
   call g_Pause
   ld a,h
   call CheckKey
-  jr nz,$-10
+  jr nz,-_
 
   pop bc
   ret
@@ -2718,22 +2788,24 @@ DispNumBase32:
 ;
   ld b,32
   xor a
-_:
+DispNumBase32_loop:
   add hl,hl
   rl e \ rl d
   rla
   cp c
-  jr c,$+4
+  jr c,+_
   inc l
   sub c
-  djnz -_
+_:
+  djnz DispNumBase32_loop
   push bc
   push de
   push hl
   add a,30h
   cp 3Ah
-  jr c,$+4
+  jr c,+_
   add a,7
+_:
   ld hl,(TempWord1)
   dec l
   ld (TempWord1),hl
@@ -3073,10 +3145,7 @@ GetToken:
   ld (de),a
   bcall(_ChkFindSym)
 VarTokenStepIn:
-  jr nc,+_
-  ld bc,0
-  ret
-_:
+  jp c,return_BC_0
   inc de
   inc de
   ld c,a
@@ -3545,12 +3614,13 @@ _:
   xor a
   ld (OP1+3),a
   ld (OP1+1),bc \ rst rFindSym
-  jr c,$+5
+  jr c,+_
 ;HL = pointer to the variable's Symbol Table entry
 ;DE = pointer to the variable's data structure
 ;B  = 0 for Ram, or Flashpage
 ;OP1=.db StrngObj,tVarStrng,tStr1,0,0; not all n�tig
   bcall(_DelVarArc)
+_:
   pop hl  ;length
   push hl
   bcall(_CreateStrng)
@@ -3929,8 +3999,9 @@ VarPointer:
   add a,l
   ld l,a
 #if (pvars+54)&255>=204
-  jr nc,$+3
+  jr nc,+_
   inc h
+_:
 #endif
   inc de
   scf
@@ -3957,8 +4028,9 @@ _:
   add a,pvars&255
   ld e,a
 #if pvars&255>=202
-  jr nc,$+3
+  jr nc,+_
   inc d
+_:
 #endif
   ex de,hl
   scf
@@ -4118,8 +4190,9 @@ Div16Loop:
   rl d
   adc hl,hl
   sbc hl,bc
-  jr nc,$+3
+  jr nc,+_
   add hl,bc
+_:
   dec e
   jr nz,Div16Loop
   rla
@@ -4159,17 +4232,18 @@ sqrtHL_page0:
 	ld	h,d
 	ld	b,8
 	or	a
-_:
+sqrtHL_loop:
 	sbc	hl,de
-	jr	nc,$+3
+	jr	nc,+_
 	add	hl,de
+_:
 	ccf
 	rl	d
 	rla
 	adc	hl,hl
 	rla
 	adc	hl,hl
-	djnz	-_
+	djnz	sqrtHL_loop
   ld e,h
   ld l,d
   ld h,b
@@ -4424,20 +4498,21 @@ TokenSet:
 isStartMenu_valid:
   ld a,(OP1+1)
   cp $23
-  jr z,+_
+  jr z,StartMenu_invalid
   cp $21
-  jr z,+_
+  jr z,StartMenu_invalid
   ld hl,(VATPtr)
   ld a,(hl)
   cp 1        ;don't want lists
-  jr nz,$+4
-_:
+  jr nz,+_
+StartMenu_invalid:
   or a
   ret
+_:
   cp 13       ;don't want complex lists
-  jr z,-_
+  jr z,StartMenu_invalid
   cp 17h      ;don't want GroupVars
-  jr z,-_
+  jr z,StartMenu_invalid
 
   bit 6,(iy+UserFlags)     ;must be AppV
   jr z,+_
@@ -4544,10 +4619,7 @@ FindGVarData:
 GrammerHook:
   .db 83h
   or a
-  jr z,$+4
-exithook3:
-  cp a
-  ret
+  jr nz,exithook3
   di
   push hl
   push de
@@ -4556,13 +4628,16 @@ exithook3:
   ld de,(progstart)
   ld a,(de)
   cp $5F      ;make sure it is the prgm Token. I just realized that in older versions, you could have any 1-byte token instead of the prgm token!
-  jr z,$+8
-_:
+  jr z,+_
+exithook1:
   pop af
   pop bc
   pop de
   pop hl
-  jr exithook3
+exithook3:
+  cp a
+  ret
+_:
   ld hl,(progend)
   sbc hl,de
   inc de
@@ -4570,14 +4645,16 @@ _:
   ld c,l
   ld a,h
   or a
-  jr z,$+5
+  jr z,+_
   ld bc,8
+_:
   ld a,c
   or a
-  jr z,-_
+  jr z,exithook1
   cp 9
-  jr c,$+4
+  jr c,+_
   ld c,8
+_:
   ex de,hl
   ld de,OP1
   ld a,5
@@ -4617,9 +4694,9 @@ _:
 HomeRunASM:
 
   ld hl,(TempWord5) \ ld bc,(TempWord4)
-  jr nz,$+6
-;===============================================================
+  jr nz,+_
   inc hl \ inc hl \ dec bc \ dec bc
+_:
   inc hl \ inc hl \ dec bc \ dec bc
   ld de,9D94h
   or a \ sbc hl,de
@@ -4662,8 +4739,9 @@ EndHook:
   cp (hl)
   jr nz,HookEnd
   inc hl \ ld a,(hl) \ cp $C9
-  jr c,$+3
+  jr c,+_
   add hl,bc
+_:
   push hl \ push bc
   ld h,b \ ld l,c
   bcall(_EnoughMem)
@@ -5199,12 +5277,22 @@ _:
 cmdJmp:
 #if (CommandJumpTable&255)=0
   ld h,CommandJumpTable>>8
-  add a,a \ jr nc,$+3 \ inc h
+  add a,a
+  jr nc,+_
+  inc h
+_:
   ld l,a
 #else
   ld hl,CommandJumpTable
-  add a,a \ jr nc,$+3 \ inc h
-  add a,l \ ld l,a \ jr nc,$+3 \ inc h
+  add a,a
+  jr nc,+_
+  inc h
+_:
+  add a,l
+  ld l,a
+  jr nc,+_
+  inc h
+_:
 #endif
   ld a,(hl)
   inc hl
