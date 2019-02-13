@@ -1953,10 +1953,11 @@ VerticalToken:
   and 7
   ld b,a
   ld a,80h
-  jr nz,+_
-  rrca
-  djnz $-1
+  jr nz,skip_vert_mask
 _:
+  rrca
+  djnz -_
+skip_vert_mask:
   srl c \ srl c \ srl c
   push af
   push bc
