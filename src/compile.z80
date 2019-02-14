@@ -148,12 +148,14 @@ _:
   inc hl
   ld (hl),d
   inc hl
-
+  ld d,h
+  ld e,l
   ret
 compile_number:
 ;If it is an int, we need to replace with a uint8, uint16
 ;If it is a float, we need to move it to the data section and replace with a relative pointer
   inc hl
+  inc de
   ret
 enoughmem:
 ;Returns nc if there are at least BC bytes available. Preserves registers.
