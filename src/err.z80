@@ -42,8 +42,9 @@ GramHandl:
   add a,l
   ld l,a
 #if (errmap&255)>251
-  jr nc,$+3
+  jr nc,+_
   inc h
+_:
 #endif
   ld a,(hl)
   .db $28  ;start of jr z,*. Since errmap>0x00FF, z flag never set
@@ -75,6 +76,10 @@ _:
 errmap:
   .db 6,14,43,36,43
 
+
+
+;The following are errors thrown outside of parsing.
+;Ex., during compiling, or loading a source file from archive
 
 err_LowMem:
 ;Need to actually show to the user

@@ -57,7 +57,8 @@ FPS             = 9824h
 OPS             = 9828h
 #define rMov9ToOP1    20h
 #define rFindSym    10h
-moduleExec = 86ECh
+moduleExec      = 86ECh
+tok_NegRelPtr   = $EE
 
 
 ;===============================================================
@@ -140,9 +141,12 @@ vars        = module4+2           ;used while compiling
 vars_count  = vars+2              ;
 size_of_buffer = vars_count+2     ;
 start_of_prog = size_of_buffer+2  ;
-end_of_prog = start_of_prog+2     ;
-stack_top   = end_of_prog+2       ;
-end_of_buffer = stack_top+2       ;
+end_of_src  = start_of_prog+2     ;
+data_top    = end_of_src+2        ;
+end_of_buffer = data_top+2        ;
+buffer_top  = end_of_buffer+2
+in_head     = buffer_top+2
+out_head    = in_head+2
 
 floatstack_ptr    = vars
 floatstack_bottom = vars+2

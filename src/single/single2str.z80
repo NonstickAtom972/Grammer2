@@ -1,6 +1,3 @@
-#ifndef inc_pushpop
-#include "pushpop.z80"
-#endif
 #define fpOP1 scrap+9
 #define fpOP2 scrap+13
 #define exp   scrap+17

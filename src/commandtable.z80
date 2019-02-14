@@ -1,3 +1,9 @@
+#ifdef ALIGN_COMMAND_TABLE
+#if $&255>0
+.echo 256-($&255)," bytes before the commandtable"
+.fill 256-($&255),255
+#endif
+#endif
 CommandJumpTable:
  .dw ErrBadToken      ; $00
  .dw module           ; $01 ;>DMS
@@ -245,7 +251,7 @@ CommandJumpTable:
  .dw ExecLine         ; $EB
  .dw Byte             ; $EC
  .dw Word             ; $ED
- .dw ErrBadToken      ; $EE
+ .dw NegRelPtr        ; $EE
  .dw ErrBadToken      ; $EF
  .dw PowToken         ; $F0
  .dw ErrBadToken      ; $F1
