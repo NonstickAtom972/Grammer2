@@ -3620,7 +3620,7 @@ _:
   ld (next_page_call_address),hl
   pop hl
   call next_page_call
-  ld hl,(scrap+30)
+  ld hl,(ptr_sto)
   ld (parsePtr),hl
   ret
 ;===============================================================

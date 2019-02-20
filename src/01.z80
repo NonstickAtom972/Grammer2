@@ -50,6 +50,7 @@
 #include "single/lnSingle.z80"
 #include "single/log10Single.z80"
 #include "single/str2single.z80"
+#include "single/routines/ascii_to_uint8.z80"
 #include "single/constants.z80"
 #include "single/singleTo_int16.z80"
 #include "isort.z80"

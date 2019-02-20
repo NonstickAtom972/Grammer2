@@ -8,13 +8,16 @@
 #define char_ENG  $3B
 #define char_DEC  $3A
 #endif
+#define ptr_sto scrap+9
 str2single:
 ;;#Routines/Single Precision
 ;;Inputs:
 ;;  HL points to the string
 ;;  BC points to where the float is output
+;;Output:
+;;  scrap+9 is the pointer to the end of the string
 ;;Destroys:
-;;  9 bytes at scrap ?
+;;  11 bytes at scrap ?
   call pushpop
   push bc
 ;Check if there is a negative sign.
@@ -72,7 +75,7 @@ _:
   cp char_ENG
   call z,str_eng_exp
 ;Gotta multiply the number at (scrap) by 2^24
-  ld (scrap+30),hl     ;Saving so that Grammer knows where the string ended
+  ld (ptr_sto),hl
   ld d,100
   call scrap_times_256
   ld a,c
@@ -216,73 +219,6 @@ scrap_times_sub:
   ld (hl),a
   inc hl
   ccf
-  ret
-ascii_to_uint8:
-;c flag means don't increment the exponent
-  ld c,0
-  ld a,(hl)
-  jr c,ascii_to_uint8_noexp
-  cp char_DEC
-  jr nz,+_
-  inc hl
-  ld (hl),a
-  jr ascii_to_uint8_noexp
-_:
-  inc b
-  sub 3Ah
-  add a,10
-  jr nc,+_
-  ld c,a
-  add a,a
-  add a,a
-  add a,c
-  add a,a
-  ld c,a
-  inc hl
-_:
-  ld a,(hl)
-  cp char_DEC
-  jr nz,+_
-  inc hl
-  jr ascii_to_uint8_noexp_2nd
-_:
-  inc b
-  sub 3Ah
-  add a,10
-  jr nc,+_
-  add a,c
-  inc hl
-  .db $FE   ;start of `cp **`, saves 1cc
-_:
-  ld a,c
-  ld (de),a
-  dec de
-  or a
-  ret
-ascii_to_uint8_noexp:
-  sub 3Ah
-  add a,10
-  jr nc,ascii_to_uint8_noexp_end
-  ld c,a
-  add a,a
-  add a,a
-  add a,c
-  add a,a
-  ld c,a
-  inc hl
-ascii_to_uint8_noexp_2nd:
-  ld a,(hl)
-  sub 3Ah
-  add a,10
-  jr nc,ascii_to_uint8_noexp_end
-  add a,c
-  inc hl
-  .db $FE   ;start of `cp **`, saves 1cc
-ascii_to_uint8_noexp_end:
-  ld a,c
-  ld (de),a
-  dec de
-  scf
   ret
 eng_overflow:
   pop af
