@@ -3,11 +3,8 @@ ascii_to_uint8:
   ld c,0
   ld a,(hl)
   jr c,ascii_to_uint8_noexp
-  cp char_DEC
-  jr nz,+_
-  inc hl
-  ld a,(hl)
-  jr ascii_to_uint8_noexp
+  cp '.'
+  jr z,ascii_to_uint8_noexp-2
 _:
   sub 3Ah
   add a,10
@@ -22,7 +19,7 @@ _:
   inc hl
 _:
   ld a,(hl)
-  cp char_DEC
+  cp '.'
   jr nz,+_
   inc hl
   jr ascii_to_uint8_noexp_2nd
@@ -37,6 +34,9 @@ _:
   dec de
   or a
   ret
+
+  inc hl
+  ld a,(hl)
 ascii_to_uint8_noexp:
   sub 3Ah
   add a,10
