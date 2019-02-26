@@ -36,7 +36,8 @@ str2single:
 ;Set exponent to 0
   ld b,0
 ;Check if the next char is char_DEC
-  cp char_DEC
+  sub char_DEC
+  or a
   jr nz,+_
   .db $FE   ;start of cp *
 ;Get rid of zeroes
@@ -72,7 +73,7 @@ _:
   jr -_
 ;Now check for engineering `E` to modify the exponent
 _:
-  cp char_ENG
+  cp char_NEG
   call z,str_eng_exp
 ;Gotta multiply the number at (scrap) by 2^24
   ld (ptr_sto),hl
