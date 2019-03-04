@@ -42,7 +42,7 @@
 .db $80,$0F, 0,0,0,0
 .db $80,$12, $01,$04    ;signing key ID
 .db $80,$47, "Grammer" ;change the $47 according to name len.
-.db $80,$81, 1          ;num pages
+.db $80,$81, 2          ;num pages
 .db $80,$90             ;no splash
 .db $03,$22,$09,$00     ;date stamp
 .db $02,$00             ;date stamp signature
