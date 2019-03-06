@@ -1,5 +1,4 @@
 main:
-  call SetUpData
   call StartMenu
   xor a
   ld (kbdScanCode),a
