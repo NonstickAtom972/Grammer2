@@ -1,0 +1,66 @@
+SetUpData:
+  bcall(_RunIndicOff)
+  call setupRAMdata
+#ifndef include_TSA
+  ld hl,ReadArcData
+  ld de,TSA
+;mov 70 bytes
+  call mov14
+  call mov14
+  call mov14
+  call mov14
+  call mov14
+  in a,(6)
+  ld (page_restore),a
+  ld (bincomparepagerestore),a
+#ifdef include_interrupt
+  dec a
+  ld (interrupt_page),a
+#endif
+#endif
+
+;initialize the float rand routine
+  ld hl,randinit
+  ld (next_page_call_address),hl
+  call next_page_call
+
+  ld hl,floatstack_bottom
+  ld (floatstack_ptr),hl
+  ld hl,seed2+1
+  set 6,(hl)
+  dec l
+  dec l
+  ld a,r \ xor (hl) \ ld (hl),a
+  ld hl,plotSScreen
+  ld (BufPtr),hl
+  ld (GrayBufPtr),hl
+  ld hl,PBuf
+  ld (PBufPtr),hl
+  ld hl,766
+  ld (PBuf),hl
+  ld a,3
+  ld (OutputLogic),a
+  ld (TextPauseTime),a
+  ld hl,FontSet
+  ld (FontPointer),hl
+  xor a
+  ld (module_count),a
+  ld h,a
+  ld l,a
+  ld (flags+33),a
+  ld (flags+34),hl
+  ld (IntLoc),hl
+  ld (PBufType),hl
+  ld (GrayRotate),hl
+  ld hl,5555h
+  ld (GrayMask),hl
+  pop hl
+  ld (SPSave),sp
+  jp (hl)
+setupRAMdata:
+;not speed critical
+  ld de,8100h
+  ld hl,RAMCodeStart
+  ld bc,RAMCodeEnd-RAMCodeStart
+  ldir
+  ret

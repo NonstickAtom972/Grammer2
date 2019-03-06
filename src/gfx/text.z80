@@ -177,3 +177,104 @@ _:
   ld b,a
   djnz PutRight
   ret
+OmniCalcFont:
+;Inputs:
+;    B is the char to draw
+  ld l,b
+  ld h,0
+  ld b,h
+  ld c,l
+  add hl,hl
+  add hl,bc
+  add hl,hl
+  add hl,bc
+  ld bc,(FontPointer)
+  add hl,bc
+  ld de,OP1
+  ld b,7
+_:
+  ld a,(hl)
+  rlca
+  rlca
+  rlca
+  ld (de),a
+  inc e
+  inc hl
+  djnz -_
+  ld de,OP1
+  ld hl,0706h
+  jr VputSCStepIn
+VPutSC:
+;Inputs:
+;    B is the char to draw
+  ld a,b
+  cp 20h
+  ld hl,(FontPointer)
+  ld c,b
+  ld b,0
+  add hl,bc
+  add hl,bc
+  add hl,bc ;*3
+  ld de,OP1
+  ld b,3  ;3*2 Nibbles
+_:
+  ld a,(hl)
+  and $F0
+  ld (de),a
+  inc e
+  ld a,(hl)
+  rrca \ rrca
+  rrca \ rrca
+  and $F0
+  ld (de),a
+  inc e
+  inc hl
+  djnz -_
+  ld de,OP1
+  ld hl,0604h
+  jr VputSCStepIn
+VPutC:
+;Inputs:
+;    B is the char to draw
+  ld hl,(FontPointer)
+  ld de,255
+_:
+  inc e
+  add hl,de
+  ld a,(hl)
+  ;a is w,h in nibbles
+  and 15 ;height
+  inc a  ;1..16 is enough
+  ld e,a
+  djnz -_
+  ld d,e  ;height->d
+  ld e,(hl) ;now width
+  srl e \ srl e
+  srl e \ srl e ;->low nibble, width 0..9
+  inc hl
+  ex de,hl
+VputSCStepIn:
+  push hl
+  ld bc,(TextRow)
+  ld a,b \ add a,l
+  cp 97
+  jr c,+_
+  ld a,c
+  add a,h \ ld c,a
+  ld a,l \ ld b,0
+_:
+  ld l,a
+  ld a,c
+  cp 58
+  jr c,+_
+  xor a
+  ld c,a
+_:
+  ld h,l
+  ld l,a
+  ld (TextRow),hl
+;  ld hl,(BufPtr)
+;  ld (gbuf_temp),hl
+  pop hl
+  ld a,(OutputLogic)
+  jp sprite

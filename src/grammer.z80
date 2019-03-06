@@ -31,7 +31,7 @@
 ;"Rect(" is sometimes Line(
 #define K_DELAY_DEFAULT 13
 #define K_DELAY_ACCEL 3
-#define ALIGN_COMMAND_TABLE
+#define ALIGN_COMMAND_TABLE      ;Comment this to potentially save some bytes, uncomment to save some clock cycles
 #define include_fire
 #define include_ncr
 ;#define include_LoadTSA
@@ -141,6 +141,7 @@ grazh:
   call progmeta
   ld hl,BreakProgram
   push hl
+  scf \ jr c,$
 ParserNext:
   bit IntActiveFlag,(iy+InternalFlag)
   call z,parser_interrupt
@@ -154,21 +155,18 @@ ParseArg:
   ld (gbuf_temp),hl
   ld hl,(parsePtr)
 ParseArg2:
-;  bit IntActiveFlag,(iy+InternalFlag)
-;  jr nz,+_
   ei
-_:
   ld a,(hl)
   inc hl
   ld (parsePtr),hl
-#if (CommandJumpTable&255)==0
+#ifdef ALIGN_COMMAND_TABLE
   ld h,CommandJumpTable>>8
   add a,a
   ld l,a
-  rra
   jr nc,+_
   inc h
 _:
+  rra
 #else
   ld e,a
   ld hl,CommandJumpTable
@@ -262,7 +260,6 @@ _:
   pop hl \ pop bc
   ld d,h \ ld e,l
   jp ZeroMem
-#include "commandtable.z80"
 
 PtChange:
   call ParseFullArg       ;To get the tilemap routine correct
@@ -292,6 +289,7 @@ PtChange:
   ld hl,(TempWord5)
   ld (BufPtr),hl
   ret
+
 solveSet:
   ld a,(hl) \ inc hl \ ld (parsePtr),hl
   sub 30h \ ld b,a
@@ -425,6 +423,7 @@ ReadRAM:
   ldir
 EndSolveSet:
   ret
+
 ISToken:
   ld a,(hl) \ inc hl
   call VarP
@@ -521,6 +520,7 @@ VarName:
    xor a \ ld (OP1+3),a    ;I don't think this is necessary
    rst rFindSym
    jp VarTokenStepIn
+#include "commandtable.z80"
 FuncToken:
   call ParseFullArg
   ld (IntLoc),bc
@@ -541,7 +541,7 @@ SendToken:
   push bc
   call ParseNextFullArg
   pop de
-  jp SendByte
+#include "subroutines/sendbyte.z80"
 NotSendByte:
   call ParseFullArg
   push bc               ;Size of the var
@@ -3864,72 +3864,6 @@ IsConditional:
   cp $CE \ ret z      ;if
   cp $D1 \ ret z      ;while
   cp $D2 \ ret        ;repeat
-SetUpData:
-  bcall(_RunIndicOff)
-  call setupRAMdata
-#ifndef include_TSA
-  ld hl,ReadArcData
-  ld de,TSA
-;mov 70 bytes
-  call mov14
-  call mov14
-  call mov14
-  call mov14
-  call mov14
-  in a,(6)
-  ld (page_restore),a
-  ld (bincomparepagerestore),a
-#ifdef include_interrupt
-  dec a
-  ld (interrupt_page),a
-#endif
-#endif
-
-;initialize the float rand routine
-  ld hl,randinit
-  ld (next_page_call_address),hl
-  call next_page_call
-
-  ld hl,floatstack_bottom
-  ld (floatstack_ptr),hl
-  ld hl,seed2+1
-  set 6,(hl)
-  dec l
-  dec l
-  ld a,r \ xor (hl) \ ld (hl),a
-  ld hl,plotSScreen
-  ld (BufPtr),hl
-  ld (GrayBufPtr),hl
-  ld hl,PBuf
-  ld (PBufPtr),hl
-  ld hl,766
-  ld (PBuf),hl
-  ld a,3
-  ld (OutputLogic),a
-  ld (TextPauseTime),a
-  ld hl,FontSet
-  ld (FontPointer),hl
-  xor a
-  ld (module_count),a
-  ld h,a
-  ld l,a
-  ld (flags+33),hl
-  ld (flags+34),hl
-  ld (IntLoc),hl
-  ld (PBufType),hl
-  ld (GrayRotate),hl
-  ld hl,5555h
-  ld (GrayMask),hl
-  pop hl
-  ld (SPSave),sp
-  jp (hl)
-setupRAMdata:
-;not speed critical
-  ld de,8100h
-  ld hl,RAMCodeStart
-  ld bc,RAMCodeEnd-RAMCodeStart
-  ldir
-  ret
 EraseParticle:
   ld c,(hl)
   inc hl
@@ -3939,10 +3873,6 @@ EraseParticle:
   call GetPixelLoc
   pop bc
   ret
-TokenSet:
-#ifdef include_LoadTSA
-#include "cmd/loadtsa.z80"
-#endif
 isStartMenu_valid:
   ld a,(OP1+1)
   cp $23
@@ -4034,15 +3964,7 @@ asm_header_only:
   inc hl \ ld a,(hl) \ cp $55 \ ret nz
   inc hl \ ld a,(hl) \ cp $C9
   ret
-CompatCall:
-  call setupRAMdata
-IsOP1GrammerProg:
-  ld (iy+UserFlags),8
-  bcall(_ChkFindSym)
-  ld (VATPtr),hl
-  jp nc,isStartMenu_valid
-  or 1
-  ret
+
 #ifdef include_LoadTSA
 ReadArc:
   call LoadReadArc
@@ -4064,174 +3986,6 @@ FindGVarData:
   ld hl,3
   bcall(_CreateAppVar)
   ret
-GrammerHook:
-  .db 83h
-  or a
-  jr nz,exithook3
-  di
-  push hl
-  push de
-  push bc
-  push af
-  ld de,(progstart)
-  ld a,(de)
-  cp $5F      ;make sure it is the prgm Token. I just realized that in older versions, you could have any 1-byte token instead of the prgm token!
-  jr z,+_
-exithook1:
-  pop af
-  pop bc
-  pop de
-  pop hl
-exithook3:
-  cp a
-  ret
-_:
-  ld hl,(progend)
-  sbc hl,de
-  inc de
-  ld b,h
-  ld c,l
-  ld a,h
-  or a
-  jr z,+_
-  ld bc,8
-_:
-  ld a,c
-  or a
-  jr z,exithook1
-  cp 9
-  jr c,+_
-  ld c,8
-_:
-  ex de,hl
-  ld de,OP1
-  ld a,5
-  ld (de),a
-  inc de
-  ldir
-  xor a
-  ld (de),a
-  call SetUpData
-  call IsOP1GrammerProg
-  jr nz,+_
-;  ld hl,OP1
-;  ld de,OP5
-;  call mov9
-  bcall(_OP1ToOP5)
-  pop af
-  pop bc
-  pop de
-  pop hl
-  call SelectedProg
-  or 1
-  ret
-_:
-  ld hl,cmdShadow+2             ;location of header
-; ION =BB6DC918
-; MOS =BB6DC901
-; DCS7=BB6DAAC9
-; Gram=BB6D55C9
-  ld a,(hl) \ cp $BB \ jp nz,HookEnd
-  inc hl \ ld a,(hl) \ cp $6D \ jp nz,HookEnd
-  inc hl \ ld a,(hl) \ cp $C9 \ jp z,MOSIONErr
-  ld c,a
-  inc hl \ ld a,(hl) \ cp $C9 \ jp nz,HookEnd
-  ld a,c \ cp $AA \ jp z,DCSErr
-#ifdef SHELL_BROKEN
-  jp GramErr
-#endif
-HomeRunASM:
-
-  ld hl,(TempWord5) \ ld bc,(TempWord4)
-  jr nz,+_
-  inc hl \ inc hl \ dec bc \ dec bc
-_:
-  inc hl \ inc hl \ dec bc \ dec bc
-  ld de,9D94h
-  or a \ sbc hl,de
-  add hl,de
-  ld de,OP1
-  jr nz,+_
-  pop hl \ pop hl \ pop hl \ pop hl
-  xor a
-  ret
-_:
-  ldir
-  xor a
-  ld (de),a
-  ld a,5
-  ld (OP1),a
-  call SetUpData+3
-  call IsOP1GrammerProg
-  jr nz,EndHook
-
-;  ld hl,OP1
-;  ld de,OP5
-;  call mov9
-  bcall(_OP1ToOP5)
-  pop af
-  pop bc
-  pop de
-  pop hl
-  call SelectedProg
-  or 1
-  ret
-EndHook_prepush:
-  push af
-  push af
-  push af
-  push af
-EndHook:
-  ld hl,cmdShadow+2             ;location of header
-; ION =BB6DC918
-; MOS =BB6DC901
-; DCS7=BB6DAAC9
-; Gram=BB6D55C9
-  ld a,(hl) \ cp $BB \ jr nz,HookEnd
-  inc hl \ ld a,(hl) \ cp $6D \ jr nz,HookEnd
-  inc hl \ ld a,(hl) \ cp $C9
-  jr z,HookEnd
-  ld a,55h
-  cp (hl)
-  jr nz,HookEnd
-  inc hl \ ld a,(hl) \ cp $C9
-  jr c,+_
-  add hl,bc
-_:
-  push hl \ push bc
-  ld h,b \ ld l,c
-  bcall(_EnoughMem)
-  jp c,ErrMEM
-  ex de,hl
-;HL # bytes
-;DE addr
-  ld de,9D95h ;start VarRAM
-  push de
-  bcall(_InsertMem)
-  pop de \ pop bc \ pop hl
-  ld a,(TempWord3)
-  push de \ push bc
-  call ReadArc
-  ld hl,0
-  add hl,sp
-  ld (SPSave),hl
-  call 9D95h ;start VarRAM
-  pop de \ pop hl
-;Delmem: HL address
-;        DE # of bytes
-  bcall(_DelMem)
-;===============================================================
-  or 1
-;HookEnd-6 Label ------ !!!!
-  pop hl
-  ld a,h
-  pop bc
-  pop de
-  pop hl
-  ret
-HookEnd:
-  xor a
-  jr HookEnd-6
 GetVarName:
   call ParseFullArg
   ld h,b
@@ -4308,238 +4062,6 @@ _:
   ld bc,(OP2)
   pop de
   or a
-  ret
-;=====================================================
-TileMap1:
-;=====================================================
-;Inputs:
-;     DE=MapLoc
-;     BC=TileLoc
-;     HL=MapWidth
-;     A=TileLogic
-;     (TempWord2)=Map X
-;     (TempWord3)=Map Y
-;=====================================================
-  and 7
-  ld (TempWord1),a
-  cp 7
-  jr nz,+_
-  ld a,(flags+33)
-  xor 16
-  ld (flags+33),a
-_:
-  push bc
-  push hl
-  push de
-  ld bc,(TempWord3)
-  call HL_Times_BC
-  ld bc,(TempWord2)
-  add hl,bc
-  pop bc \ add hl,bc
-  ex (sp),hl ;edited in 2.50.0.2
-  ld de,-12  ;
-  add hl,de  ;
-  pop de     ;
-  ld (TempWord2),hl
-  xor a
-  ld (TempWord1+1),a
-  pop bc
-;DE points to first Map Element
-;(TempWord2) is the map width thing
-;BC points to the sprite data
-TileMap1loop:
-  ld h,12
-  ld a,(de) \ inc de
-  dec h
-  jr nz,DrawNextTile
-  ld hl,(TempWord2)
-  add hl,de
-  ex de,hl
-  ld h,12
-DrawNextTile:
-  push hl
-  ld h,0 \ ld l,a
-  add hl,hl
-  add hl,hl
-  add hl,hl
-  ld a,(TempWord1)
-  cp 7
-  jr nz,+_
-  add hl,hl
-_:
-  add hl,bc
-  ld a,(TempWord1+1)
-  call DrawTile
-  ld (TempWord1+1),a
-  pop hl
-  jr nz,TileMap1Loop+2
-  ret
-DrawTile:
-;Input:
-;     A is the tile number to draw
-;     HL points to the sprite data
-;Output:
-;     A is incremented by 1
-;     BC is not changed
-;     DE is not changed
-;     HL is not changed
-;     z flag set if A is 96
-; jr $
-  sub 96
-  ret nc
-  push af
-  push hl
-  push de
-  push bc
-  ex de,hl
-;DE points to sprite
-  ld hl,(BufPtr)
-  inc h
-  inc h
-  inc h
-  ld bc,-96
-_:
-  add hl,bc
-  add a,12
-  jr nc,-_
-  ld c,a
-  inc b
-  add hl,bc
-  ld bc,0108h
-  ld a,(TempWord1)
-  call DrawSpriteXxY
-  pop bc
-  pop de
-  pop hl
-  pop af
-  add a,97
-  ret
-OmniCalcFont:
-;Inputs:
-;    B is the char to draw
-  ld l,b
-  ld h,0
-  ld b,h
-  ld c,l
-  add hl,hl
-  add hl,bc
-  add hl,hl
-  add hl,bc
-  ld bc,(FontPointer)
-  add hl,bc
-  ld de,OP1
-  ld b,7
-_:
-  ld a,(hl)
-  rlca
-  rlca
-  rlca
-  ld (de),a
-  inc e
-  inc hl
-  djnz -_
-  ld de,OP1
-  ld hl,0706h
-  jr VputSCStepIn
-VPutSC:
-;Inputs:
-;    B is the char to draw
-  ld a,b
-  cp 20h
-  ld hl,(FontPointer)
-  ld c,b
-  ld b,0
-  add hl,bc
-  add hl,bc
-  add hl,bc ;*3
-  ld de,OP1
-  ld b,3  ;3*2 Nibbles
-_:
-  ld a,(hl)
-  and $F0
-  ld (de),a
-  inc e
-  ld a,(hl)
-  rrca \ rrca
-  rrca \ rrca
-  and $F0
-  ld (de),a
-  inc e
-  inc hl
-  djnz -_
-  ld de,OP1
-  ld hl,0604h
-  jr VputSCStepIn
-VPutC:
-;Inputs:
-;    B is the char to draw
-  ld hl,(FontPointer)
-  ld de,255
-_:
-  inc e
-  add hl,de
-  ld a,(hl)
-  ;a is w,h in nibbles
-  and 15 ;height
-  inc a  ;1..16 is enough
-  ld e,a
-  djnz -_
-  ld d,e  ;height->d
-  ld e,(hl) ;now width
-  srl e \ srl e
-  srl e \ srl e ;->low nibble, width 0..9
-  inc hl
-  ex de,hl
-VputSCStepIn:
-  push hl
-  ld bc,(TextRow)
-  ld a,b \ add a,l
-  cp 97
-  jr c,+_
-  ld a,c
-  add a,h \ ld c,a
-  ld a,l \ ld b,0
-_:
-  ld l,a
-  ld a,c
-  cp 58
-  jr c,+_
-  xor a
-  ld c,a
-_:
-  ld h,l
-  ld l,a
-  ld (TextRow),hl
-;  ld hl,(BufPtr)
-;  ld (gbuf_temp),hl
-  pop hl
-  ld a,(OutputLogic)
-  jp sprite
-SearchLine:
-;Inputs:
-;     HL points to the start
-;     BC is the number of bytes to search
-;     DE is the line number
-;     A is the line byte
-;Outputs:
-;     A is not changed
-;     BC is the number of bytes left for the search
-;     DE points to the line
-;     HL is the length of the line
-;===============================================================
-  inc bc
-  dec de \ inc d \ inc e
-  or a
-_:
-  ld (TempWord1),hl
-  cpir
-  jp po,+_
-  dec e \ jr nz,-_
-  dec d \ jr nz,-_
-_:
-  scf
-  ld de,(TempWord1)
-  sbc hl,de
   ret
 
 GPutSI:
@@ -4693,58 +4215,8 @@ _:
   ld (parsePtr),hl
   pop bc
   ret
-GetByte:
-  ld d,3
-  ld bc,-1
-  xor a
-  out (0),a
-  in a,(0)
-  xor d
-  ret z
-  ld bc,0800h
-_:
-  in a,(0)
-  bit 1,a
-  jr nz,-_
-  out (0),a
-  rra
-  rl c
-  djnz -_
-  ret
-SendByte:
-;E is the byte to send
-;BC is the wait length
-  ld a,3
-  out (0),a
-  ld d,a
-_:
-  in a,(0)
-  and d
-  jr nz,+_
-  dec bc
-  ld a,b
-  or c
-  jr nz,-_
-  dec bc
-  ret
-_:
-  ld b,8
-SendByteLoop:
-;E is the byte to send
-;D is the mask
-  xor a
-  rlc e
-  jr c,+_    ;could use rla
-  inc a
-_:
-  out (0),a
-  djnz SendByteLoop
-  xor a
-  out (0),a
-  ld c,a
-  ret
 cmdJmp:
-#if (CommandJumpTable&255)=0
+#ifdef ALIGN_COMMAND_TABLE
   ld h,CommandJumpTable>>8
   add a,a
   jr nc,+_
@@ -4790,22 +4262,31 @@ DrawRectToGraph:
 #include "compile.z80"
 #include "module.z80"
 #include "ramcode.z80"
+#include "SetUpData.z80"
 #include "routines.z80"
 #include "math.z80"
+#include "parserhook.z80"
 #include "tokenhook.z80"
 #include "cmd/particle.z80"
+#ifdef include_LoadTSA
+#include "cmd/loadtsa.z80"
+#endif
 #include "gfx/text.z80"
 #include "gfx/circle.z80"
 #include "gfx/gbufToLCD.z80"
 #include "gfx/getpixelloc_nobound.z80"
 #include "gfx/GetPixelLoc.z80"
+#include "gfx/TileMap1.z80"
 #include "math/mul16.z80"
 #include "math/HL_Div_C.z80"
 #include "cmd/prime.z80"
 #include "subroutines/diRestore.z80"
+#include "subroutines/getbyte.z80"
+#include "subroutines/searchline.z80"
 #include "parserinterrupt.z80"
 #include "err.z80"
 #include "data.z80"
+
 .echo "Page 0: ",$8000-$," bytes remaining"
 
 .fill $8000-$,255
