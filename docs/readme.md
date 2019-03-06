@@ -3,8 +3,8 @@
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.1.7
-Last Update...20 February 2019
+Version.......2.50.1.8
+Last Update...6 March 2019
 Language......English
 Programming...Assembly
 Size..........2-Page app
@@ -102,7 +102,7 @@ Remember to always `End` your subroutines! Now I want to take time to finally st
 See the [Math](math.md) documentation.
 
 ## Drawing
-See the [Drawing](drawing.md) documentation.
+See the [Drawing](drawing.md) documentation and the [Drawing Commands](#drawing-commands).
 
 # Command List
 
@@ -134,7 +134,6 @@ lot of info (about 9 pages), but I made some examples later on so that you can f
 | !If <expr>   | Like `If`, but executes if the condition is false.
 | !If-Then     | Like `If-Then`, but inverts the condition.
 | !If-Then-Else | Like `If-Then-Else`, but inverts the condition.
-
 | For(         | The arguments for this are `For(Var,Start,End`. `Var` is the name of a var, `Start` is the starting value to load to the var. `End` is the max value to load to the var. Executes the loop, incrementing the variable each time until Var=End
 | Pause If     | This will pause so long as the condition is true for example, to pause until a key is pressed, `Pause If !getKey`.
 | !Pause If    | This will pause while the condition is false. So to pause until enter is pressed, do `!Pause If 9=getKey`.
@@ -207,11 +206,12 @@ to remain in the loop while Enter is being pressed:
 | Return       | This returns a pointer to the next line of code.
 | Goto         | This is unlike the BASIC `Goto` command. This jumps to a pointer as opposed to a label.
 | Lbl          | This returns the pointer of a label. The argument is a pointer to the label name. For example, `Lbl "HI` will search for `.HI` in the program code. Also, you can specify which variable the label is in. For example, if you wanted to jump to a label in another program, you can add a second argument as the name of the var. For example, to find the label `HI` in prgmBYE: `Lbl "HI","BYE`
-| Pause        | This will pause for approximately x/100 seconds. So `Pause 66` will pause for about .66 seconds.
+| Pause xx     | This will pause for approximately xx/100 seconds. So `Pause 66` will pause for about .66 seconds.
+| Pause        | This will wait for [Enter] to be pressed and released.
 | prgm         | This is used to execute a sub routine.
 | Func         | The arguments are `FuncPointer[,Counter`. This will automatically execute the subroutine pointed to by <<pointer>> based on Counter. Counter is based on an internal counter, not based on actual timings like seconds or milliseconds. The default is 128. See the [examples](#control-examples) below.
 | Asm(         | This can be used to run an assembly program.
-| AsmPrgm      | This allows you to input asm code in hex. (C9 is needed)
+| AsmPrgm      | This allows you to input an asm code in hex. (C9 is needed)
 | ln(          | This will let you jump forward or backward a given number of lines.
 | <sub>L</sub> | The list <sub>L</sub>. Arguments are <sub>`L`</sub>`line#,[start,[size,[EOL` This let's you execute a specific line number. By default, it starts the line count within the main program, but you can pass an optional start value, an optional size value (default is 32768 bytes long), and an optional End-Of-Line argument (default is 63, the newline token).
 
@@ -299,8 +299,8 @@ This is a command subset. Commands start as `solve(#,`
 | 4   | CallError    | `solve(4,Error#`. This will execute the error code of a Grammer error. For example, to make a Memory error: `solve(4,1`. Using Error 2, you can input a string for a custom error: `solve(4,2,"Uh-Oh!`
 | 5   | PortWrite(   | `solve(5,port#,value`. This writes to a port. Ports give information about peripherals. You can find ports documentation at [WikiTi](http://wikiti.brandonw.net/index.php?title=Category:83Plus:Ports:By_Address)
 | 6   | PortRead(    | `solve(6,port#`. Reads a byte from the port.
-| 7   | CopyVar      | Copies variables
-| 8   | OverwriteVar | Overwrites variables with new data
+| 7   | CopyVars     | `solve(7,addr`. Copies the pointer vars to some other location. Currently this requires 108 bytes of space in the new buffer. Good for backing up vars.
+| 8   | OverwriteVar | `solve(8,addr`. Overwrites pointer variables with new data.
 
 Here is an error handler example
 ```
@@ -449,6 +449,9 @@ in `Ans` and the Y position in `Ɵ'`.
 If you want to draw to coordinates based on the last drawn
 coordinates, you can do something like this: `Text(+3,+0,"Hello`.
 But instead of +0, just leave it empty like this: `Text(+3,,"Hello`
+
+If you have a pointer to some text and you want to draw, say, just 4 tokens:
+`:Text(0,0,"HELLO",4`. Note that this ignores End-Of-String characters.
 
 ### Line(
 This is used to draw rectangles. The syntax for this command is:
