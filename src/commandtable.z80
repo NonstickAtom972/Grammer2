@@ -8,11 +8,7 @@ CommandJumpTable:
  .dw ErrBadToken      ; $00
  .dw module           ; $01 ;>DMS
  .dw ErrBadToken      ; $02
-#ifdef include_prime
  .dw FracToken        ; $03
-#else
-  .dw ErrBadToken     ; $03
-#endif
  .dw StoToken         ; $04
  .dw ErrBadToken      ; $05
  .dw SetData          ; $06
