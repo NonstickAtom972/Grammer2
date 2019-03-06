@@ -11,13 +11,13 @@
 ;================:
 ;Project.........Grammer
 ;Program.........Grammer
-;Author..........Zeda Elnara (ThunderBolt)
+;Author..........Zeda Thomas (ThunderBolt)
 ;E-mail..........xedaelnara@gmail.com
 ;Size............
 ;Language........English
 ;Programming.....Assembly
-;Version.........V2Ac.14.5.16
-;Last Update.....6:45 AM 5/22/2012 ;not now
+;Version.........v2.50            ;I rarely update this stuff
+;Last Update.....March 6 2018     ;This is not accurate, probably
 
 #define bcall(x) rst 28h \ .dw x
 #define LCDDelay()   in a,(16) \ rla \ jr c,$-3
@@ -32,9 +32,8 @@
 #define K_DELAY_DEFAULT 13
 #define K_DELAY_ACCEL 3
 #define ALIGN_COMMAND_TABLE
-;#define include_fire
-;#define include_prime
-;#define include_ncr
+#define include_fire
+#define include_ncr
 ;#define include_LoadTSA
 ;#define include_interrupt
 
@@ -64,10 +63,11 @@ jumptable:
 #endif
 
 SelectedProg:
+  bcall(_OP5ToOP1)
+;  ld de,OP1
+;  ld hl,OP5
+;  call mov9
 
-  ld de,OP1
-  ld hl,OP5
-  call mov9
 SelectedProgOP1:
   ld hl,gbuf
   ld (BufPtr),hl
@@ -143,50 +143,25 @@ grazh:
   push hl
 ParserNext:
   bit IntActiveFlag,(iy+InternalFlag)
-  jr nz,NoInt
-  ld hl,(IntLoc)
-  ld a,h \ or l
-  jr z,NoInt
-  ex de,hl
-  ld hl,(IntCount)
-  dec l
-#ifdef include_fire
-  jr nz,NoFire
-  dec h
-  jr nz,NoFire
-  ld hl,(parsePtr)
-  push hl
-  ld (parsePtr),de
-  set IntActiveFlag,(iy+InternalFlag)
-  push bc
-  call ParserNext
-  pop bc
-  pop hl
-  ld (parsePtr),hl
-  ld hl,(IntMax)
-NoFire:
-  ld (IntCount),hl
-  res IntActiveFlag,(iy+InternalFlag)
-#endif
-NoInt:
+  call z,parser_interrupt
   bit OnBlockFlag,(iy+UserFlags)
   call z,CheckStatus
   call z,ONErr
   ld de,ParserNext
   push de
 ParseArg:
-  ld hl,(BufPtr)        ;wtf is going on here?
+  ld hl,(BufPtr)
   ld (gbuf_temp),hl
   ld hl,(parsePtr)
 ParseArg2:
-  bit IntActiveFlag,(iy+InternalFlag)
-  jr nz,+_
+;  bit IntActiveFlag,(iy+InternalFlag)
+;  jr nz,+_
   ei
 _:
   ld a,(hl)
   inc hl
   ld (parsePtr),hl
-#if (CommandJumpTable&255)=0
+#if (CommandJumpTable&255)==0
   ld h,CommandJumpTable>>8
   add a,a
   ld l,a
@@ -207,15 +182,7 @@ _:
   push de
   ld hl,(parsePtr)
   ret
-#ifdef include_prime
-FracToken:
-  ld h,b \ ld l,c
-  call PrimeTest
-  ld b,0
-  ld (ThetaPrimeVar),bc
-  ld b,h \ ld c,l
-  ret
-#endif
+
 OutputToken:
   ld a,(hl)
   cp 11
@@ -246,7 +213,6 @@ _:
   cp 2Bh \ call z,ParseNextFullArg
   ld (FontPointer),bc
   ret
-#include "commandtable.z80"
 NewLine:
   ld (Ans),bc
 IncPtr:
@@ -296,6 +262,8 @@ _:
   pop hl \ pop bc
   ld d,h \ ld e,l
   jp ZeroMem
+#include "commandtable.z80"
+
 PtChange:
   call ParseFullArg       ;To get the tilemap routine correct
   call ParseNextFullArg   ;Map Data
@@ -438,18 +406,20 @@ ReadPort:
   ret
 _:
   djnz +_
+;Copy variables to a new location
   call ParseNextFullArg
   ld d,b
   ld e,c
   ld hl,smallEditRAM
-  jr L46be
+  jr mov108
 _:
   djnz EndSolveSet
+;Overwrite all pointer vars
   call ParseNextFullArg
   ld h,b
   ld l,c
   ld de,smallEditRAM
-L46be:
+mov108:
   ld bc,108    ;=108, 2*54, 4*(26+1) ; could use 'call mov4 \ jp mov104's
 ReadRAM:
   ldir
@@ -1935,17 +1905,17 @@ AsmPrgm:
   pop bc
   jp 86ECh
 OMNom:
-;Note from Future Zeda: "I love you, Past Zeda."
-;        cp 5 \ jr nz,BBrandInt
-;          dec hl \ dec hl \ dec hl
-;          ld a,(hl) \ cp 4Dh \ ret nz
-;          dec hl
-;          ld a,(hl) \ cp 4Fh \ ret nz
-;          call ParseFullArg
-;          ld a,c \ and 3
-;          add a,12
-;          out (16),a
-;          ret
+;Note from Future Zeda: "I love you Past Zeda."
+  cp 5 \ jr nz,BBrandInt
+  dec hl \ dec hl \ dec hl
+  ld a,(hl) \ cp 'M' \ ret nz
+  dec hl
+  ld a,(hl) \ cp 'N' \ ret nz
+  call ParseFullArg
+  ld a,c \ and 3
+  add a,12
+  out (16),a
+  ret
 BBrandInt:
   cp 10 \ jr nz,BBLCM
   call ParseFullArg
@@ -2022,20 +1992,20 @@ PauseToken:
   call EndOArg
   push bc
   jr nz,NotBASICPause
-  ld h,9
 _:
-  ld bc,1
-  call g_Pause
-  ld a,h
-  call CheckKey
-  jr z,-_
-_:
-  ld bc,1
-  call g_Pause
-  ld a,h
-  call CheckKey
+  bit OnBlockFlag,(iy+UserFlags)
+  call z,CheckStatus
+  call z,ONErr
+  call GetKeyDebounce
+  cp 9
   jr nz,-_
-
+_:
+  bit OnBlockFlag,(iy+UserFlags)
+  call z,CheckStatus
+  call z,ONErr
+  call GetKeyDebounce
+  or a
+  jr nz,-_
   pop bc
   ret
 NotBASICPause:
@@ -2052,6 +2022,9 @@ g_Pause:
   push de
   ei
 _:
+  bit OnBlockFlag,(iy+UserFlags)
+  call z,CheckStatus
+  call z,ONErr
   halt
   dec bc
   ld a,b
@@ -2336,10 +2309,10 @@ _:
 _:
   call ParseNextFullArg
   push bc
-  set Xis0,(iy+ParticleFlag)
   cp 2Bh
   jr nz,+_
   call ParseNextFullArg
+  set Xis0,(iy+ParticleFlag)
   xor a
 _:
   pop hl
@@ -2373,14 +2346,13 @@ _:
   ld c,l
   ld l,0
 _:
-  pop de
-  push hl
-  ld a,(de)
+  ex (sp),hl
+  ld a,(hl)
   call Is_2_Byte
   jr nz,+_
-  inc de
+  inc hl
 _:
-  push de
+  push hl
   ld hl,OP3
   call PutSM
   pop hl
@@ -2824,6 +2796,7 @@ CheckKey:
 ;Output:
 ;     BC is 1 if the key is pressed, 0 if it is not
 ;     z if the key is pressed, nz if not
+  call diRestore
   cp 41 ;on-key
   jr z,check_for_ON_key
 _:
@@ -2832,6 +2805,7 @@ _:
   and 7
   srl b \ srl b \ srl b
   inc b \ inc a
+;b = 2; a = 1
   ld c,a
   ld a,7Fh
 _:
@@ -2839,13 +2813,13 @@ _:
   djnz -_
   out (1),a
   ld b,c
-  ld a,7Fh
+  ld a,80h
 _:
   rlca
   djnz -_
   ld c,a
   in a,(1)
-  cp c
+  and c
 CheckKey_End:
   ld c,b
   ret nz
@@ -4140,9 +4114,10 @@ _:
   call SetUpData
   call IsOP1GrammerProg
   jr nz,+_
-  ld hl,OP1
-  ld de,OP5
-  call mov9
+;  ld hl,OP1
+;  ld de,OP5
+;  call mov9
+  bcall(_OP1ToOP5)
   pop af
   pop bc
   pop de
@@ -4190,9 +4165,10 @@ _:
   call IsOP1GrammerProg
   jr nz,EndHook
 
-  ld hl,OP1
-  ld de,OP1+44
-  call mov9
+;  ld hl,OP1
+;  ld de,OP5
+;  call mov9
+  bcall(_OP1ToOP5)
   pop af
   pop bc
   pop de
@@ -4533,8 +4509,9 @@ _:
 _:
   ld h,l
   ld l,a
-CoordAdj:
   ld (TextRow),hl
+;  ld hl,(BufPtr)
+;  ld (gbuf_temp),hl
   pop hl
   ld a,(OutputLogic)
   jp sprite
@@ -4823,7 +4800,10 @@ DrawRectToGraph:
 #include "gfx/getpixelloc_nobound.z80"
 #include "gfx/GetPixelLoc.z80"
 #include "math/mul16.z80"
+#include "math/HL_Div_C.z80"
+#include "cmd/prime.z80"
 #include "subroutines/diRestore.z80"
+#include "parserinterrupt.z80"
 #include "err.z80"
 #include "data.z80"
 .echo "Page 0: ",$8000-$," bytes remaining"
