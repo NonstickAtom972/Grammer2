@@ -6,23 +6,29 @@ startmenu__:
 ;Need to show <status><name><type>
 ;Show 7 programs at a time
 
+;First we set up the initial data and pointers
+  call SetUpData
 
-;need to set up the default screen
-;need to clear it
-  ei
+;Delete temp programs (archived progs are copied to temp programs)
   bcall(_DeleteTempPrograms)
+
+;Sort the VAT, but put the calc in 15MHz mode if possible in order to speed it up
   ld c,1
   call SetSpeed
   ld hl,sortVAT
+
+;Set up some pointers for VAT traversal
   ld (next_page_call_address),hl
   call next_page_call
+
+;Set the default gbuf to saveSScreen and clear it
   ld hl,saveSScreen
   ld (gbuf_temp),hl
   ld (BufPtr),hl
   ld (GrayBufPtr),hl
   call ZeroMem768
-;gonna take advantage of A=0
-  ld (iy+33),a    ;reset the text flags like a responsible adult, Zeda
+
+;Set speed to 6MHz, take advantage of A=0 fom ZeroMem768
   ld c,a
   call SetSpeed
 
