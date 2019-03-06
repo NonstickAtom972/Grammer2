@@ -52,8 +52,16 @@ StopToken:
 BreakProgram:
   xor a
   push af
-  xor a
+;Reset the keypress
+_:
+  call GetKeyDebounce
+  or a
+  jr nz,-_
+;Reset the link port
   out (0),a
+;Reset the OS keypress
+  ld (843Fh),a
+  ld (8444h),a
   pop af
   ld hl,(parsePtr)
   dec hl
