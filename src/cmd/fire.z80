@@ -1,13 +1,13 @@
 FireCycle:
   dec a \ jr nz,FireCycle2
-  
+
   ld a,e
   ld de,12
   ex de,hl
   add hl,de
   ld bc,2F4h
   or a
-  jr z,BlackFireLoop    
+  jr z,BlackFireLoop
 FireLoop:
   call Random
   cpl
@@ -108,9 +108,8 @@ BlackFireLoop2:
   dec a
   jr nz,BlackFireLoop2
   ret
-Random:         ;feel free to give me a smaller rand routine that is pretty random x.x
+Random:
 ;preserve HL,DE,BC
-
   push hl
   push de
   call prng16
