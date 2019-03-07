@@ -54,6 +54,7 @@ NoChange:
 TokenTable:
 ; .db $02,0,7,"module."
  .db $02,0,1,$F2    ;$
+ .db $04,0,6,$05,"Float"
  .db $06,0,8,5,"lFactor"
  .db $28,0,7,"Insert("
  .db $36,0,7,"ClrPart"
