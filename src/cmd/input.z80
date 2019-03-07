@@ -23,7 +23,8 @@ SetInputStr:
 g_Input:
   res 0,(iy+35)
   xor a
-  out (0),a
+  ld (843Fh),a      ;Reset the OS keypress
+  out (0),a         ;Reset the link port
   ld (TempWord3),hl
   add hl,bc
   ld (TempWord4),hl
