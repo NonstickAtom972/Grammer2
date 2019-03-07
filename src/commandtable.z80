@@ -7,7 +7,7 @@
 CommandJumpTable:
  .dw ErrBadToken      ; $00
  .dw module           ; $01 ;>DMS
- .dw ErrBadToken      ; $02
+ .dw todectoken       ; $02
  .dw FracToken        ; $03
  .dw StoToken         ; $04
  .dw ErrBadToken      ; $05

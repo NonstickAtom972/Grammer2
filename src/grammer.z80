@@ -141,7 +141,6 @@ grazh:
   call progmeta
   ld hl,BreakProgram
   push hl
-  scf \ jr c,$
 ParserNext:
   bit IntActiveFlag,(iy+InternalFlag)
   call z,parser_interrupt
@@ -520,7 +519,6 @@ VarName:
    xor a \ ld (OP1+3),a    ;I don't think this is necessary
    rst rFindSym
    jp VarTokenStepIn
-#include "commandtable.z80"
 FuncToken:
   call ParseFullArg
   ld (IntLoc),bc
@@ -3597,81 +3595,6 @@ _:
   ld hl,(ptr_sto)
   ld (parsePtr),hl
   ret
-;===============================================================
-HL_Div_BC:
-;===============================================================
-;Performs HL/BC
-;Speed:   1182cc (+6cc for every 0bit in the result)
-;Size:    29 bytes
-;Inputs:
-;     DE is the numerator
-;     BC is the denominator
-;Outputs:
-;     HL is the quotient
-;     DE is the remainder
-;     BC is not changed
-;     z flag is set
-;     c flag is reset
-;===============================================================
-  ex de,hl
-;===============================================================
-DE_Div_BC:
-;===============================================================
-;Performs DE/BC
-;Speed:   1178cc (+6cc for every 0bit in the result)
-;Size:    28 bytes
-;Inputs:
-;     HL is the numerator
-;     BC is the denominator
-;Outputs:
-;     HL is the quotient
-;     DE is the remainder
-;     BC is not changed
-;     z flag is set
-;     c flag is reset
-;===============================================================
-  ld a,e
-  ld e,16
-  ld hl,0
-Div16Loop:
-  rla
-  rl d
-  adc hl,hl
-  sbc hl,bc
-  jr nc,+_
-  add hl,bc
-_:
-  dec e
-  jr nz,Div16Loop
-  rla
-  cpl
-  ld e,a
-  ld a,d
-  rla
-  cpl
-  ld d,a
-  ex de,hl
-  ret
-#include "cmd/searchstring.z80"
-;===============================================================
-CheckStatus:
-;===============================================================
-;Speed:  89 cycles
-;Size:   13 bytes
-;Outputs:
-;     z is set if ON is being pressed
-;     c is set if 15MHz mode is used
-;===============================================================
-  push bc
-  push af
-  in a,(4)
-  and 8
-  in a,(20)
-  rra
-  pop bc
-  ld a,b
-  pop bc
-  ret
 sqrtHL_page0:
 ;returns HL as the sqrt, DE as the remainder
 	ld	a,l
@@ -3722,103 +3645,6 @@ Is_Var_Name:
   add a,2 \ ret z
   inc a \ ret z
   inc a \ ret
-ConvOP1:
-  ld hl,OP1
-convFloat:
-;Inputs: HL points to the TI Float.
-;Outputs: The float is converted to a 16-bit integer held in DE, or LSB in A.
-;68cc if not a number
-;93cc          on (0,1)
-;154.140625cc  on [1,10) or 0
-;324.5159375cc on [10,100)
-;435.6565625cc on [100,1000)
-;540.031875cc  on [1000,10000)
-;651.1725cc    on [10000,100000)
-;118cc         if >=100000
-;Average for integers on [0,65535]: ~632.43cc
-  call +_
-  ld a,e
-  ret
-_:
-  xor a
-  ld d,a
-  ld e,a
-  or (hl)
-  and 31
-  ret nz
-  inc hl
-  ld a,(hl)
-  sub 80h
-  ret c
-  inc hl
-  jr z,lastdigit2
-  cp 5
-  ret nc
-  ld b,a
-
-_:
-  ;multiply DE by 100
-  ex de,hl
-  ld a,b
-  sla l
-  add hl,hl
-  ld b,h
-  ld c,l
-  add hl,hl
-  add hl,bc
-  add hl,hl
-  add hl,hl
-  add hl,hl
-  add hl,bc
-  ex de,hl
-  ld b,a
-  call convBCDbyte
-  inc hl
-  dec b
-  ret z
-  djnz -_
-lastdigit:
-  ex de,hl
-  ld b,h
-  ld c,l
-  add hl,hl
-  add hl,hl
-  add hl,bc
-  add hl,hl
-  ex de,hl
-lastdigit2:
-;49+{0,8
-;min: 49cc
-;max: 57cc
-;avg: 49+8*4.5/256 = 49.140625
-  ld a,(hl)
-  rrca
-  rrca
-  rrca
-  rrca
-  and 15
-  add a,e
-  ld e,a
-  ret nc
-  inc d
-  ret
-convBCDbyte:
-;min: 60cc
-;max: 68cc
-;avg: 60+8*(99*98/2/100)/256 = 61.5159375cc
-  ld a,(hl)   ;\ I feel particularly proud of this code, so feel free to use it ^~^
-  and $F0     ; |It converts a byte of BCD to an 8-bit int.
-  rra         ; |The catch is, I only have A and C to use, and (hl) is the BCD
-  ld c,a      ; |number.
-  rra         ; |If you come up with faster, please let me know and post it in
-  rra         ; |the optimized routines thread on popular TI forums.
-  sub a,c     ; |Algo: Multiply upper digit by -6, add the original byte.
-  add a,(hl)  ;/ Result is upper_digit*(-6+16)+lower_digit. Ha, repost.
-  add a,e
-  ld e,a
-  ret nc
-  inc d
-  ret
 ConvHexTo86ECh:
 ;max: 174n+91
 ;min: 128n+56
@@ -4257,6 +4083,20 @@ DrawRectToGraph:
   ld (next_page_call_address),hl
   pop hl
   jp next_page_call
+#include "commandtable.z80"
+todectoken:
+;Takes a pointer to a string and converts it to a float
+  ld hl,str2single
+  ld (next_page_call_address),hl
+  push bc
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop hl
+  jp next_page_call
+
+
+
 #include "main.z80"
 #include "progmeta.z80"
 #include "compile.z80"
@@ -4271,6 +4111,7 @@ DrawRectToGraph:
 #ifdef include_LoadTSA
 #include "cmd/loadtsa.z80"
 #endif
+#include "cmd/searchstring.z80"
 #include "gfx/text.z80"
 #include "gfx/circle.z80"
 #include "gfx/gbufToLCD.z80"
@@ -4279,10 +4120,13 @@ DrawRectToGraph:
 #include "gfx/TileMap1.z80"
 #include "math/mul16.z80"
 #include "math/HL_Div_C.z80"
+#include "math/HL_Div_BC.z80"
 #include "cmd/prime.z80"
 #include "subroutines/diRestore.z80"
 #include "subroutines/getbyte.z80"
 #include "subroutines/searchline.z80"
+#include "subroutines/CheckStatus.z80"
+#include "subroutines/ConvOP1.z80"
 #include "parserinterrupt.z80"
 #include "err.z80"
 #include "data.z80"
