@@ -9,6 +9,10 @@ Language......English
 Programming...Assembly
 Size..........2-Page app
 ```
+
+Hey! You! This app is still in development! If you have issues, please send me an email, post in the forums, or, post an issue on GitHub! Thanks, you're the best :)
+
+
 To follow the progress of Grammer, check out [Omnimaga](https://www.omnimaga.org/grammer/), [Cemetech](http://www.cemetech.net/forum/viewforum.php?f=71) or [GitHub](https://github.com/Zeda/Grammer2), where development is most active.
 
 If you have questions or suggestions, feel free to email me or post in the forums!

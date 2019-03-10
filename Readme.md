@@ -1,5 +1,5 @@
 # Readme
-For a tutorial/documentation on the commands open [/docs/commands.html](/docs/readme.md)
+For a tutorial/documentation on the commands open [/readme/commands.html](/docs/readme.md)
 
 # Building
 
