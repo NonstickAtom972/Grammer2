@@ -962,6 +962,14 @@ SetMemE:
   lddr
   ret
 PiToken:
+; Check if the next char is a hex digit. If yes, convert as hexadecimal, else return the float value for pi
+  ld a,(hl)
+  sub '0'
+  sub 10
+  jr c,ConvHexStr
+  sub 7
+  sub 6
+  jr nc,floatpi
 ConvHexStr:
   xor a
   ex de,hl
@@ -981,6 +989,14 @@ _:
   ld (parsePtr),de
   ld b,h \ ld c,l
   ex de,hl
+  ret
+floatpi:
+  call floatstackpush
+  push hl
+  ld de,float_pi
+  ex de,hl
+  call mov4_page0
+  pop bc
   ret
 #ifdef include_ncr
 #include "cmd/ncr.z80"
@@ -1045,6 +1061,7 @@ FullToken:
   ld a,(hl)
   ld c,1
   call EndOArg
+  call nz,isop
   call nz,ParseFullArg
 SetSpeed:
   in a,(20h)
@@ -1065,6 +1082,7 @@ _:
 ClrDrawToken:
   ld a,(hl)
   call EndOArg
+  call nz,isop
   jr z,g_ClrDraw
   call ParseFullArg
   ld h,b \ ld l,c
@@ -1562,6 +1580,16 @@ _:
   ret
 lowercasetokens:
   ld (parsePtr),hl
+  cp $31      ;the `e` token
+  jr nz,+_
+  call floatstackpush
+  push hl
+  ld de,float_e
+  ex de,hl
+  call mov4_page0
+  pop bc
+  ret
+_:
   cp $B0
   jr c,length
   cp $CB
@@ -1988,6 +2016,7 @@ CircleToken:
 PauseToken:
   ld a,(hl)
   call EndOArg
+  call nz,isop
   push bc
   jr nz,NotBASICPause
 _:
@@ -3266,6 +3295,7 @@ DispGraph:
   ld a,(hl)
   ld hl,(BufPtr)
   call EndOArg
+  call nz,isop
   jp z,GraphToLCD+3
   call ParseFullArg
   ld h,b
@@ -3278,6 +3308,25 @@ EndOArgNotSto:
 ;  cp 3Ah \ ret z
   cp 3Eh \ ret z ;:
   cp 2Bh \ ret z ;,
+  or a
+  ret
+isop:
+  cp $82  ;*
+  ret z
+  cp $83  ;/
+  ret z
+  cp $95  ; nCr
+  cp 1    ;>Frac
+  ret z
+  cp 2    ;>Dec
+  ret z
+  cp $6A
+  ret c
+  cp $72
+  jr nc,+_
+  cp a
+  ret
+_:
   or a
   ret
 ;===============================================================
