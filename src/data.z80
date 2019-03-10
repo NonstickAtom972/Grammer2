@@ -417,6 +417,8 @@ vFont:
 .db $0,$0
 ;Char $100
 .db $0,$0
+float_pi:     .db $DB,$0F,$49,$81
+float_e:      .db $54,$f8,$2d,$81
 GramTempName:
  .db 16h,"GramTemp"
 GVarData:
