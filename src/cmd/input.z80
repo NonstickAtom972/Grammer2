@@ -2,6 +2,7 @@ InputToken:
   ld bc,Str1Space
   ld a,(hl)
   call EndOArg
+  call nz,isop
   jr z,SetInputStr
   call ParseFullArg
   ld h,b
