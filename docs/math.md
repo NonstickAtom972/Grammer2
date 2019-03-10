@@ -73,20 +73,31 @@ Here are the math operations currently available.
 | a≤b     | ≤     | ≤       | If a is less than or equal to b, this returns 1, else it returns 0. |
 
 ## Floating Point
-As of version 2.5.1.0, Grammer is beginning to have support for floating point numbers. Grammer was originally only intended to have 16-bit integer math support. As a consequence, many useful tokens were already in use, making float support convoluted. I want to reinforce this idea, though: Grammer is a 16-bit integer-centric language.
+As of version 2.50.1.0, Grammer is beginning to have support for floating point numbers. Grammer was originally only intended to have 16-bit integer math support. As a consequence, many useful tokens were already in use, making float support convoluted. I want to reinforce this idea, though: Grammer is a 16-bit integer-centric language.
 
-You will have to interface with floats via pointers. Internally, there is a special floating-point storage that holds a few elements for intermediate processing. If this storage gets full, it wraps around and starts overwriting old items. In particular, this can happen in expressions with many operations. For example, `3.14159+.6.789` will overwrite three values-- two for the numbers 3.14159, 6.789, and one for the sum. At the time of this writing, it can hold 8 floats. In the future this might change, but if you need long-term storage, you will need to copy the 4-byte float to somewhere safe. With that in mind, Grammer now supports a special-purpose move operator `→.` that takes a pointer on the left side, `x` and a pointer *var* on the right side, `Y` and copies the 4 bytes at `x` to the memory at `Y`. Floats must start with a number: `.367` will be interpreted as a comment (float support was added on top of the existing Grammer framework), whereas `0.367` is interpreted as a float, and returns a pointer to its converted value.
+You will have to interface with floats via pointers. Internally, there is a special floating-point storage that holds a few elements for intermediate processing. If this storage gets full, it wraps around and starts overwriting old items. In particular, this can happen in expressions with many operations. For example, `3.14159+.6.789` will overwrite three values-- two for the numbers 3.14159, 6.789, and one for the sum. At the time of this writing, it can hold 8 floats. In the future this might change, but if you need long-term storage, you will need to copy the 4-byte float to somewhere safe. With that in mind, Grammer now supports a special-purpose move operator `→.` that takes a pointer on the left side, `x` and a pointer *var* on the right side, `Y` and copies the 4 bytes at `x` to the memory at `Y`. Floats must start with a number: `.367` will be interpreted as a comment/label (float support was added on top of the existing Grammer framework), whereas `0.367` is interpreted as a float, and returns a pointer to its converted value.
 
 In general, float commands are signified by an operations followed by a `.`. As of this writing, there are a handful of known bugs, so don't count on this for your math homework yet!
 
 | Example | Token | Grammer | Description                                      |
 |:------- |:----- |:------- |:------------------------------------------------ |
+| e       | e     |         | Returns approximately 2.718282 (Euler's number) |
+| π       | π     |         | Returns approximately 3.141596 (pi). If a hexadecimal digit follows, it will instead return the value for the hexadecimal string. |
 | A→.B    | →.    | →.      | Stores the 4 bytes at ptr A to ptr B             |
 | A+.B    | +.    | +.      | Adds the floats at A and B, returns a pointer.   |
 | A-.B    | -.    | -.      | Subtracts the floats at A and B, returns a pointer. |
 | A*.B    | *.    | *.      | Multiplies the floats at A and B, returns a pointer. |
 | A/.B    | /.    | /.      | Divides the floats at A and B, returns a pointer. |
 | √(.B    | √(.   | √(.     | Computes the square root of the float at A, returns a pointer. |
+| e^(.A   | 2^(.  |         | Returns 2^A. It's annoying, I know, but I never thought I'd add float support and then I added e^( in the token hook. |
+| A^.B    | ^.    | ^.      | Returns A^B |
+| abs(.A  | abs(. |         | Returns the absolute value of the float. |
+| -.A     | (-)   |         | Returns the negative of the float. This is the negative token, not minus. |
+| sin(.A  | sin(. |         | ** Only accurate on -pi/4<A<pi/4
+| cos(.A  | cos(. |         | ** Only accurate on -pi/4<A<pi/4
+| log(.A[,B  | log(. |      | `log(.A` returns the base-10 logarithm. `log(.A,B` returns the base-B logarithm of A. log10 is only working for positive numbers x>2 and x<1
+| rand.   | rand. |         | Returns a random number on [0,1) |
+| A▶Dec   | ▶Dec  | ▶Float  | A is a pointer. This converts the data at the pointer to a float. Can be used on strings, or `Input` for example. |
 | Text(x,y,`.`A |      |    | Displays a float located at A. |
 | A=.B    | =.    |         | Returns an 1 if float A equals float B, else 0. |
 | A≠.B    | =.    |         | Returns an 1 if float A is not equal to float B, else 0. |
@@ -96,7 +107,8 @@ In general, float commands are signified by an operations followed by a `.`. As 
 | A≤.B    | =.    |         | Returns an 1 if float A is less than or equal to float B, else 0. |
 | int(.A  | int(. |         | Converts  a float to a signed integer. |
 
-Examples. The following two codes produce the same result, but the first one uses temporary storage that may get overwritten later, an the second one copies values to less volatile storage:
+
+Examples. The following two codes produce the same result, but the first one uses temporary storage that may get overwritten later, and the second one copies values to less volatile storage:
 ```
 3.1415926→X     ;Notice it is just storing a pointer, not copying actual data!
 1.2345678→Y
