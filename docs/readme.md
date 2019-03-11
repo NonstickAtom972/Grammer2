@@ -3,7 +3,7 @@
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.1.9    (I will probably forget to change this :( )
+Version.......2.50.2.0    (I will probably forget to change this :( )
 Last Update...6 March 2019
 Language......English
 Programming...Assembly
@@ -261,7 +261,7 @@ Or to jump backwards:
 | getKey       | This returns a value from 0 to 56 that is the current key press. You can use [this chart](#keycodes) for values.
 | getKey(      | `getKey(` will allow you to see if a key is being pressed. For example, `getKey(9` will return `1` if enter is pressed
 | Input        | This allows you to input a string. The pointer to the string is returned. (this is not a permanent location, the data will be overwritten the next time Input is used). To get a value input from the user, you can use `expr(` : `expr(Input →A`. This will store the result to A. `Input` can also take an optional string input. The input string will be displayed after what the user is typing. If you execute this code, I think it'll explain it better. It's honestly pretty cool for a calculator.
-| Menu(        | *This requires the default package, GramPkg to be on your calc (in RAM or archived).* Syntax is, `Menu(y,x,w,"Header","Item0","Item1","Item2","Exit`. It basically makes a pop-up style menu, returning the number of the selected item.
+| Menu(        | ~~*This may require the included appvar, GramPkg, to be on your calc (in RAM or archived).*~~ Syntax is, `Menu(y,x,w,"Header","Item0","Item1","Item2","Exit`. It basically makes a pop-up style menu, returning the number of the selected item.
 | Ans          | This will return the value of the previous line.
 | expr(        | This will compute a string as a line of code (useful with `Input`)
 | inString(    | This is similar to the TI-BASIC command. This will return the location of a sub-string. The inputs are where to start searching and the string to search for: `inString(SearchStart,SearchString[,maxlength]`. The size of the input string is returned in `Ɵ'` and if there was no match found, 0 is returned.
@@ -608,10 +608,10 @@ Please note that the tile data and map data have to be raw bytes, as opposed to 
   * The current buffer is copied x pixels up to itself with XOR logic
 * 21,x-CopyUpErase
   * The current buffer is copied x pixels up to itself with Erase logic
-* ~~22,type-FireCycle~~
-  * ~~This burns the contents if the screen for one cycle. If type is 0, white fire is used, if it is 1, black fire is used.~~
-* ~~23,Type,Y,X,Width,Height-Fire Cycle 2~~
-  * ~~Type is the same as FireCycle and the other inputs are the same as Pt-On( where X and Width go by every 8 pixels.~~
+* 22,type-FireCycle
+  * This burns the contents of the screen for one cycle. If type is 0, white fire is used, if it is 1, black fire is used.
+* 23,Type,Y,X,Width,Height-Fire Cycle 2
+  * Type is the same as FireCycle and the other inputs are the same as Pt-On( where X and Width go by every 8 pixels.
 
 ### RecallPic
 This is used to copy a picture to the current buffer. As an example of its use `RecallPic 0`. This works for pictures 0 to 255 and archived pics.
