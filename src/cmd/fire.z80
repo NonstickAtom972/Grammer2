@@ -112,10 +112,12 @@ Random:
 ;preserve HL,DE,BC
   push hl
   push de
+  push bc
   call prng16
   ld a,h
-  or l
-  or b
+  and l
+  and b
+  pop bc
   pop de
   pop hl
   ret
