@@ -36,6 +36,7 @@
 #define include_ncr
 ;#define include_LoadTSA
 ;#define include_interrupt
+#define INCLUDE_GRAMPKG
 
 .org $4000
 .db $80,$0F, 0,0,0,0
@@ -508,6 +509,7 @@ _:
   ld b,h
   ld c,l
   ret
+#include "commandtable.z80"
 VarName:
    ld e,a
    ld d,(hl)
@@ -4132,7 +4134,6 @@ DrawRectToGraph:
   ld (next_page_call_address),hl
   pop hl
   jp next_page_call
-#include "commandtable.z80"
 todectoken:
 ;Takes a pointer to a string and converts it to a float
   ld hl,str2single
@@ -4151,8 +4152,8 @@ todectoken:
 #include "compile.z80"
 #include "module.z80"
 #include "ramcode.z80"
-#include "SetUpData.z80"
 #include "routines.z80"
+#include "SetUpData.z80"
 #include "math.z80"
 #include "parserhook.z80"
 #include "tokenhook.z80"

@@ -94,7 +94,7 @@ L7c5d: ;Menu and jmp
  push de
  ret
 _:
-MenuSelect=-_-Menu+moduleExec
+MenuSelect=-_-Menu_code_start+moduleExec
  ld c,(hl)
  inc hl
  ld e,(hl)
@@ -239,7 +239,7 @@ L7d16: ;down = 1
  ld c,a  ;new coord
  jr MenuDraw ;Menu draw
 _:
-vPutscr = -_-Menu+moduleExec
+vPutscr = -_-Menu_code_start+moduleExec
   ld (TextRow),bc
   ld bc,0
   ld d,b
@@ -259,4 +259,4 @@ _:
   pop de
   jr -_
 _:
-menuopts = -_-Menu+moduleExec
+menuopts = -_-Menu_code_start+moduleExec

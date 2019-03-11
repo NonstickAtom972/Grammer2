@@ -1,15 +1,16 @@
 ;;All routines must be 768 bytes or less
 ;;They get copied to saveSScreen
+#ifndef EXCLUDE_GRAMPKG_INC
 #include "grammer.inc"
 #include "grammer2.5.inc"
+#endif
   .db "Gram"
   .dw 0
   .dw (+_-2-$)/2
-  .dw p_Disp
-  .dw p_Text
-  .dw p_Menu
+  .dw p_Disp-P_Disp
+  .dw p_Text-P_Disp
+  .dw p_Menu-P_Disp
 _:
-.org 0
 p_Disp: .db "DISP",$29 \ .dw p_Text-$-2
     ld a,$DE
     jp cmdJmp
@@ -18,7 +19,7 @@ p_Text: .db "TEXT",$10 \ .dw p_menu-$-2
     jp cmdJmp
 p_menu:
   .db $E6,0 \ .dw p_end-$-2
-Menu:
+Menu_code_start:
   ld hl,(TempWord1)
   ld (parsePtr),hl
 #include "cmd/menu.z80"

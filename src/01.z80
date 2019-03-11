@@ -57,4 +57,13 @@
 #include "gfx/drawrect.z80"
 #include "single/lut.z80"
 #include "math/rand_single.z80"
+
+#ifdef INCLUDE_GRAMPKG
+grampkg_start:
+#define EXCLUDE_GRAMPKG_INC
+#include "grampkg.z80"
+grampkg_end:
+#endif
+
+
 .echo "Page 1: ",$8000-$," bytes remaining"

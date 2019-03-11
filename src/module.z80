@@ -6,12 +6,20 @@
 
 
 module:
+#ifndef INCLUDE_GRAMPKG
   ld hl,s_grampkg
   rst rMov9ToOP1
   bcall(_ChkFindSym)
   ld a,b
   ld b,0
   call module_locate+6
+#else
+  in a,(6)
+  dec a
+  ld hl,grampkg_start
+  ld bc,grampkg_end-grampkg_start
+  call module_located
+#endif
   ret c
   ld hl,module_count
   ld a,(hl)
@@ -41,7 +49,7 @@ module_locate:
   jp c,module_not_found
   call GetVarInfoVarFound
   ;now HL points to data, DE points to VAT entry, BC is size, A is page
-
+module_located:
 ;Need to read 4-byte magic number
 ;Need to read the valid version number and size of table
 ;Verify that the package has at least 8 bytes
