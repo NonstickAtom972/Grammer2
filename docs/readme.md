@@ -803,7 +803,7 @@ better tutorial for Grammer and as well Louis Becquey (persalteas) for his work 
 writing a french readme/tutorial. Both of them have also made many valuable
 suggestions that have helped make Grammer what it is right now. Thanks much!
 
-I also thank Hans Burch for reconstructing Grammer 2 after I lost my work. It must have been a tremendous amount of effort and tedium, and I greatly appreciate it.
+I also thank Hans Burch for reconstructing Grammer 2 after I lost my work. It must have been a tremendous amount of effort and tedium, and I greatly appreciate it. They've continued to provide valuable feedback about bugs and it has been extremely helpful.
 
 Finally, I would like to thank the sites that have let me get the word out about
 this project, especially [Omnimaga](https://www.omnimaga.org/index.php) and [Cemetech](https://www.cemetech.net/).
