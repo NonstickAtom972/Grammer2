@@ -1336,7 +1336,7 @@ _:
   ret
 CopyUpErase:
 #ifdef include_fire
-  dec a \ jr nz,+_
+  dec a \ jr nz,fire
 #else
   dec a \ ret nz
 #endif
@@ -1348,7 +1348,7 @@ _:
   inc de \ cpi
   jp pe,-_
   ret
-_:
+fire:
 #ifdef include_fire
 #include "cmd/fire.z80"
 #endif
