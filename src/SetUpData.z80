@@ -54,6 +54,16 @@ SetUpData:
   ld (GrayRotate),hl
   ld hl,5555h
   ld (GrayMask),hl
+
+  ld hl,saveSScreen+256
+  ld (stack_base),hl
+  ld (stack_ptr),hl
+  inc h
+  inc h
+  ld (stack_top),hl
+
+
+
   pop hl
   ld (SPSave),sp
   jp (hl)
