@@ -32,6 +32,7 @@ _PutS           = 450Ah
 _OP5ToOP1       = 413Bh
 _OP1ToOP5       = 4153h
 appErr1         = 984Dh
+appErr2         = 985Ah
 cxErrorEP       = 8595h
 curRow          = 844Bh
 curCol          = 844Ch
@@ -96,18 +97,15 @@ TempWord5   = TempWord4+2 ;2      10
 textRow     = TempWord5+2 ;1      11
 textCol     = textRow+1   ;1      12
 
-TextPauseTime=984Dh           ;1
-GrayBufPtr  = TextPauseTime+1 ;2 984E
-Ans         = GrayBufPtr+2    ;2 9850
-StackCount  = Ans+2           ;2 9852
-StackLoc    = StackCount+2    ;2 9854
-OutputLogic = StackLoc+2      ;1 9856
-ErrorLoc    = OutputLogic+1   ;2 9857
-;ForBackUp   = ErrorLoc+2      ;2
-;0 bytes left
+TextPauseTime=appErr2         ;1
+GrayBufPtr  = TextPauseTime+1 ;2
+Ans         = GrayBufPtr+2    ;2
+StackCount  = Ans+2           ;2
+StackLoc    = StackCount+2    ;2
+OutputLogic = StackLoc+2      ;1
+ErrorLoc    = OutputLogic+1   ;2
+SPSave      = ErrorLoc+2      ;2
 
-SPSave              = 985Ah
-;12 bytes left
 BufPtr              = 84E7h
 
 parseError  = 84EBh           ;2
@@ -155,6 +153,10 @@ floatstack_bottom = vars+2
 floatstack_top    = vars+2+32     ;Give room for 8 floats. I am a generous god.
 seedsingle0 = floatstack_top
 seedsingle1 = seedsingle0+4
+
+stack_base  = seedsingle1+4
+stack_top   = stack_base+2
+stack_ptr   = stack_top+2
 
 PBuf          = 9872h
 ramCode       = 8100h
