@@ -374,7 +374,7 @@ CallError:
   sbc hl,bc
   jr nc,+_
 CustomError:
-  ld bc,13
+  ld bc,12
 _:
   ex de,hl
   ld de,appErr1
@@ -1592,6 +1592,16 @@ lowercasetokens:
   pop bc
   ret
 _:
+  cp $4B        ;Pmt_End
+  jr nz,+_
+  ld bc,(stack_top)
+  ret
+_:
+  cp $4C        ;Pmt_Bgn
+  jr nz,+_
+  ld bc,(stack_base)
+  ret
+_:
   cp $B0
   jr c,length
   cp $CB
@@ -2689,14 +2699,16 @@ EndToken:
   pop de
   ret
 ErrorJump:
+  ; If we are currently parsing an errorthen we don't want to be stuck in an infinite loop !
   bit errorChecking,(iy+InternalFlag)
   ret nz
+  set errorChecking,(iy+InternalFlag)
+
   push de
   push hl
   push bc
   ld hl,(parsePtr)
   ld (ErrorLoc),hl
-  set errorChecking,(iy+InternalFlag)
   ld hl,(parseError)
   ld a,h
   or l
@@ -3212,7 +3224,17 @@ StoFloat:
 NotOSVar:
   call VarP
   jr nc,NotAVar
+
   push hl
+  push bc
+  ld bc,stack_base
+  or a
+  sbc hl,bc
+  add hl,bc
+  pop bc
+  jr nz,+_
+  ld (stack_ptr),bc
+_:
   ld a,(de)
   ex de,hl
   inc hl
@@ -3485,6 +3507,10 @@ VarPointer:
   ld d,h
   ld e,l
   ld a,(hl)
+  cp $4B     ;Pmt_End
+  jr z,Pmt_End_ptr
+  cp $4C     ;Pmt_Bgn
+  jr z,Pmt_Bgn_ptr
   sub 203
   ret nc
   sub -16
@@ -3500,6 +3526,16 @@ VarPointer:
   inc h
 _:
 #endif
+  inc de
+  scf
+  ret
+Pmt_End_ptr:
+  ld hl,stack_top
+  inc de
+  scf
+  ret
+Pmt_Bgn_ptr:
+  ld hl,stack_base
   inc de
   scf
   ret
@@ -3972,6 +4008,7 @@ ExecLine_:
   inc hl
   call VarP
   ret nc
+parse_by_ptr_to_ptr:
   push de
   push hl
   ld a,(hl)
@@ -4172,6 +4209,7 @@ todectoken:
 #include "math/HL_Div_C.z80"
 #include "math/HL_Div_BC.z80"
 #include "cmd/prime.z80"
+#include "cmd/param.z80"
 #include "subroutines/diRestore.z80"
 #include "subroutines/getbyte.z80"
 #include "subroutines/searchline.z80"
