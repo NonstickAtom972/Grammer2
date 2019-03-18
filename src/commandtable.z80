@@ -124,7 +124,7 @@ CommandJumpTable:
  .dw ErrBadToken      ; $74
  .dw FullToken        ; $75
  .dw FuncToken        ; $76
- .dw ErrBadToken      ; $77
+ .dw ParamToken       ; $77
  .dw ErrBadToken      ; $78
  .dw ErrBadToken      ; $79
  .dw ErrBadToken      ; $7A
