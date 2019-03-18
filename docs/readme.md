@@ -3,8 +3,8 @@
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.2.0    (I will probably forget to change this :( )
-Last Update...6 March 2019
+Version.......2.50.3.0    (I will probably forget to change this :( )
+Last Update...17 March 2019
 Language......English
 Programming...Assembly
 Size..........2-Page app
@@ -218,6 +218,11 @@ to remain in the loop while Enter is being pressed:
 | AsmPrgm      | This allows you to input an asm code in hex. (C9 is needed)
 | ln(          | This will let you jump forward or backward a given number of lines.
 | <sub>L</sub> | The list <sub>L</sub>. Arguments are <sub>`L`</sub>`line#,[start,[size,[EOL` This let's you execute a specific line number. By default, it starts the line count within the main program, but you can pass an optional start value, an optional size value (default is 32768 bytes long), and an optional End-Of-Line argument (default is 63, the newline token).
+| Param        | `?` points to parameters, this stores those parameter values to variables. For example, if `?` points to `1,2,3,4`, then `ParamA,B,C,D` will store `1` to `A`, `2` to `B`, `3` to `C`, and `4` to `D`. This updates `?`. This is useful for subroutines that take parameters! See the example below.
+| Param'        | This pushes values to the parameter stack. For example, `Param'A,0,1,B+2` pushes the value of A, 0, 1, and B+2 to the stack.
+| Param°        | This pops values off the parameter stack into a var. For example, using the previous `push` sequence, `Param°A,B,C,D` would store the original `B`+2 to `A`, `1` to `B`, `0` to `C`, and the original `A` to `D`.
+| Pmt_Bgn       | This token is located at [Apps][Finance][Up]. This is a var that holds the base location for the parameter stack. Changing this value automatically resets the parameter stack pointer.
+| Pmt_End       | This token is located at [Apps][Finance][Up][Up]. This is a var that holds the end location for the parameter stack.
 
 ### Control Examples
 ```
@@ -254,6 +259,20 @@ Or to jump backwards:
 :"Yeah...:ln(-3
 ```
 
+```
+:ClrDraw
+:Lbl "BoldLine(→Z
+:prgm(Z,rand,rand,rand,rand,1
+:DispGraph
+:Stop
+
+:.BoldLine(
+:ParamA,B,C,D,E
+:Line('A,B,C,D,E
+:Line('A+1,B,C+1,D,E
+:Line('A,B+1,C,D+1,E
+:End
+```
 
 ## Input/Computing
 | Name         | Description |
