@@ -17,11 +17,22 @@ DCSErr:
   inc hl \ ld a,(hl) \ cp $C9 \ jp nz,HomeRunASM
   ld de,StrDCS
   jp CustomError
+
+
+ErrStackOverflow_pop:
+  ld hl,s_StackOverflow_pop
+  ld a,6
+  jr custerrd
+ErrStackOverflow_push:
+  ld hl,s_StackOverflow_push
+  ld a,5
+  jr custerrd
 ErrPkgNotFound:
   ld hl,s_PkgNotFound
-  ld de,appErr1
-  call mov12
   ld a,4
+custerrd:
+  ld de,appErr1
+  call mov13
   jr err
 ErrBadToken:
   ld a,3
@@ -37,7 +48,7 @@ Err:
 GramHandl:
   ld hl,(ErrorLoc)
   ld (parsePtr),hl
-  cp 5 \ jr nc,BreakProgram
+  cp errmap_end-errmap \ jr nc,BreakProgram
   ld hl,errmap
   add a,l
   ld l,a
@@ -47,7 +58,7 @@ GramHandl:
 _:
 #endif
   ld a,(hl)
-  .db $28  ;start of jr z,*. Since errmap>0x00FF, z flag never set
+  .db $FE  ;start of cp *s
 StopToken:
 BreakProgram:
   xor a
@@ -82,7 +93,8 @@ _:
   or 1
   ret
 errmap:
-  .db 6,14,43,36,43
+  .db 6,14,43,36,43,43,43
+errmap_end:
 
 
 

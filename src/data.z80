@@ -1,5 +1,5 @@
 StrVersion:
- .db "Grammer v2.50.2.0",0
+ .db "Grammer v2.50.3.0",0
 sinTable:
 .db 0,3,6,9,13,16,19,22,25,28,31,34,37,40,43,46
 .db 49,52,55,58,60,63,66,68,71,74,76,79,81,84,86,88
@@ -433,6 +433,9 @@ StrGram:
   .db "Broken Shell",0
 s_PkgNotFound:
   .db "PkgNotFound",0
+s_StackOverflow_pop:
+s_StackOverflow_push:
+  .db "StackOverflw",0
 ;Str8Space: .db "        ",0
 Str1Space: .db " ",0
 #ifndef INCLUDE_GRAMPKG
