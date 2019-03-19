@@ -3,7 +3,7 @@
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.3.0    (I will probably forget to change this :( )
+Version.......2.50.4.0    (I will probably forget to change this :( )
 Last Update...17 March 2019
 Language......English
 Programming...Assembly
@@ -128,7 +128,7 @@ lot of info (about 9 pages), but I made some examples later on so that you can f
 | E       | E     | E       | This indicates the start of a binary string. This is the exponential `E`.
 
 
-## Loops/Conditionals
+## Loops/Conditionals/Blocks
 
 | Name         | Description |
 |:------------ |:------- |
@@ -145,8 +145,9 @@ lot of info (about 9 pages), but I made some examples later on so that you can f
 | !While <condition> | Executes what is between `!While...End` so long as the condition is zero.
 | Repeat <condition> | Executes what is between `Repeat...End` and continues to do so as long as the condition is zero.
 | !Repeat <condition> | Executes what is between `Repeat...End` and continues to do so as long as the condition is non-zero.
+| `▶Nom(`x,y,z | This starts a block in which a defined list of variables is preserved. For example, in `▶Nom(A,B,C: <<code>> :End`, no matter what `<<code>>` does to A,B, and C, they will be restored when the `End` is parsed.
 
-### Examples With Conditionals
+### Examples With Blocks
 
 ```
 :If A=B      ;Since A=B is false, the following line is skipped
@@ -203,6 +204,21 @@ to remain in the loop while Enter is being pressed:
 :End     ;This tells the While loop to End / restart!
 ```
 
+An example with `▶Nom(`
+```
+:ClrDraw
+:▶Nom(A,B
+:0→B
+:For(A,0,9
+:B+A→B
+:Text('0,0,A
+:Text('6,0,B
+:DispGraph
+:Pause 33
+:End
+:End
+```
+
 ## Control
 
 | Name         | Description |
@@ -223,6 +239,7 @@ to remain in the loop while Enter is being pressed:
 | Param°        | This pops values off the parameter stack into a var. For example, using the previous `push` sequence, `Param°A,B,C,D` would store the original `B`+2 to `A`, `1` to `B`, `0` to `C`, and the original `A` to `D`.
 | Pmt_Bgn       | This token is located at [Apps][Finance][Up]. This is a var that holds the base location for the parameter stack. Changing this value automatically resets the parameter stack pointer.
 | Pmt_End       | This token is located at [Apps][Finance][Up][Up]. This is a var that holds the end location for the parameter stack.
+| `▶Nom(`x,y,z | This starts a block in which a defined list of variables is preserved. For example, in `▶Nom(A,B,C: <<code>> :End`, no matter what `<<code>>` does to A,B, and C, they will be restored when the `End` is parsed.
 
 ### Control Examples
 ```
@@ -244,6 +261,20 @@ An example with setting an interrupt
 ```
 That will do DispGraph several times per second automatically.
 
+An example with `▶Nom(`
+```
+:ClrDraw
+:▶Nom(A,B
+:0→B
+:For(A,0,9
+:B+A→B
+:Text('0,0,A
+:Text('6,0,B
+:DispGraph
+:Pause 33
+:End
+:End
+```
 
 Jump three lines with `ln(`
 ```

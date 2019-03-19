@@ -1945,15 +1945,7 @@ AsmPrgm:
 OMNom:
 ;Note from Future Zeda: "I love you Past Zeda."
   cp 5 \ jr nz,BBrandInt
-  dec hl \ dec hl \ dec hl
-  ld a,(hl) \ cp 'M' \ ret nz
-  dec hl
-  ld a,(hl) \ cp 'N' \ ret nz
-  call ParseFullArg
-  ld a,c \ and 3
-  add a,12
-  out (16),a
-  ret
+#include "cmd/nom.z80"
 BBrandInt:
   cp 10 \ jr nz,BBLCM
   call ParseFullArg
@@ -3361,24 +3353,38 @@ FindEndToken:
 ;Outputs:
 ;     HL points to the byte after the proper End token
 ;===============================================================
-  ld b,1
+  ld b,0
+SearchEnd_inc:
+  inc b
 SearchEndLoop:
   inc hl
   ld a,(hl)
+; Make sure it isn't >Nom(
+  cp $BB
+  jr nz,+_
+  inc hl
+  ld a,(hl)
+  cp 5
+  jr z,SearchEnd_inc
+  jr SearchEndLoop
+_:
+  call Is_2_Byte
+  jr nz,+_
+  inc hl
+  jr SearchEndLoop
+_:
+  ld a,(hl)
   sub $CF                  ;Then
   jr c,SearchEndLoop       ;**Just to save time
-  jr z,+_
+  jr z,SearchEnd_inc
   dec a
-  dec a \ jr z,+_   ;While
-  dec a \ jr z,+_   ;Repeat
-  dec a \ jr z,+_   ;For
+  dec a \ jr z,SearchEnd_inc   ;While
+  dec a \ jr z,SearchEnd_inc   ;Repeat
+  dec a \ jr z,SearchEnd_inc   ;For
   dec a \ jr nz,SearchEndLoop ;End
   djnz SearchEndLoop
   inc hl
   ret
-_:
-  inc b
-  jr SearchEndLoop
 FindElseEnd:
 ;Input:
 ;     HL is an address
@@ -3388,18 +3394,34 @@ FindElseEnd:
   ld b,0
 FindElseEnd_:
   inc b
+FindElseEndLoop:
   inc hl
   ld a,(hl)
-  sub $CF           ;Then
-  jr c,-_+1
-  jr z,-_
-  dec a \ jr z,+_
-  dec a \ jr z,-_   ;While
-  dec a \ jr z,-_   ;Repeat
-  dec a \ jr z,-_   ;For
-  dec a \ jr nz,FindElseEnd_+1
+; Make sure it isn't >Nom(
+  cp $BB
+  jr nz,+_
+  inc hl
+  ld a,(hl)
+  cp 5
+  jr z,FindElseEnd_
+  jr FindElseEndLoop
 _:
-  djnz FindElseEnd_+1
+  call Is_2_Byte
+  jr nz,+_
+  inc hl
+  jr FindElseEndLoop
+_:
+  ld a,(hl)
+  sub $CF           ;Then
+  jr c,FindElseEndLoop
+  jr z,FindElseEnd_
+  dec a \ jr z,+_
+  dec a \ jr z,FindElseEnd_   ;While
+  dec a \ jr z,FindElseEnd_   ;Repeat
+  dec a \ jr z,FindElseEnd_   ;For
+  dec a \ jr nz,FindElseEndLoop
+_:
+  djnz FindElseEndLoop
   ld a,(hl)
   inc hl
   ret
