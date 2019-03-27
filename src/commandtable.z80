@@ -38,7 +38,7 @@ CommandJumpTable:
  .dw PToRy            ; $1E
  .dw ErrBadToken      ; $1F
  .dw ErrBadToken      ; $20
- .dw ErrBadToken      ; $21
+ .dw meanToken        ; $21
  .dw SolveSet         ; $22
  .dw ErrBadToken      ; $23
  .dw ErrBadToken      ; $24
@@ -202,19 +202,19 @@ CommandJumpTable:
  .dw LnToken          ; $BE
  .dw PowerOf2         ; $BF
  .dw logToken         ; $C0
- .dw ErrBadToken      ; $C1
+ .dw pow10Token       ; $C1
  .dw Sin              ; $C2
- .dw ErrBadToken      ; $C3
+ .dw asinToken        ; $C3
  .dw Cos              ; $C4
- .dw ErrBadToken      ; $C5
- .dw ErrBadToken      ; $C6
- .dw ErrBadToken      ; $C7
- .dw ErrBadToken      ; $C8
- .dw ErrBadToken      ; $C9
- .dw ErrBadToken      ; $CA
- .dw ErrBadToken      ; $CB
- .dw ErrBadToken      ; $CC
- .dw ErrBadToken      ; $CD
+ .dw acosToken        ; $C5
+ .dw tanToken         ; $C6
+ .dw atanToken        ; $C7
+ .dw sinhToken        ; $C8
+ .dw asinhToken       ; $C9
+ .dw coshToken        ; $CA
+ .dw acoshToken       ; $CB
+ .dw tanhToken        ; $CC
+ .dw atanhToken       ; $CD
  .dw IfToken          ; $CE
  .dw ParserNext       ; $CF
  .dw ElseToken        ; $D0

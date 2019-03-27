@@ -292,7 +292,7 @@ PowToken:
   jp float_stepin
 
 _:
-  ld hl,pow2Single
+  ld hl,expSingle
   jp float_stepin_1
 PowerOf2:
   ld a,(hl)
@@ -490,3 +490,82 @@ float_stepin_0:
   pop hl
   ld (next_page_call_address),hl
   jp next_page_call
+
+
+
+
+tanToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,tanSingle
+  jp float_stepin_1
+atanToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,atanSingle
+  jp float_stepin_1
+acosToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,acosSingle
+  jp float_stepin_1
+asinToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,asinSingle
+  jp float_stepin_1
+
+
+tanhToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,tanhSingle
+  jp float_stepin_1
+coshToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,coshSingle
+  jp float_stepin_1
+sinhToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,sinhSingle
+  jp float_stepin_1
+atanhToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,atanhSingle
+  jp float_stepin_1
+acoshToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,acoshSingle
+  jp float_stepin_1
+asinhToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,asinhSingle
+  jp float_stepin_1
+pow10Token:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,pow10Single
+  jp float_stepin_1
+
+meanToken:
+  ld a,(hl)
+  cp 3Ah
+  jp nz,ErrBadToken
+  ld hl,meanSingle
+  jp float_stepin_2
