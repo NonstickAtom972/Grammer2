@@ -1,9 +1,18 @@
+<div hidden>
+***
+
+If you can see this, then you are probably looking at the plaintext.
+You can view the HTML document in the `readme` folder :)
+
+***
+</div>
+
 # Commands and Tutorial
 ```
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.4.0    (I will probably forget to change this :( )
+Version.......2.50.5.0    (I will probably forget to change this :( )
 Last Update...17 March 2019
 Language......English
 Programming...Assembly
