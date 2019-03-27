@@ -51,18 +51,6 @@
      jp main
 jumptable:
 #include "jmptable.z80"
-#ifdef include_interrupt
-.echo "  ",$4100-$," bytes before interrupt jump"
-#if $4100<$
-;need to shorten interrupt, possibly put in a jp instead of actual code
-.echo "Alert!!! Interrupt table is in the wrong place!"
-.echo "no interrupt table"
-#else
-.fill $4100-$,255
-.fill $4201-$,$81
-#endif
-#endif
-
 SelectedProg:
   bcall(_OP5ToOP1)
 ;  ld de,OP1
