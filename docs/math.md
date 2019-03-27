@@ -86,16 +86,28 @@ In general, float commands are signified by an operations followed by a `.`. As 
 | A→.B    | →.    | →.      | Stores the 4 bytes at ptr A to ptr B             |
 | A+.B    | +.    | +.      | Adds the floats at A and B, returns a pointer.   |
 | A-.B    | -.    | -.      | Subtracts the floats at A and B, returns a pointer. |
+| mean(.A,B | mean(. |      | Computes the mean of A and B                     |
 | A*.B    | *.    | *.      | Multiplies the floats at A and B, returns a pointer. |
 | A/.B    | /.    | /.      | Divides the floats at A and B, returns a pointer. |
 | √(.B    | √(.   | √(.     | Computes the square root of the float at A, returns a pointer. |
 | e^(.A   | e^(.  |         | Returns e^A. |
+| 10^(.A  | 10^(. |         | Returns 10^A. |
 | A^.B    | ^.    | ^.      | Returns A^B |
 | abs(.A  | abs(. |         | Returns the absolute value of the float. |
 | -.A     | (-)   |         | Returns the negative of the float. This is the negative token, not minus. |
 | sin(.A  | sin(. |         | Returns the sine of A (in radians).
 | cos(.A  | cos(. |         | Returns the cosine of A (in radians).
-| log(.A[,B  | log(. |      | `log(.A` returns the base-10 logarithm.  `log(.A,B` returns the base-B logarithm of A. Currently only works on positive inputs x>2 and x<1,
+| tan(.A  | tan(. |         | Returns the tangent of A (in radians).
+| sinh(.A  | sinh(. |       | Returns the hyperbolic sine of A.
+| cosh(.A  | cosh(. |       | Returns the hyperbolic cosine of A.
+| tanh(.A  | tanh(. |       | Returns the hyperbolic tangent of A.
+| sin<sup>-1</sup>(.A  | sin<sup>-1</sup>(. |         | Returns the arcsine of A (in radians).
+| cos<sup>-1</sup>(.A  | cos<sup>-1</sup>(. |         | Returns the arccosine of A (in radians).
+| tan<sup>-1</sup>(.A  | tan<sup>-1</sup>(. |         | Returns the arctangent of A (in radians).
+| sinh<sup>-1</sup>(.A  | sinh<sup>-1</sup>(. |       | Returns the hyperbolic arcsine of A.
+| cosh<sup>-1</sup>(.A  | cosh<sup>-1</sup>(. |       | Returns the hyperbolic arccosine of A.
+| tanh<sup>-1</sup>(.A  | tanh<sup>-1</sup>(. |       | Returns the hyperbolic arctangent of A.
+| log(.A[,B  | log(. |      | `log(.A` returns the base-10 logarithm.  `log(.A,B` returns the base-B logarithm of A.
 | rand.   | rand. |         | Returns a random number on [0,1) |
 | A▶Dec   | ▶Dec  | ▶Float  | A is a pointer. This converts the data at the pointer to a float. Can be used on strings, or `Input` for example. |
 | Text(x,y,`.`A |      |    | Displays a float located at A. |
