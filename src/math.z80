@@ -111,22 +111,11 @@ logToken:
   jp nz,ErrBadToken
   call ParseNextFullArg
   cp 2Bh
-  jr z,+_
+  ld hl,logSingle
+  jp z,float_stepin_2_
   ld hl,log10Single
   push hl
   jr float_stepin_1_
-_:
-  push bc
-  call ParseNextFullArg
-  push bc
-  call floatstackpush
-  ld b,h
-  ld c,l
-  pop de
-  ld hl,logSingle
-  ld (next_page_call_address),hl
-  pop hl
-  jp next_page_call
 Add:
   push bc
   ld a,(hl)
@@ -567,5 +556,21 @@ meanToken:
   ld a,(hl)
   cp 3Ah
   jp nz,ErrBadToken
-  ld hl,meanSingle
-  jp float_stepin_2
+  ld hl,ameanSingle
+float_stepin_2:
+  push hl
+  call ParseNextFullArg
+  pop hl
+float_stepin_2_:
+  push bc
+  push hl
+  call ParseNextFullArg
+  push bc
+  call floatstackpush
+  ld b,h
+  ld c,l
+  pop de
+  pop hl
+  ld (next_page_call_address),hl
+  pop hl
+  jp next_page_call
