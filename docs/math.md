@@ -50,7 +50,7 @@ Here are the math operations currently available.
 | max(a,b | max(  | max(    | Returns the maximum of two numbers. |
 | sin(a   | sin(  | sin(    | This returns the sine of a number as a value between -128 and 127. The period is 256, not 360. For example, sin(32) is like sin(45) in normal math. If you need help, take the actual sin(45) and multiply by 128. Rounded, this is 91. So, sin(32)=91. |
 | cos(a   | cos(  | cos(    | This calculates cosine. See notes on sine. |
-| e^(a    | e^(   | 2^(     | Computes a power of 2. |
+| e^(a    | e^(   | e^(     | Computes a power of 2. |
 | gcd(a,b | gcd(  | gcd(    | Returns the greatest common divisor of two numbers. |
 | lcm(a,b | lcm(  | lcm(    | Returns the least common multiple of two numbers. |
 | a▶Frac  | ▶Frac | ▶lFactor | θ' contains the smallest factor of the number. Output is a divided by that number. For example, 96▶Frac will output 48 with θ'=2. You can use this to test primality. |
@@ -89,13 +89,13 @@ In general, float commands are signified by an operations followed by a `.`. As 
 | A*.B    | *.    | *.      | Multiplies the floats at A and B, returns a pointer. |
 | A/.B    | /.    | /.      | Divides the floats at A and B, returns a pointer. |
 | √(.B    | √(.   | √(.     | Computes the square root of the float at A, returns a pointer. |
-| e^(.A   | 2^(.  |         | Returns 2^A. It's annoying, I know, but I never thought I'd add float support and then I added e^( in the token hook. |
+| e^(.A   | e^(.  |         | Returns e^A. |
 | A^.B    | ^.    | ^.      | Returns A^B |
 | abs(.A  | abs(. |         | Returns the absolute value of the float. |
 | -.A     | (-)   |         | Returns the negative of the float. This is the negative token, not minus. |
-| sin(.A  | sin(. |         | ** Only accurate on -pi/4<A<pi/4
-| cos(.A  | cos(. |         | ** Only accurate on -pi/4<A<pi/4
-| log(.A[,B  | log(. |      | `log(.A` returns the base-10 logarithm. `log(.A,B` returns the base-B logarithm of A. log10 is only working for positive numbers x>2 and x<1
+| sin(.A  | sin(. |         | Returns the sine of A (in radians).
+| cos(.A  | cos(. |         | Returns the cosine of A (in radians).
+| log(.A[,B  | log(. |      | `log(.A` returns the base-10 logarithm.  `log(.A,B` returns the base-B logarithm of A. Currently only works on positive inputs x>2 and x<1,
 | rand.   | rand. |         | Returns a random number on [0,1) |
 | A▶Dec   | ▶Dec  | ▶Float  | A is a pointer. This converts the data at the pointer to a float. Can be used on strings, or `Input` for example. |
 | Text(x,y,`.`A |      |    | Displays a float located at A. |
