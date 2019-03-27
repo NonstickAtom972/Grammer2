@@ -1,67 +1,66 @@
 .org $4000
 #define scrap 8000h
-
 #include "gfx/bigtile.z80"
-#include "single/pushpop.z80"
-#include "single/subSingle.z80"
-
-
-#ifdef include_interrupt
-.echo "  ",$4100-$," bytes before interrupt table second page"
-#if $4100<$
-;need to shorten interrupt, possibly put in a jp instead of actual code
-.echo "Alert!!! Interrupt table is in the wrong place on second page!"
-.echo "no interrupt table"
-#else
-.fill $4100-$,255
-.fill $4201-$,$81
-#endif
-#endif
-
-#include "single/cmpSingle.z80"
-
-
-#ifdef include_interrupt
-#include "interrupt.z80"
-#endif
-
-#include "single/single2str.z80"
-#include "single/mulSingle.z80"
-#include "single/mulSingle_p041015625.z80"
-#include "single/mulSingle_p34375.z80"
-#include "single/mulSingle_p375.z80"
-#include "single/divSingle.z80"
-#include "single/addSingle.z80"
-#include "single/rsubSingle.z80"
-#include "single/ameanSingle.z80"
-#include "single/mod1Single.z80"
-#include "single/sinSingle.z80"
-#include "single/cosSingle.z80"
-#include "single/absSingle.z80"
-#include "single/negSingle.z80"
-#include "single/sqrtSingle.z80"
-#include "single/geomeanSingle.z80"
-#include "single/pow2Single.z80"
-#include "single/powSingle.z80"
-#include "single/expSingle.z80"
-#include "single/randSingle.z80"
-#include "single/bg2iSingle.z80"
-#include "single/bgSingle.z80"
-#include "single/logSingle.z80"
-#include "single/lgSingle.z80"
-#include "single/lnSingle.z80"
-#include "single/log10Single.z80"
-#include "single/str2single.z80"
-#include "single/routines/ascii_to_uint8.z80"
-#include "single/routines/mov4.z80"
-#include "single/routines/sqrt16.z80"
-#include "single/routines/sqrtHLIX.z80"
-#include "single/constants.z80"
-#include "single/singleTo_int16.z80"
 #include "isort.z80"
 #include "gfx/drawrect.z80"
-#include "single/lut.z80"
 #include "math/rand_single.z80"
+
+#include "single/sinSingle.z80"
+#include "single/cosSingle.z80"
+#include "single/tanSingle.z80"
+#include "single/mulSingle.z80"
+#include "single/mul10Single.z80"
+#include "single/mulSingle_p375.z80"
+#include "single/mulSingle_p34375.z80"
+#include "single/mulSingle_p041015625.z80"
+#include "single/addSingle.z80"
+#include "single/rsubSingle.z80"
+#include "single/subSingle.z80"
+#include "single/constants.z80"
+#include "single/pushpop.z80"
+#include "single/expSingle.z80"
+#include "single/powSingle.z80"
+#include "single/pow2Single.z80"
+#include "single/pow10Single.z80"
+#include "single/divSingle.z80"
+#include "single/divSingle_special.z80"
+#include "single/logSingle.z80"
+#include "single/lnSingle.z80"
+#include "single/lgSingle.z80"
+#include "single/log10Single.z80"
+;#include "single/single2char.z80"
+#include "single/single2str.z80"
+#include "single/single2TI.z80"
+#include "single/str2single.z80"
+#include "single/lut.z80"
+
+#include "single/absSingle.z80"
+#include "single/acosSingle.z80"
+#include "single/asinSingle.z80"
+#include "single/atanSingle.z80"
+#include "single/acoshSingle.z80"
+#include "single/asinhSingle.z80"
+#include "single/atanhSingle.z80"
+#include "single/ameanSingle.z80"
+#include "single/geomeanSingle.z80"
+#include "single/sqrtSingle.z80"
+#include "single/cmpSingle.z80"
+#include "single/bgSingle.z80"
+#include "single/bg2iSingle.z80"   ;slightly faster version for ln(x), can omit and use bgiSingle instead :)
+#include "single/randSingle.z80"
+#include "single/coshSingle.z80"
+#include "single/sinhSingle.z80"
+#include "single/tanhSingle.z80"
+#include "single/negSingle.z80"
+#include "single/ti2single.z80"
+#include "single/single2char.z80"
+#include "single/mod1Single.z80"
+#include "single/singleTo_int16.z80"
+#include "single/routines/mov4.z80"
+#include "single/routines/ascii_to_uint8.z80"
+#include "single/routines/sqrt16.z80"
+#include "single/routines/sqrtHLIX.z80"
+
 
 #ifdef INCLUDE_GRAMPKG
 grampkg_start:
