@@ -73,7 +73,7 @@ TokenTable:
  .db $62,1,7,"WriteB("
  .db $70,1,4,"Inv("
  .db $72,1,7,"WriteW("
- .db $7E,1,2,"2^"
+; .db $7E,1,2,"2^"
  .db $A6,1,4,"For "
  .db $B4,1,7,"GetInc("
  .db $BC,1,7,"SetBuf("
