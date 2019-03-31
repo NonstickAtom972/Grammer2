@@ -1,28 +1,31 @@
 Sqrt:
   ld a,(hl)
   cp 3Ah
-  jr z,+_
+  jr z,floatsqrt
   inc hl
   cp $AE
   push af
-  jr nz,$+5
+  jr nz,+_
   ld (parsePtr),hl
+_:
   call ParseFullArg
+  ld hl,sqrtHL
+  ld (next_page_call_address),hl
   ld h,b
   ld l,c
-  call sqrtHL_page0
-  ld (ThetaPrimeVar),de
-  ld c,l
-  ld b,h
+  call next_page_call
+
+  ld (ThetaPrimeVar),hl
+  ld c,a
+  ld b,0
   pop af
   ret nz
-  ;if HL-DE<0, increment BC
-  or a
-  sbc hl,de
+  ;if HL-BC<0, increment BC
+  sbc hl,bc
   ret nc
   inc bc
   ret
-_:
+floatsqrt:
   ld hl,sqrtSingle
   jr float_stepin_1
 sinefloat:

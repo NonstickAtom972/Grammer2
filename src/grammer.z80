@@ -497,7 +497,6 @@ _:
   ld b,h
   ld c,l
   ret
-#include "commandtable.z80"
 VarName:
    ld e,a
    ld d,(hl)
@@ -3692,32 +3691,6 @@ _:
   ld hl,(ptr_sto)
   ld (parsePtr),hl
   ret
-sqrtHL_page0:
-;returns HL as the sqrt, DE as the remainder
-	ld	a,l
-	ld	l,h
-	ld	de,$0040
-	ld	h,d
-	ld	b,8
-	or	a
-sqrtHL_loop:
-	sbc	hl,de
-	jr	nc,+_
-	add	hl,de
-_:
-	ccf
-	rl	d
-	rla
-	adc	hl,hl
-	rla
-	adc	hl,hl
-	djnz	sqrtHL_loop
-  ld e,h
-  ld l,d
-  ld h,b
-  ld d,b
-  rl d
-	ret
 SetMem:
   ld (hl),a
   ld d,h
@@ -4228,6 +4201,7 @@ todectoken:
 #include "parserinterrupt.z80"
 #include "err.z80"
 #include "data.z80"
+#include "commandtable.z80"
 
 .echo "Page 0: ",$8000-$," bytes remaining"
 
