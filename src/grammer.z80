@@ -4086,28 +4086,34 @@ LnToken:
   push bc
   jr z,JumpBack
   call ParseFullArg
+  dec bc
+  inc b
+  inc c
   ld d,b \ ld e,c
   ld bc,0
 _:
   ld a,3Fh
   cpir
-  dec de
-  ld a,d \ or e
+  dec e
+  jr nz,-_
+  dec d
   jr nz,-_
   ld (parsePtr),hl
   pop bc
   ret
 JumpBack:
   call ParseNextFullArg
+  inc b
+  inc c
   ld d,b \ ld e,c
   dec hl
   ld bc,0
-  inc de
 _:
   ld a,3Fh
   cpdr
-  dec de
-  ld a,d \ or e
+  dec e
+  jr nz,-_
+  dec d
   jr nz,-_
   ld (parsePtr),hl
   pop bc
