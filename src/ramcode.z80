@@ -77,11 +77,14 @@ prev_page_call = -_-RAMCodeStart+ramCode
   in a,(6)
   inc a
   out (6),a
+  pop af
 prev_page_call_address = $-RAMCodeStart+ramCode+1
   call 0
+  push af
   in a,(6)
   dec a
   out (6),a
+  pop af
   ret
 _:
 bincompare = -_-RAMCodeStart+ramCode
