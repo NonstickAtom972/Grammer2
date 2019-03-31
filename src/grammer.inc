@@ -195,6 +195,7 @@ SignedText      =   5
 ParticleFlag    = 35
 InternalFlag2   = 35
 Xis0            = 0
+inputflag       = 0
 Xis95           = 1
 Yis0            = 2
 Yis63           = 3

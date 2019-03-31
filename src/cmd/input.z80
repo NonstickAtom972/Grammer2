@@ -8,7 +8,7 @@ InputToken:
   ld h,b
   ld l,c
   ld de,OP1
-  call GetGrammerText+3
+  call GetGrammerText_DE
   ld h,b
   ld l,c
   add hl,de
@@ -22,16 +22,16 @@ SetInputStr:
   ld hl,cmdShadow
   ld bc,128
 g_Input:
-  res 0,(iy+35)
+  res inputflag,(iy+InternalFlag2)
   xor a
-  ld (843Fh),a      ;Reset the OS keypress
-  out (0),a         ;Reset the link port
+  ld (kbdScanCode),a      ;Reset the OS keypress
+  out (0),a               ;Reset the link port
   ld (TempWord3),hl
   add hl,bc
   ld (TempWord4),hl
   ld hl,(textRow)
   ld (TempWord2),hl
-  set 3,(iy+33)
+  set errorChecking,(iy+InternalFlag)
   ld hl,(TempWord5)
   call GPutS
   call GraphToLCD
@@ -41,7 +41,7 @@ g_Input:
   ld (hl),3Fh
   ld (TempWord1),hl
 InputLoop:
-  res 4,(iy+9)
+  res onInterrupt,(iy+onFlags)
   bcall(_GetKeyRetOff)
   cp 3
   jp z, EnterP
@@ -58,17 +58,15 @@ InputLoop:
   sbc hl,bc \ add hl,bc
   jr nc,InputLoop
   ld a,d \ or a
-  jr z,$+4
+  jr z,+_
   ld (hl),d \ inc hl
+_:
   ld (hl),e \ inc hl
   ld (TempWord1),hl
   ld (hl),3Fh
-  call DispInputString
-  jr InputLoop
+  jr DispInputString
 ClearP:
 DelP:
-  call DelInput
-  jr InputLoop
 DelInput:
   ld bc,0
   ld hl,(TempWord1)
@@ -79,45 +77,48 @@ DelInput:
   jr c,DelDone
   dec hl \ dec hl
   ld a,(hl) \ call Is_2_Byte
-  jr z,$+3
+  jr z,+_
   inc hl
+_:
   ld (TempWord1),hl
   bcall(_Get_Tok_Strng)
 DelDone:
   ld (hl),3Fh
   ld a,b
   or c
-  jr z,$+7
+  jr z,DispInputString
   push bc
-  set 0,(iy+35)
+  set inputflag,(iy+InternalFlag2)
 DispInputString:
   ld hl,(TempWord3)
   call GetGrammerText
   ld hl,(TempWord2)
   ld (TextRow),hl
   ex de,hl
-  ld a,1
-  xor (iy+34)
-  ld (iy+34),a
+  ld a,1<<InvertTextFlag
+  xor (iy+UserFlags)
+  ld (iy+UserFlags),a
   call PutSM
-  ld a,1
-  xor (iy+34)
-  ld (iy+34),a
+  ld a,1<<InvertTextFlag
+  xor (iy+UserFlags)
+  ld (iy+UserFlags),a
   ld hl,(textRow)
   push hl
-  bit 0,(iy+35)
+  bit inputflag,(iy+InternalFlag2)
   jr z,NoDelToken
-  res 0,(iy+35)
+  res inputflag,(iy+InternalFlag2)
   pop hl
   pop bc
   push hl
+_:
   push bc
   ld a,20h
   call PutSC
   pop bc
   cpi
-  jp pe,$-9
+  jp pe,-_
   ld hl,(TempWord5)
+_:
   push hl
   ld a,20h
   call PutSC
@@ -125,7 +126,7 @@ DispInputString:
   ld a,(hl)
   inc hl
   or a
-  jr nz,$-10
+  jr nz,-_
   pop hl
   ld (textRow),hl
   push hl
@@ -136,7 +137,10 @@ NoDelToken:
   ld (textRow),hl
 ;DE points to string
 ;BC is the size
-  jp GraphToLCD
+  call GraphToLCD
+  jp InputLoop
+
+
 EnterP:
   ld hl,(TempWord2)
   ld (TextRow),hl
@@ -144,5 +148,5 @@ EnterP:
   call TokenTextLoop
   ld bc,(TempWord3)
   sbc hl,bc
-  res 3,(iy+33)
+  res errorChecking,(iy+InternalFlag)
   ret
