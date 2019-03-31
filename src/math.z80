@@ -71,10 +71,21 @@ Sine:
   xor 80h
 _:
   and 63
+#if (sinTable&255)<192
+#if (sintable&255)==0
+  ld h,sinTable>>8
+  ld l,a
+#else
+  ld hl,sinTable
+  add a,l
+  ld l,a
+#endif
+#else
   ld c,a
   ld hl,sinTable
   ld b,0
   add hl,bc
+#endif
   ld c,(hl)
   rlc d
   ret nc
