@@ -51,8 +51,7 @@ PutSC:
   jp z,VPutC
   cp 10h
   jp z,VPutSC
-  cp 18h
-  jp z,OmniCalcFont
+  jp OmniCalcFont
 _:
   push bc
   ld bc,(textRow)
