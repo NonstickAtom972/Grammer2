@@ -69,5 +69,7 @@ grampkg_start:
 grampkg_end:
 #endif
 
+#include "io/getKeyChar.z80"
+#include "io/input.z80"
 
 .echo "Page 1: ",$8000-$," bytes remaining"

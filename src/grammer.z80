@@ -430,7 +430,6 @@ _:
   ret
 AnsToken:
   ld bc,(Ans) \ ret
-#include "cmd/input.z80"
 seqToken:
 CopyHex:
   ex de,hl
@@ -4170,7 +4169,10 @@ todectoken:
   ld c,l
   pop hl
   jp next_page_call
-
+InputToken:
+  ld hl,InputStr
+  ld (next_page_call_address),hl
+  jp next_page_call
 
 
 #include "main.z80"
@@ -4180,7 +4182,6 @@ todectoken:
 #include "ramcode.z80"
 #include "routines.z80"
 #include "SetUpData.z80"
-#include "math.z80"
 #include "parserhook.z80"
 #include "tokenhook.z80"
 #include "cmd/particle.z80"
@@ -4203,11 +4204,13 @@ todectoken:
 #include "subroutines/getbyte.z80"
 #include "subroutines/searchline.z80"
 #include "subroutines/CheckStatus.z80"
+#include "commandtable.z80"
+#include "data.z80"
+#include "math.z80"
 #include "subroutines/ConvOP1.z80"
 #include "parserinterrupt.z80"
 #include "err.z80"
-#include "data.z80"
-#include "commandtable.z80"
+
 
 .echo "Page 0: ",$8000-$," bytes remaining"
 

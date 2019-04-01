@@ -1,0 +1,221 @@
+#define CUR_COUNT_RESET 30
+
+keyflags    = 35
+shift     = 0
+alpha     = 1
+shiftprev = 2
+alphaprev = 3
+holdmod   = 4
+cursorblink = 7
+
+curcount    = OP4
+penTemp     = OP4+1
+textRow_base= OP4+3
+input_base  = OP4+5
+input_top   = OP4+7
+input_head  = OP4+9
+
+InputStr:
+  call input
+  ld b,h
+  ld c,l
+  ret
+input:
+  ld hl,(textRow)
+  ld (textRow_base),hl
+
+;set up the default input buffer
+  ld hl,cmdShadow
+  ld bc,128
+  ld (input_base),hl
+  ld (input_head),hl
+  add hl,bc
+  ld (input_top),hl
+
+;Draw the box that displays input mode
+  call draw_modebox
+
+;Clear the input
+  call input_clear
+
+;clear input mode
+  xor a
+  ld (flags+keyflags),a
+
+;Get input
+  call inputloop
+
+;append a null byte to end the input string.
+  ld hl,(input_head)
+  ld (hl),0
+  ld hl,(input_base)
+  ret
+inputloop:
+  ld hl,(textRow)
+  ld (penTemp),hl
+  res cursorblink,(iy+keyflags)
+  ld a,CUR_COUNT_RESET
+  ld (curcount),a
+input_key_loop:
+  in a,(4)
+  and 8
+  jp z,input_ON
+
+;blink the cursor
+  ld hl,curcount
+  dec (hl)
+  jr nz,+_
+  ld (hl),CUR_COUNT_RESET
+  ld a,(flags+keyflags)
+  xor 1<<cursorblink
+  ld (flags+keyflags),a
+  and 1<<cursorblink
+  ld a,$E4    ;underline
+  jr z,$+4
+  ld a,' '
+  call inp_VPutMap
+  call inp_disp
+  ld hl,(penTemp)
+  ld (textRow),hl
+_:
+  ld hl,getKeyDebounce
+  ld (prev_page_call_address),hl
+  call prev_page_call
+  or a
+  jr z,input_key_loop
+  cp 9
+  ret z
+  push af
+  ld a,' '
+  call inp_VPutMap
+  ld hl,(penTemp)
+  ld (textRow),hl
+  pop af
+  call +_
+  jr inputloop
+_:
+  cp 15
+  jr z,input_clear
+  cp 56
+  jr z,input_del
+  call getKeyChar
+  call +_
+  ret c
+  ld de,(input_head)
+  ld hl,(input_top)
+  sbc hl,de
+  ret z
+  ld (de),a
+  inc de
+  ex de,hl
+  ld (hl),0
+  ld (input_head),hl
+  call inp_VPutMap
+  jp inp_disp
+
+_:
+  call pushpop
+;Draw the input mode
+  ld hl,(textRow)
+  push hl
+  ld a,(flags+keyflags)
+  ld l,a
+  rrca
+  rrca
+  xor l
+  and 3
+  jr nz,+_
+  xor l
+  and 3
+  jr nz,no_change_input_mode
+_:
+  ld a,l
+  and %11110011
+  ld h,a
+  ld a,l
+  and 3
+  add a,a
+  add a,a
+  or h
+  ld (flags+keyflags),a
+  ld hl,input_mode_LUT
+  and 3
+  add a,l
+  ld l,a
+#if input_mode_LUT>252
+  jr nc,$+3
+  inc h
+#endif
+  ld a,(hl)
+  push af
+  call draw_modebox
+  pop af
+;  ld hl,$5B01
+  ld hl,$1701
+  ld (textRow),hl
+  call inp_VPutMap
+  call inp_disp
+no_change_input_mode:
+  pop hl
+  ld (textRow),hl
+  ret
+input_clear:
+  call +_
+  jr c,input_clear
+  jp inp_disp
+input_del:
+  call +_
+  jp inp_disp
+_:
+  ld de,(input_head)
+  ld hl,(input_base)
+  or a
+  sbc hl,de
+  ret z
+  add hl,de
+  ex de,hl
+  dec hl
+  ld (input_head),hl
+  ld (hl),0
+  ld hl,(textRow_base)
+  ld (textRow),hl
+  ex de,hl
+  call inp_VPutS
+
+  ld hl,(textRow)
+  push hl
+  ld a,' '
+  call inp_VPutMap
+  pop hl
+  ld (textRow),hl
+
+  scf
+  ret
+draw_modebox:
+  ld bc,$0900
+  ld de,$0859
+  ld a,6
+  call drawrect
+inp_disp:
+  ld hl,GraphToLCD
+  ld (prev_page_call_address),hl
+  jp prev_page_call
+input_ON:
+  ld hl,ONErr
+  ld (prev_page_call_address),hl
+  call prev_page_call
+  jr inp_disp
+inp_VPutS:
+  push hl
+  ld hl,GPutS
+  ld (prev_page_call_address),hl
+  pop hl
+  jp prev_page_call
+inp_VPutMap:
+  push hl
+  ld hl,PutSC
+  ld (prev_page_call_address),hl
+  pop hl
+  jp prev_page_call
+input_mode_LUT:
+.db " ",$1E,"Aa"
