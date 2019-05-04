@@ -7,5 +7,5 @@ python jt.py jmptable.z80 grammer2.5.inc
 #spasm grampkg.z80 ../bin/grampkg.8xv
 cp grammer2.5.inc ../docs/grammer2.5.inc
 echo -e "\e[1m\e[37mAssembling App\e[0m"
-spasm grammer.z80 ../bin/grammer.8xk
+spasm grammer.z80 ../bin/grammer.8xk -I single
 cd ..
