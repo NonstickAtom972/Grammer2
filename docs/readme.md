@@ -117,6 +117,10 @@ See the [Math](math.md) documentation.
 ## Drawing
 See the [Drawing](drawing.md) documentation and the [Drawing Commands](#drawing-commands).
 
+## Fonts
+You can use DrDnar's [Monochrome Font Editor](https://github.com/drdnar/MFE/releases)
+to generate fonts! It supports many kinds of font formats, including Grammer fonts.
+
 # Command List
 
 Here are a bunch of commands that do not fit in the drawing or math category. This is a whole
