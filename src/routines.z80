@@ -122,10 +122,10 @@ _:
   jr nc,-_
   ret
 prng16:
-;;collaboration by Zeda with Runer112
-;;160cc
-;;26 bytes
-;;cycle: 4,294,901,760 (almost 4.3 billion)
+;collaboration by Zeda with Runer112
+;160cc
+;26 bytes
+;cycle: 4,294,901,760 (almost 4.3 billion)
   ld hl,(seed1)
   ld b,h
   ld c,l

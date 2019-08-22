@@ -206,6 +206,7 @@ selected_entry:
   call isStartMenu_valid
   call z,SelectedProgOP1
   jp startmenu__
+
 cur_dn:
   ld a,(hl)
   inc a
@@ -296,7 +297,6 @@ _:
   call DrawRectToGraphI \ .db 16,11,6,64,0
   call draw_var_name
   jp main_menu_loop
-
 
 highlight_Gram:
   ld de,$1100

@@ -30,7 +30,7 @@ Interrupt:
   ei
   ret
 ;gHook:
-;;runs the Grammer code set to interrupt
+;runs the Grammer code set to interrupt
 ;  ret
 interruptON:
   ret

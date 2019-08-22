@@ -1,13 +1,13 @@
 fastline:
-;;B is x0
-;;C is y0
-;;D is x1
-;;E is y1
-;;A is the method
-;;HL is where to draw
-;;Destroys:
-;;  All (including shadow registers)
-;;  3 bytes at TempWord1
+;B is x0
+;C is y0
+;D is x1
+;E is y1
+;A is the method
+;HL is where to draw
+;Destroys:
+;  All (including shadow registers)
+;  3 bytes at TempWord1
 
 ;Disable interrupts so that we can use shadow registers
   call diRestore
