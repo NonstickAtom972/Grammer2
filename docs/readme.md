@@ -1,19 +1,12 @@
-<div hidden>
-***
-
-If you can see this, then you are probably looking at the plaintext.
-You can view the HTML document in the `readme` folder :)
-
-***
-</div>
+An HTML version of this file is in the `readme` folder :)
 
 # Commands and Tutorial
 ```
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.5.0    (I will probably forget to change this :( )
-Last Update...17 March 2019
+Version.......2.50.6.0    (I will probably forget to change this :( )
+Last Update...22 August 2019
 Language......English
 Programming...Assembly
 Size..........2-Page app
@@ -42,7 +35,18 @@ should become familiar with Grammer's:
 
 ## Getting Started
 First, send Grammer 2 to your calculator. If you have this document, I assume you have the App.
-Next, run the app on your calc. Grammer is now installed until your next RAM clear.  
+Next, run the app on your calc. Grammer is now installed until your next RAM clear.
+The  app's menu controls are as follows:
+
+* [Clear] exits
+* [Up/Down] scroll through the filtered list of programs and appvars
+* [Enter] selects a program or appvar to run as a Grammer program
+* [Y=] toggles the `Gram` filter. This shows only files with a Grammer header.
+* [Window] toggles the `AppV` filter. Toggled on, this will only show appvars, off will show progams and appvars.
+* [Zoom] toggles the `Asm` filter. Toggled on, this will only show assembly programs.
+* [Trace] exits the app, like [Clear].
+* [Hook] toggles the token hook. When enabled, some token names are changed while editing a program with the Grammer header.
+
 ![Grammer Main Menu-- (Default) Grammer programs only](img/img000.png)
 ![Grammer Main Menu-- All Programs and Appvars](img/img001.png)
 ![Grammer Main Menu-- Appvars Only](img/img002.png)
@@ -323,13 +327,20 @@ Or to jump backwards:
 |:------------ |:------- |
 | getKey       | This returns a value from 0 to 56 that is the current key press. You can use [this chart](#keycodes) for values.
 | getKey(      | `getKey(` will allow you to see if a key is being pressed. For example, `getKey(9` will return `1` if enter is pressed
-| Input        | This allows you to input a string. The pointer to the string is returned. (this is not a permanent location, the data will be overwritten the next time Input is used). To get a value input from the user, you can use `expr(` : `expr(Input →A`. This will store the result to A. `Input` can also take an optional string input. The input string will be displayed after what the user is typing. If you execute this code, I think it'll explain it better. It's honestly pretty cool for a calculator.
+| Input        | This allows you to input a string. The pointer to the string is returned. (this is not a permanent location, the data will be overwritten the next time Input is used). To get a value input from the user, you can use `expr(` : `expr(Input →A`. This will store the result to A. `Input` can also take an optional string input. The input string will be displayed after what the user is typing. If you execute this code, I think it'll explain it better. It's honestly pretty cool for a calculator. **See below for information on the Input vars!**
 | Menu(        | ~~*This may require the included appvar, GramPkg, to be on your calc (in RAM or archived).*~~ Syntax is, `Menu(y,x,w,"Header","Item0","Item1","Item2","Exit`. It basically makes a pop-up style menu, returning the number of the selected item.
 | Ans          | This will return the value of the previous line.
 | expr(        | This will compute a string as a line of code (useful with `Input`)
 | inString(    | This is similar to the TI-BASIC command. This will return the location of a sub-string. The inputs are where to start searching and the string to search for: `inString(SearchStart,SearchString[,maxlength]`. The size of the input string is returned in `Ɵ'` and if there was no match found, 0 is returned.
 | length(      | This will return the size of a variable (in RAM or Archive) as well as the pointer to the data in `Ɵ'`. For example, to get the size of the appvar named `Data`: `length("UData→A`. If the var is not found, -1 is returned.
 | length('     | This is used to search for a line. For example, if you want to find a specific line number in a program, this is what you would use. The syntax: `length('StartSearch,Size,LineNumber,[LineByte`, `StartSearch` is where to begin the search `Size` is how many bytes to search in. 0 will search all RAM. `LineNumber` is the line number you are looking for. `LineByte` is an optional argument for what byte is considered a new line. The output is the location of the string and `Ɵ'` has the size of the string. If the line is not found, the last line is returned instead.
+
+### Input Vars!
+There are two Input variables that you can store to:
+```
+x→Input       This sets the address of the Input buffer.
+x→Input'      This sets the size of the Input buffer. Remember, 1 byte is used to mark the end of the string!
+```
 
 ### Input Examples
 
