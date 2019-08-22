@@ -3000,10 +3000,10 @@ VarToken:
   set FactorialFlag,(iy+InternalFlag)
   ret
 ParseNextFullArg_Buffer:
-;;Input: z flag
-;;Result:
-;;  z  : Parse the next argument, result in BC
-;;  nz : Returns BC as the pointer to the main buffer
+;Input: z flag
+;Result:
+;  z  : Parse the next argument, result in BC
+;  nz : Returns BC as the pointer to the main buffer
   ld bc,(BufPtr)
   call z,ParseNextFullArg
   ld (gbuf_temp),bc
@@ -3160,6 +3160,7 @@ StoToken:
   ld a,(hl)
   inc hl
   cp $AA \ jp z,StoString
+  cp $DC \ jp z,StoInput
   cp $DE \ jr z,StoDisp
   cp $01 \ jr z,StoModule
   cp $3A \ jr z,StoFloat
@@ -3246,6 +3247,18 @@ StoModule:
   ld (hl),c
   inc hl
   ld (hl),b
+  ret
+StoInput:
+  ld a,(hl)
+  cp $AE
+  jr z,sto_input_size
+  ld (parsePtr),hl
+  ld (input_base),bc
+  ret
+sto_input_size:
+  inc hl
+  ld (parsePtr),hl
+  ld (input_size),bc
   ret
 Return:
   call EndOfLine
@@ -3470,17 +3483,17 @@ TextConvertEnd:
   inc hl
   pop de
   ret
-;;===============================================================
+;===============================================================
 GetGrammerStr:
-;;===============================================================
-;;Input:
-;;    HL points to the start of the string
-;;Outputs:
-;;     A is the value of the ending byte of the string
-;;    BC is the size of the string
-;;    HL points to the ending byte of the string
-;;     z flag is set
-;;===============================================================
+;===============================================================
+;Input:
+;    HL points to the start of the string
+;Outputs:
+;     A is the value of the ending byte of the string
+;    BC is the size of the string
+;    HL points to the ending byte of the string
+;     z flag is set
+;===============================================================
   ld bc,0
 _:
   inc hl
@@ -4170,15 +4183,32 @@ todectoken:
   pop hl
   jp next_page_call
 InputToken:
-  ld hl,InputStr
+  ld de,s_null
+  ld a,(hl)
+  call EndOArg
+  call nz,isop
+  jr z,+_
+  call ParseFullArg
+  ld h,b
+  ld l,c
+  ld de,OP1
+  call GetGrammerText_DE
+  ld h,b
+  ld l,c
+  add hl,de
+  ld (hl),0
+_:
+  ld hl,input
   ld (next_page_call_address),hl
-  jp next_page_call
-
-
+  call next_page_call
+  ld b,h
+  ld c,l
+  ret
 #include "main.z80"
 #include "progmeta.z80"
 #include "compile.z80"
 #include "module.z80"
+#include "commandtable.z80"
 #include "ramcode.z80"
 #include "routines.z80"
 #include "SetUpData.z80"
@@ -4203,11 +4233,11 @@ InputToken:
 #include "subroutines/diRestore.z80"
 #include "subroutines/getbyte.z80"
 #include "subroutines/searchline.z80"
-#include "subroutines/CheckStatus.z80"
-#include "commandtable.z80"
-#include "data.z80"
+#include "grammerdata.z80"
 #include "math.z80"
+#include "subroutines/chardim.z80"
 #include "subroutines/ConvOP1.z80"
+#include "subroutines/CheckStatus.z80"
 #include "parserinterrupt.z80"
 #include "err.z80"
 

@@ -144,9 +144,9 @@ start_of_prog = size_of_buffer+2  ;
 end_of_src  = start_of_prog+2     ;
 data_top    = end_of_src+2        ;
 end_of_buffer = data_top+2        ;
-buffer_top  = end_of_buffer+2
-in_head     = buffer_top+2
-out_head    = in_head+2
+buffer_top  = end_of_buffer+2     ;
+in_head     = buffer_top+2        ;
+out_head    = in_head+2           ;
 
 floatstack_ptr    = vars
 floatstack_bottom = vars+2
@@ -157,6 +157,12 @@ seedsingle1 = seedsingle0+4
 stack_base  = seedsingle1+4
 stack_top   = stack_base+2
 stack_ptr   = stack_top+2
+
+input_base  = stack_ptr+2
+input_head  = input_base+2
+input_top   = input_head+2
+input_size  = input_top+2
+
 
 PBuf          = 9872h
 ramCode       = 8100h

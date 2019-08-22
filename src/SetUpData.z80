@@ -62,6 +62,10 @@ SetUpData:
   inc h
   ld (stack_top),hl
 
+  ld hl,textShadow
+  ld (input_base),hl
+  ld hl,128
+  ld (input_size),hl
 
 
   pop hl
