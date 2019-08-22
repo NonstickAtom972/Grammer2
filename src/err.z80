@@ -73,6 +73,10 @@ _:
 ;Reset the OS keypress
   ld (843Fh),a
   ld (8444h),a
+;Reset textShadow and cmdShadow
+	bcall(_clrTxtShd)
+  bcall(_saveCmdShadow)
+
   pop af
   ld hl,(parsePtr)
   dec hl
