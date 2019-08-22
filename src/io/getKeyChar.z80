@@ -1,6 +1,6 @@
-
 getKeyChar:
-;;converts a key press to a char
+;converts a key press to a char
+;returns c flag set if not a valid key
     cp 54 \ jr nz,+_
     ;If previous state was [2nd], set normal, else set [2nd]
     ld a,(keyflags+flags)
@@ -18,7 +18,7 @@ _:
     ret c
     bit alpha,(iy+keyflags)
     jr nz,chkalphakey
-    cp 46
+    cp 47
     ccf
     ret c
     bit shift,(iy+keyflags)
