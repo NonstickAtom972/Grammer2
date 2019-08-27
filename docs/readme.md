@@ -806,7 +806,7 @@ Toggles mode 4 (enable/disable [ON] key)
 * `Output(1` will change to the variable width font.
 * `Output(2` will allow you to use the 4x6 font at pixel coordinates
 * `Output(3,font` will let use Omnicalc or BatLib styled fonts.
-* `Output(°,#` will change the draw logic.
+* `Output(°#` will change the draw logic.
   * 0=Overwrite
   * 1=AND
   * 2=XOR
