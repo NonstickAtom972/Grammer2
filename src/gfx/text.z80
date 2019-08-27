@@ -275,5 +275,12 @@ _:
 ;  ld hl,(BufPtr)
 ;  ld (gbuf_temp),hl
   pop hl
+  ld a,7
+  add a,l
+  and %11111000
+  rra
+  rra
+  rra
+  ld l,a
   ld a,(OutputLogic)
   jp sprite

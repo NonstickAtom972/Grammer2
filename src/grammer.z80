@@ -2422,21 +2422,22 @@ _:
   cp 2Bh
   ld c,1
   call z,ParseNextFullArg
+  push bc
   cp 2Bh
   ld c,8
   call z,ParseNextFullArg
-  ld l,1
+  pop hl
   ld h,c
   push hl
   ld hl,(parsePtr)
   ld a,(hl)
-  cp $2b
+  cp $2B
   call ParseNextFullArg_Buffer
   pop hl
   pop bc
   pop de
   pop af
-#include "gfx/sprite.z80"
+#include "gfx/bigsprite.z80"
 
 
 LineToken:
@@ -4208,8 +4209,8 @@ _:
 #include "progmeta.z80"
 #include "compile.z80"
 #include "module.z80"
-#include "commandtable.z80"
 #include "ramcode.z80"
+#include "commandtable.z80"
 #include "routines.z80"
 #include "SetUpData.z80"
 #include "parserhook.z80"
