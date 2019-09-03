@@ -41,8 +41,44 @@ grampkg_start:
 grampkg_end:
 #endif
 
+menu_code_start:
+#include "cmd/menu.z80"
+
 #include "io/getKeyChar.z80"
 #include "io/getKeyTok.z80"
 #include "io/input.z80"
+#include "io/menu.z80"
+
+p1_PutTokenText:
+  ld bc,PutTokenText
+  ld (prev_page_call_address),bc
+  jp prev_page_call
+
+p1_GraphToLCD:
+  ld hl,GraphToLCD
+  ld (prev_page_call_address),hl
+  jp prev_page_call
+
+p1_ParseFullArg:
+  ld hl,ParseFullArg
+  ld (prev_page_call_address),hl
+  jp prev_page_call
+
+p1_ParseNextFullArg:
+  ld hl,ParseNextFullArg
+  ld (prev_page_call_address),hl
+  jp prev_page_call
+
+p1_ParserNext:
+  ld hl,ParserNext
+  ld (prev_page_call_address),hl
+  jp prev_page_call
+
+p1_getKeyDebounce:
+  push hl
+  ld hl,getKeyDebounce
+  ld (prev_page_call_address),hl
+  pop hl
+  jp prev_page_call
 
 .echo "Page 1: ",$8000-$," bytes remaining"
