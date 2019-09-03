@@ -1,281 +1,258 @@
 menuMem = saveSScreen
+;Now define where vars are located, 17 bytes required in all.
+textbox_top     = menuMem
+textbox_left    = textbox_top+1    ;needs to follow textbox_top
+textbox_bottom  = menuMem+2
+textbox_width   = textbox_bottom
+textbox_right   = textbox_bottom+1 ;needs to follow textbox_bottom
+menucallptr     = menuMem+4
+menutop         = menuMem+6
+menucur         = menuMem+8
+menuselection   = menuMem+10
+menuheader_ptr  = menuMem+12
+menuheader_coord= menuMem+14
+menuheader_cur  = menuMem+16  ;1 byte
+menu_num_items  = menuMem+17  ;2 bytes
+menu_get        = menuMem+19
+menu_sel        = menuMem+21
+menuopts        = menuMem+23
+
+#define MENU_MAX_ELEMENTS ((menuMem+768-menuopts)>>1)
 
 ;Menu:
-  ld hl,(BufPtr)
-  ld (gbuf_temp),hl
-
 ;Get the y coordinate
-  call ParseFullArg
+  ld hl,(parsePtr)
+  ld a,(hl)
+  cp $AE
+  jp z,fancymenu
+  call p1_ParseFullArg
   push bc
 
 ;Get the x coordinate
-  call ParseNextFullArg
-  pop de
-  ld d,c
-  push de
+  call p1_ParseNextFullArg
+  pop hl
+  ld h,c
+
+;Save the coords
+  ld (textbox_top),hl
 
 ; Get the width of the menu
-  call ParseNextFullArg
-
-;Store the coords at menuMem
-  pop hl
-  ld (menuMem),hl
-
-
-;Load the height and width of the meenu header at menuMem+2
-  ld b,9
-  ld (menuMem+2),bc
+  call p1_ParseNextFullArg
+  ld (textbox_width),bc
 
 ;Get the header
-  call ParseNextFullArg
+  call p1_ParseNextFullArg
+  ld (menuheader_ptr),bc
 
-;Convert the title from tokens to ASCII
+  ld hl,menuopts
+  ld bc,0
+
+menu_param_loop:
+  inc bc
+  ld a,b
+  cp MENU_MAX_ELEMENTS>>8
+  jr nz,+_
+  ld a,c
+  cp MENU_MAX_ELEMENTS&255
+  jp menu_err
+_:
+  push bc
+  push hl
+  call p1_ParseNextFullArg
+  pop hl
+  ld (hl),c
+  inc hl
+  ld (hl),b
+  inc hl
+  pop bc
+  cp $2B
+  jr z,menu_param_loop
+_:
+
+;Save the number of elements
+  ld (menu_num_items),bc
+
+;Now we need to render the menu, but first we'll get the height of the menu in pixels
+;4+font_height*min(9-int(y/font_height),BC+1
+  ld a,(textbox_top)
+  ld e,9
+  add a,a
+  jr c,cmp_menu_height
+  .db $FE
+_:
+  dec e
+  sub FONT_HEIGHT*2
+  jr nc,-_
+cmp_menu_height:
+;E is the max height
+;if BC+1 is smaller, use that
+  inc bc
+  inc b
+  dec b
+  jr nz,+_
+  ld a,c
+  cp e
+  jr nc,+_
+  ld e,c
+_:
+;now do E*FONT_HEIGHT+4, given that it won't overflow 8 bits
+  ld a,5
+  ld b,FONT_HEIGHT
+_:
+  add a,e
+  djnz -_
+
+;now set the width and height
+  ld e,a
+  ld a,(textbox_width)
+  ld d,a
+
+  ld ix,menu_command_lookup
+
+menu_entry:
+  ;Set the default graphics buffer
+  ld hl,(BufPtr)
+  ld (gbuf_temp),hl
+
+
+;save and set the the font method
+  ld a,(GrayRotate)
+  push af
+  and %11100111
+  or %00010000
+  ld (GrayRotate),a
+  ld hl,(FontPointer)
+  push hl
+  ld hl,FontSet
+  ld (FontPointer),hl
+
+  ld bc,(textbox_top)
+  ld hl,(menuheader_ptr)
+
+  call menuroutine
+
+  pop hl
+  ld (FontPointer),hl
+  pop af
+  ld (GrayRotate),a
+  ret
+
+fancymenu:
+;header,y,x,h,w,get,sel
+  call p1_ParseNextFullArg
+  ld (menuheader_ptr),bc
+
+  call p1_ParseNextFullArg
+  push bc
+  call p1_ParseNextFullArg
+  pop hl
+  ld h,c
+  ld (textbox_top),hl
+
+  call p1_ParseNextFullArg
+  push bc
+  call p1_ParseNextFullArg
+  pop hl
+  ld h,c
+  push hl ;w,h
+
+  call p1_ParseNextFullArg
+  ld (menu_get),bc
+
+  call p1_ParseNextFullArg
+  ld (menu_sel),bc
+
+  pop de
+  ld ix,fancymenu_lookup
+  jr menu_entry
+
+
+menu_err:
+  ld hl,ErrStackOverflow_push
+  ld (prev_page_call),hl
+  jp prev_page_call
+
+fancymenu_lookup:
+;save the current parsePtr
+  ld hl,(parsePtr)
+  push hl
+
+;save Ans and replace with the current cursor
+  ld hl,(Ans)
+  push hl
+
+;save thetaprime
+  ld hl,(ThetaPrimeVar)
+  push hl
+
+;Save the text coordinates
+  ld hl,(TextRow)
+  push hl
+
+;Set ThetaPrime
+  ld l,a
+  ld h,0
+  ld (ThetaPrimeVar),hl
+
+
+
+;now set the location to start parsing at
+  ld hl,(menu_get)
+  jr nc,+_
+  ld hl,(menu_sel)
+  ld bc,(menucur)
+_:
+  ld (parsePtr),hl
+
+;set Ans
+  ld (Ans),bc
+
+;Now parse
+  call p1_ParserNext
+
+;Restore text coordinates
+  pop hl
+  ld (TextRow),hl
+
+;restore thetaprimevar
+  pop hl
+  ld (ThetaPrimeVar),hl
+
+;restore Ans
+  pop hl
+  ld (Ans),hl
+
+;restore parsePtr
+  pop hl
+  ld (parsePtr),hl
+
+;return 0 if failed
   ld h,b
   ld l,c
-  ld de,menuopts
-  call GetGrammerText_DE; Title
+  ld a,b
+  or c
+  ret nz
+  scf
+  ret
 
-;
-  ex de,hl
+
+menu_command_lookup:
+  jr c,menu_command_select
+;get element number BC
+  ld hl,(menu_num_items)
+  scf
+  sbc hl,bc
+  ret c
+  ld hl,menuopts
   add hl,bc
-  ld (hl),0
-  inc hl
-  push hl
-  inc hl
-  ex de,hl
-  ld b,1
-
-_: ;more Parameters
- push bc
- push de
- call ParseNextFullArg
- pop de
- ld h,b
- ld l,c
- cp $2B
- push af
- call GetGrammerText_DE
- ex de,hl
- add hl,bc
- ld (hl),0
- inc hl
- ex de,hl
- pop af
- pop bc
-
- jr nz,Menu_preselect1 ;kein Komma, kein preselect
- inc hl
- ld a,(hl) ;Komma vorhanden, ist dann ' vorhanden
- cp $AE ;'
- jr z,Menu_preselect2
- dec hl
- inc b
- jr -_
-
-Menu_preselect1:
- xor a
- jr Menu_sele+4
-Menu_preselect2:
- push bc
- call ParseNextFullArg_Inc
- ld a,c  ;c is wanted item = 1..7
- pop bc  ;b is max items
- ld d,b
- cp d
- jr c,Menu_sele
- ld a,d
-Menu_sele:
- or a
- jr z,+_
- dec a
-_:
- ld (TempWord3),a ;preselect
-Exec_Menu:
- ld a,b
- pop hl
- ld (hl),a
- ld hl,menuMem
- call MenuSelect
- ld b,0
- inc l
- cp 15 ;test clear
- jr nz,+_
- ld l,b
-_:
-
- ld c,l
- ret
-
-L7c5d: ;Menu and jmp
- pop hl
- call MenuSelect
- ld de,(TempWord4)
- push de
- ret
-_:
-MenuSelect=-_-Menu_code_start+moduleExec
- ld c,(hl)
- inc hl
- ld e,(hl)
- inc hl
- ld d,(hl)
- inc hl
- ld b,(hl)
- ld hl,menuopts
- ld a,6
- push bc
- push de
- push hl
- call DrawRectToGraph
- pop hl
- pop de
- pop bc
- ld b,e
- inc b
- inc b
- inc c
- inc c
- push de
- push bc
- call vPutscr
- inc hl
- pop bc
- pop de
- ld a,c
- add a,8
- ld c,a
- push bc
- ld a,(hl)
-
- ld (TempWord3+1),a ;Anzahl items
-
- inc hl
- push af
- ld b,a
- add a,a
- add a,b
- add a,a
- ld b,a
- inc b
- inc b
- inc b
- dec c
- dec c
- ld a,6
- push hl
- push bc
- push de
- call DrawRectToGraph
- pop hl
- dec h
- dec h
- inc l
- ld (TempWord1),hl
- pop hl
- ld h,7
- inc l
- ld (TempWord2),hl
- pop hl
- pop af
- pop bc
- or a
- ret z
- ld de,(TempWord2)
- push de
- ld de,(TempWord1)
- push de
-
-_: ;all rows
- push af
- push bc
- call vPutscr
- inc hl
- pop bc
- ld a,c
- add a,6
- ld c,a
- pop af
- dec a
- jr nz,-_ ;next row
- pop bc
- ld (TempWord1),bc
- pop bc
- ld (TempWord4),hl
- ld hl,(TempWord3)
-;6*l+c->c
- ld a,l  ;0..7
- add a,a ;*2
- add a,l ;*3
- add a,a ;*6
- ld bc,(TempWord2)
- add a,c
- ld c,a
-MenuDraw:
-  push hl
-  ld de,(TempWord1) ;width, height
-  push bc ;start_coord
-  ld a,2  ;mode inv
-  call DrawRectToGraph
-  pop bc
-  push bc
-  call GraphToLCD
-  pop bc
-  ld de,(TempWord1)
-  push bc
-  ld a,2
-  call DrawRectToGraph
-_:  ;Test Enter, auf, ab
-  call GetKeyDebounce
-  or a
-  jr z,-_
-  pop bc
-  pop hl
-  cp 9 ;Enter
-  ret z
-  cp 15 ;test clear
-  ret z
-  dec a
-  jr nz,+_
-  inc a
-  jr L7d16 ;down = 1
-
-_: ;test up
- sub 3
- jr nz,MenuDraw ;Menu draw
- dec a ;up=>-1
-
-L7d16: ;down = 1
- ld d,a ;key
- add a,l
- cp h
- jr nc,MenuDraw ;Menu draw
- ld l,a  ;selected item
- ld a,d  ;+-1
- add a,a ;*2
- add a,d ;*3
- add a,a ;+-6
- add a,c
- ld c,a  ;new coord
- jr MenuDraw ;Menu draw
-_:
-vPutscr = -_-Menu_code_start+moduleExec
-  ld (TextRow),bc
-  ld bc,0
-  ld d,b
-_:
+  add hl,bc
   ld a,(hl)
-  cp d
-  ret z
-  push de
-  inc bc
-  push bc
   inc hl
-  push hl
-  ld b,a
-  call VPutSC
-  pop hl
-  pop bc
-  pop de
-  jr -_
-_:
-menuopts = -_-Menu_code_start+moduleExec
+  ld h,(hl)
+  ld l,a
+  ret
+
+menu_command_select:
+  ld bc,(menucur)
+  inc bc
+  ret
