@@ -4159,14 +4159,17 @@ _:
   ld hl,(parsePtr)
   ret
 menu:
-  ld hl,(parsePtr)
-  ld (TempWord1),hl
-  ld hl,OP3
-  ld (parsePtr),hl
-  ld (hl),$E6
-  inc hl
-  ld (hl),0
-  jp module
+  ; ld hl,(parsePtr)
+  ; ld (TempWord1),hl
+  ; ld hl,OP3
+  ; ld (parsePtr),hl
+  ; ld (hl),$E6
+  ; inc hl
+  ; ld (hl),0
+  ; jp module
+  ld hl,menu_code_start
+  ld (next_page_call_address),hl
+  jp next_page_call
 DrawRectToGraph:
   push hl
   ld hl,drawrect

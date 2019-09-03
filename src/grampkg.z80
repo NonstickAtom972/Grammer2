@@ -9,7 +9,7 @@
   .dw (+_-2-$)/2
   .dw p_Disp-P_Disp
   .dw p_Text-P_Disp
-  .dw p_Menu-P_Disp
+;  .dw p_Menu-P_Disp
 _:
 p_Disp: .db "DISP",$29 \ .dw p_Text-$-2
     ld a,$DE
@@ -18,9 +18,9 @@ p_Text: .db "TEXT",$10 \ .dw p_menu-$-2
     ld a,$93
     jp cmdJmp
 p_menu:
-  .db $E6,0 \ .dw p_end-$-2
-Menu_code_start:
-  ld hl,(TempWord1)
-  ld (parsePtr),hl
-#include "cmd/menu.z80"
-p_end:
+;   .db $E6,0 \ .dw p_end-$-2
+; Menu_code_start:
+;   ld hl,(TempWord1)
+;   ld (parsePtr),hl
+; #include "cmd/menu.z80"
+; p_end:
