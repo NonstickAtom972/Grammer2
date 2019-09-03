@@ -328,12 +328,44 @@ Or to jump backwards:
 | getKey       | This returns a value from 0 to 56 that is the current key press. You can use [this chart](#keycodes) for values.
 | getKey(      | `getKey(` will allow you to see if a key is being pressed. For example, `getKey(9` will return `1` if enter is pressed
 | Input        | This allows you to input a string. The pointer to the string is returned. (this is not a permanent location, the data will be overwritten the next time Input is used). To get a value input from the user, you can use `expr(` : `expr(Input →A`. This will store the result to A. `Input` can also take an optional string input. The input string will be displayed after what the user is typing. If you execute this code, I think it'll explain it better. It's honestly pretty cool for a calculator. **See below for information on the Input vars!**
-| Menu(        | ~~*This may require the included appvar, GramPkg, to be on your calc (in RAM or archived).*~~ Syntax is, `Menu(y,x,w,"Header","Item0","Item1","Item2","Exit`. It basically makes a pop-up style menu, returning the number of the selected item.
+| Menu(        | ~~*This may require the included appvar, GramPkg, to be on your calc (in RAM or archived).*~~ Syntax is, `Menu(y,x,w,"Title","Item0","Item1","Item2","Exit`. It basically makes a pop-up style menu, returning the number of the selected item. Returns 0 if exited due to `[CLEAR]` or `[ON]`.
+| Menu('       | Draws a menu that queries Grammer subroutines for the content to render. Syntax is `Menu('"Title",y,x,height,width,GET_ELEMENT_ptr,SELECT_ELEMENT_ptr`. The subroutine for GET_ELEMENT will receive the index in Ans. Return 0 if out-of-bounds, else return a pointer to the string to draw. The subroutine for SELECT_ELEMENT will receive the index in Ans. Modify this as you want, the result will be returned as the result of the menu. Returns 0 if exited due to `[CLEAR]` or `[ON]`. |
 | Ans          | This will return the value of the previous line.
 | expr(        | This will compute a string as a line of code (useful with `Input`)
 | inString(    | This is similar to the TI-BASIC command. This will return the location of a sub-string. The inputs are where to start searching and the string to search for: `inString(SearchStart,SearchString[,maxlength]`. The size of the input string is returned in `Ɵ'` and if there was no match found, 0 is returned.
 | length(      | This will return the size of a variable (in RAM or Archive) as well as the pointer to the data in `Ɵ'`. For example, to get the size of the appvar named `Data`: `length("UData→A`. If the var is not found, -1 is returned.
 | length('     | This is used to search for a line. For example, if you want to find a specific line number in a program, this is what you would use. The syntax: `length('StartSearch,Size,LineNumber,[LineByte`, `StartSearch` is where to begin the search `Size` is how many bytes to search in. 0 will search all RAM. `LineNumber` is the line number you are looking for. `LineByte` is an optional argument for what byte is considered a new line. The output is the location of the string and `Ɵ'` has the size of the string. If the line is not found, the last line is returned instead.
+
+Here is an example with the basic menu:
+```
+Menu(1,1,16,"Title","ITEM 1","ITEM 2","ITEM 3→M
+```
+
+And here is an example using callbacks:
+```
+Lbl "GET→A
+Lbl "SEL→B
+Menu('"Title",2,33,59,30,A,B→M
+Text('0,0,M
+Stop
+
+
+.GET
+→X<26
+If !
+End
+"ITEM A→Z
+int(Z+5,X+65
+Z
+End
+
+
+.SEL
++1
+End
+```
+
+
 
 ### Input Vars!
 There are two Input variables that you can store to:
@@ -445,9 +477,7 @@ This is used to draw sprites to pixel coordinates. It is limited in some ways, c
 * DataPointer is a pointer to the sprite data
 * Y is the pixel Y-coordinate
 * X is the pixel X-coordinate
-* Width is 1. More options may be due in the future, but for now,
-just put 1 :) The default is 1.
-
+* Width is the width of the sprite (in bytes). The default is 1 (8 pixels).
 * Height is the number of pixels tall the sprite is. 8 is default
 
 ### Pt-On(
