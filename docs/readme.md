@@ -5,8 +5,8 @@ An HTML version of this file is in the `readme` folder :)
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.6.0    (I will probably forget to change this :( )
-Last Update...22 August 2019
+Version.......2.50.6.2    (I will probably forget to change this :( )
+Last Update...4 September 2019
 Language......English
 Programming...Assembly
 Size..........2-Page app
@@ -582,6 +582,12 @@ This is used to draw rectangles. The syntax for this command is:
   * 9-White border, Inverted inside.
   * 10-Shifts the contents in that rectangle up
   * 11-Shifts the contents in that rectangle down
+  * 12-
+  * 13-
+  * 14-Pxl-Test Rect (count the number of ON pixels in the rectangle)
+  * 15-Pxl-Test Border (count the number of ON pixels on the border)
+  * 16-Inverted border, black fill
+  * 17-Inverted border, white fill
 
 ### Pxl-On(
 This turns a pixel on using coordinates (y,x). To draw to a
