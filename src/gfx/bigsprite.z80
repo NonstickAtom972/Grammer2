@@ -334,4 +334,3 @@ spritemask:
   .db $00,$80,$C0,$E0,$F0,$F8,$FC,$FE
 call_ix:
   jp (ix)
-.echo $-sprite
