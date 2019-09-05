@@ -1,6 +1,8 @@
-;===============================================================
-drawrect:
-;===============================================================
+#define rightbordermask TempWord2
+#define leftbordermask TempWord2+1
+#define toprightmask TempWord3
+#define topleftmask TempWord3+1
+rect:
 ;Inputs:
 ;     A is the type of rectangle to draw
 ;        0 =White
@@ -19,303 +21,413 @@ drawrect:
 ;     C is the Y pixel coordinate
 ;     D is the width in pixels
 ;     E is is the X pixel coordinate
-;===============================================================
-;RectData  =84A2h
-  di
-  ex af,af'
-;Check if coords are negative
-  ld a,c
-  or a
-  jp p,$+9
-  add a,b
-  ret nc
-  ret z
-  ld b,a
-  ld c,0
-  ld a,e
-  or a
-  jp p,$+9
-  add a,d
-  ret nc
-  ret z
-  ld d,a
-  ld e,0
-;Check dimensions
-  ld a,b
-  or a
-  ret z
-  jp p,$+6
-  neg
-  ld b,a
-  add a,c
-  sub 64
-  jr c,$+6
-  neg
-  add a,b
-  ld b,a
 
-  ld a,d
-  or a
-  ret z
-  jp p,$+6
-  neg
-  ld d,a
-  add a,e
-  sub 96
-  jr c,$+6
-  neg
+;Need to generate a top/bottom left and right mask
+;Need to generate a left and right mask
+  ld (TempWord1),a    ;saving the method
+  ld a,e
+  and 7
+  ld hl,spritemask
+  add a,l
+  ld l,a
+#if spritemask&255>248
+  jr nc,$+3
+  inc h
+#endif
+  cpl
+  ld (topleftmask),a
+  ld l,a
+  rra
+  xor l
+  ld (leftbordermask),a
+
+  ld a,e
   add a,d
-  ld d,a
+  cpl
+  and 7
+#if spritemask&255>248
+  ld hl,spritemask
+  add a,l
+  ld l,a
+  jr nc,$+3
+  inc h
+#else
+  add a,spritemask&255
+  ld l,a
+#endif
+  ld (toprightmask),a
+  ld l,a
+  rra
+  xor l
+  ld (rightbordermask),a
+
+
+;Now we make sure the rect is on-screen is on-screen in the horizontal direction
+  sla l     ;This will hold clipping info
+
   ld a,c
   cp 64
+  jr c,+_
+  add a,b
   ret nc
+  ld c,0
+  ld b,a
+  inc l
+_:
+;Next check b+c<=64 and b>0
+  sla l
+  ld a,64
+  sub c
+  ret z
+  cp b
+  jr nc,+_
+  ld b,a
+  inc l
+_:
+
+;Next check if the rect is on-screen in the vertical direction
   ld a,e
   cp 96
-  ret nc
-MakePattern:
-  push bc
-  ld hl,RectData
-  ld b,24
-  xor a
-_:
-  ld (hl),a
-  inc l
-  djnz -_
-  ld hl,RectData
-  ld c,(RectData+12)&255
-  ld a,e
-_:
-  sub 8
   jr c,+_
-  inc l
-  inc c
-  jr -_
+  add a,d
+  ret nc
+  ld d,a
+  xor a
+  ld e,a
+  ld (rightbordermask),a
+
 _:
-  add a,8
-  ld b,a
-  inc b
-  ld e,a
-  ld a,d
-  add a, e
-  ld e,a
-  ld a,1
-  rrca
-  djnz $-1
-  ld b,l
-  push af
-  ld l,c
-  or (hl)
-  ld (hl),a
-  ld l,b
-  pop af
-  dec a
-  scf
-  adc a,a
-  ld (hl),a
-  ld a,e
-  sub 8
-  jr c,$+10
-  jr z,$+10
-  inc l
-  ld (hl),-1
-  inc c
-  jr $-10
-  add a,8
-
-  ld b,a
-  or a
-  ld a,1
-  jr z,$+5
-  rrca
-  djnz $-1
-
-  ld b,l
-  push af
-  ld l,c
-  or (hl)
-  ld (hl),a
-  ld l,b
-  pop af
-  dec a
-  cpl
-  and (hl)
-  ld (hl),a
-  pop bc
+;Next check d+e<=64
+  ld a,96
+  sub e
+  cp d
+  jr nc,+_
+  ld d,a
+  xor a
+  ld (leftbordermask),a
+_:
+;B is the height
+;C is the Y pixel coordinate
+;D is the width in pixels
+;E is is the X pixel coordinate
+;L is clipping flags:
+;   bit 0 means bottom-clipped
+;   bit 1 means top-clipped
+  ld a,l
+  ld (TempWord1+1),a    ;Store clipping flags
+;Now We calculate where to begin drawing.
+;Note that this will always start on screen due to how we performed clipping
   ld a,b
-  ld b,0
-  ld h,b
+  ld h,0
+  ld b,h
   ld l,c
   add hl,hl
   add hl,bc
   add hl,hl
   add hl,hl
+  ld c,e
+  srl c
+  srl c
+  srl c
+  add hl,bc
   ld bc,(gbuf_temp)
   add hl,bc
   ld b,a
-  ex af,af'
-  .db $CB,$67,$28,$10,$D6,$10,$F5,$0E,$18,$11
-  .dw RectData
-  .db $1A,$2F,$12,$13,$0D,$20,$F9,$F1
+;Need to calculate how many bytes spanned
+  ld a,e
+  and %11111000
+  ld c,a
+  ld a,e
+  add a,d
+  and %11111000
+  sub c
+  ld d,a
+  inc d
+;B is height
+;HL points to where to start drawing
+;D is bytes spanned
 
+  ld a,(TempWord1)
   or a
-  jr nz,$+13h
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$2F,$A6,$77,$13,$23,$0D,$20,$F7,$10,$F0,$C9
-;dbs1
-
+  jp z,rect_wbwf
   dec a
-  jr nz,$+12h
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$B6,$77,$13,$23,$0D,$20,$F8,$10,$F1,$C9
-;dbs2
+  jp z,rect_bbbf
   dec a
-  jr nz,$+12h
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$AE,$77,$13,$23
-  .db $0D,$20,$F8,$10,$F1,$C9
-;dbs3
+  jp z,rect_xbxf
   dec a
-  jr nz,$+26h
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$B6,$77,$13,$23,$0D,$20,$F8,$05,$C8
-;dbs4
-  .db $05,$28,$0F,$0E,$0C,$11
-  .dw RectData+12
-  .db $1A,$B6,$77,$13,$23,$0D,$20,$F8,$10,$F1,$04,$18,$DC
-;dbs5
+  jp z,rect_bbcf
   dec a
-  jr nz,$+28h
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$A6,$AE,$77,$13,$23,$0D,$20,$F7,$05,$C8,$05,$28,$10,$0E,$0C,$11
-  .dw RectData+12
-  .db $1A,$A6,$AE,$77,$13,$23,$0D,$20,$F7,$10,$F0,$04,$18,$DA
-;dbs6
+  jp z,rect_wbcf
   dec a
-  jr nz,$+26h
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$AE
-  .db $77,$13,$23,$0D,$20,$F8,$05,$C8,$05,$28,$0F,$0E,$0C,$11
-  .dw RectData+12
-  .db $1A,$AE,$77,$13,$23,$0D,$20,$F8
-  .db $10,$F1,$04,$18,$DC
-;dbs7
+  jp z,rect_xbcf
   dec a
-  jr nz,$+36h
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$B6,$77,$13,$23,$0D,$20,$F8,$05,$C8,$05
-  .db $28,$1F,$E5,$0E,$0C,$11
-  .dw RectData
-  .db $1A,$A6,$AE,$77,$13,$23,$0D,$20,$F7,$E1,$0E,$0C,$11
-  .dw RectData+12
-  .db $1A
-  .db $B6,$77,$13,$23,$0D,$20,$F8,$10,$E1,$04,$18,$CC
-;dbs8
-  .db $3D,$20,$33,$0E,$0C,$11
-  .dw RectData
-  .db $1A,$B6,$77,$13
-  .db $23,$0D,$20,$F8,$05,$C8,$05,$28,$1E,$E5,$0E,$0C,$11
-  .dw RectData
-  .db $1A,$AE,$77,$13,$23,$0D,$20,$F8,$E1
-  .db $0E,$0C,$11
-  .dw RectData+12
-  .db $1A,$B6,$77,$13,$23,$0D,$20,$F8,$10,$E2,$04,$18,$CD,$3D,$20,$34,$0E,$0C,$11
-  .dw RectData
-  .db $1A,$A6,$AE,$77,$13,$23,$0D,$20,$F7,$05,$C8,$05,$28,$1E,$E5,$0E,$0C,$11
-  .dw RectData
-  .db $1A,$B6
-  .db $77,$13,$23,$0D,$20,$F8,$E1,$0E,$0C,$11
-  .dw RectData+12
-  .db $1A,$AE,$77,$13,$23,$0D,$20,$F8,$10,$E2,$04,$18
-  .db $CC,$3D,$20,$35,$0E,$0C,$11
-  .dw RectData
-  .db $1A,$A6,$AE,$77,$13,$23,$0D,$20,$F7,$05,$C8,$05,$28,$1F,$E5
-  .db $0E,$0C,$11
-  .dw RectData
-  .db $1A,$AE,$77,$13,$23,$0D,$20,$F8,$E1,$0E,$0C,$11
-  .dw RectData+12
-  .db $1A,$A6,$AE,$77,$13
-  .db $23,$0D,$20,$F7,$10,$E1,$04,$18,$CB,$3D,$20,$37,$05,$C8,$F3,$E5,$D9,$01,$0C,$00,$E1,$09,$D9,$0E
-  .db $0C,$11
-  .dw RectData
-  .db $D5,$D9,$D1,$D9,$1A,$2F,$A6,$D9,$47,$1A,$A6,$B0,$13,$23,$D9,$77,$13,$23,$0D,$20
-  .db $EF,$10,$E4,$0E,$0C,$11
-  .dw RectData
-  .db $1A,$2F,$A6,$77,$13,$23,$0D,$20,$F7,$FB,$C9
-;dbs9
-  .db $3D,$20,$40,$F3,$C5
-  .db $11,$0C,$00,$19,$10,$FD,$2B,$E5,$D9,$11,$F4,$FF,$E1,$19,$D9,$C1,$05,$C8,$0E,$0C,$11
-  .dw RectData+11
-  .db $D5
-  .db $D9,$D1,$D9,$1A,$2F,$A6,$D9,$47,$1A,$A6,$B0,$1B,$2B,$D9,$77,$1B,$2B,$0D,$20,$EF,$10,$E4,$0E,$0C
-  .db $11
-  .dw RectData+11
-  .db $1A,$2F,$A6,$77,$1B,$2B,$0D,$20,$F7,$FB,$C9
-;dbs10
+  jp z,rect_bbwf
   dec a
-  ret z
+  jp z,rect_bbxf
   dec a
-  ret z
-  exx
-  ld de,0
-  ld c,8
-  exx
-PxlTestRect:
+  jp z,rect_wbbf
   dec a
-  jr nz,PxlTestBorder
-  ld c,12
-  ld de,RectData
-PxlTstRectLoop:
-  call PxlTestWithMask
-  djnz PxlTstRectLoop-5
-  exx
-  ld b,d
-  ld c,e
-  ret
-PxlTestBorder:
+  jp z,rect_wbxf
+  dec a
+  jp z,rect_shift_up
+  dec a
+  jp z,rect_shift_down
+  dec a
+  jp z,rect_shift_right
+  dec a
+  jp z,rect_shift_left
+  dec a
+  jp z,rect_xbbf
   dec a
   ret nz
-  ld c,12
-  ld de,RectData
-  call PxlTestWithMask
+rect_xbwf:
+  call horiz_xb
   dec b
-  jr z,PxlTestBorder-4
+  ret z
   dec b
-  jr z,PxlTestBrdrEnd
-  ld c,12
-  ld de,RectData+12
-PxlTstBrdrLoop:
-  call PxlTestWithMask
-  djnz PxlTstBrdrLoop-5
-PxlTestBrdrEnd:
-  ld de,RectData
-  ld c,12
-  call PxlTestWithMask
-  exx
-  ld b,d
-  ld c,e
-  ret
-PxlTestWithMask:
-  ld a,(de)
+  jp z,horiz_xb
+  ;Here we need to fill with an inverted border, white fill
+  dec d
+  jr z,rect_xbwf_1byte
+rect_xbwf_loop:
+  push de
+  push hl
+  ld a,(topleftmask)
+  rra
+  cpl
   and (hl)
-  exx
-  ld b,c
-_:
-  add a,a
-  jr nc,$+3
-  inc de
-  jr z,+_
-  djnz -_
-_:
-  exx
-  inc de
+  ld e,a
+  ld a,(leftbordermask)
+  xor e
+  ld (hl),a
   inc hl
-  dec c
-  jr nz,PxlTestWithMask
+  dec d
+  jr z,+_
+  ld (hl),0
+  inc hl
+  dec d
+  jr nz,$-4
+_:
+  ld a,(toprightmask)
+  rla
+  cpl
+  and (hl)
+  ld e,a
+  ld a,(rightbordermask)
+  xor e
+  ld (hl),a
+  pop hl
+  ld e,12
+  add hl,de
+  pop de
+  djnz rect_xbwf_loop
+  jp horiz_xb
+rect_xbwf_1byte:
+  ld a,(topleftmask)
+  ld e,a
+  ld a,(toprightmask)
+  and e
+  ld e,a
+  ld a,(leftbordermask)
+  ld d,a
+  ld a,(rightbordermask)
+  or d
+  and e
+  ld d,a
+  ld a,e
+  cpl
+  ld e,a
+_:
+  ld a,(hl)
+  and e
+  xor d
+  ld (hl),a
+  inc hl
+  djnz -_
+rect_wbwf:
+_:
+  call horiz_wb
+  djnz -_
   ret
+rect_bbbf:
+;B is height
+;HL points to where to start drawing
+;D is bytes spanned
+_:
+  call horiz_bb
+  djnz -_
+  ret
+rect_xbxf:
+_:
+  call horiz_xb
+  djnz -_
+  ret
+rect_bbcf:
+  call horiz_bb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_bb
+  ;Here we need to fill with a black border, clear fill
+  ret
+rect_wbcf:
+  call horiz_wb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_wb
+  ;Here we need to fill with a white border, clear fill
+  ret
+rect_xbcf:
+  call horiz_xb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_xb
+  ;Here we need to fill with a inverted border, clear fill
+  ret
+rect_bbwf:
+  call horiz_bb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_bb
+  ;Here we need to fill with a black border, white fill
+  ret
+rect_bbxf:
+  call horiz_bb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_bb
+  ;Here we need to fill with a black border, inverted fill
+  ret
+rect_wbbf:
+  call horiz_wb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_wb
+  ;Here we need to fill with a white border, black fill
+  ret
+rect_wbxf:
+  call horiz_wb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_wb
+  ;Here we need to fill with a white border, inverted fill
+  ret
+rect_xbbf:
+  call horiz_xb
+  dec b
+  ret z
+  dec b
+  jp z,horiz_xb
+  ;Here we need to fill with a inverted border, black fill
+  ret
+rect_shift_up:
+rect_shift_down:
+rect_shift_right:
+rect_shift_left:
+  ret
+horiz_bb:
+  push de
+  dec d
+  ld a,(topleftmask)
+  jr nz,+_
+  ld e,a
+  ld a,(toprightmask)
+  and e
+  or (hl)
+  ld (hl),a
+  jr endhoriz_bb
+_:
+  push hl
+  or (hl)
+  ld (hl),a
+  inc hl
+  dec d
+  jr z,horizbb_lastiter
+_:
+  ld (hl),-1
+  inc hl
+  dec d
+  jr nz,-_
+horizbb_lastiter:
+  ld a,(toprightmask)
+  or (hl)
+  ld (hl),a
+  pop hl
+endhoriz_bb:
+  ld e,12
+  add hl,de
+  pop de
+  ret
+
+
+horiz_wb:
+  push de
+  dec d
+  ld a,(topleftmask)
+  cpl
+  jr nz,+_
+  ld e,a
+  ld a,(toprightmask)
+  cpl
+  or e
+  and (hl)
+  ld (hl),a
+  jr endhoriz_bb
+_:
+  push hl
+  and (hl)
+  ld (hl),a
+  inc hl
+  dec d
+  jr z,horizwb_lastiter
+_:
+  ld (hl),0
+  inc hl
+  dec d
+  jr nz,-_
+horizwb_lastiter:
+  ld a,(toprightmask)
+  cpl
+  and (hl)
+  ld (hl),a
+  pop hl
+  jp endhoriz_bb
+
+
+horiz_xb:
+  push de
+  dec d
+  ld a,(topleftmask)
+  jr nz,+_
+  ld e,a
+  ld a,(toprightmask)
+  and e
+  xor (hl)
+  ld (hl),a
+  jr endhoriz_bb
+_:
+  push hl
+  xor (hl)
+  ld (hl),a
+  inc hl
+  dec d
+  jr z,horizxb_lastiter
+_:
+  ld a,(hl)
+  cpl
+  ld (hl),a
+  inc hl
+  dec d
+  jr nz,-_
+horizxb_lastiter:
+  ld a,(toprightmask)
+  xor (hl)
+  ld (hl),a
+  pop hl
+  jp endhoriz_bb
