@@ -238,12 +238,15 @@ menu_arrow:
 ;check arrow keys
   dec a
   jr z,menu_down
-  dec a
-  jr z,menu_left
-  dec a
-  jr z,menu_right
-  add a,-1      ;sets the carry flag if it is not a keypress
+  sub 3
+  scf
   ret nz
+  ; dec a
+  ; jr z,menu_left
+  ; dec a
+  ; jr z,menu_right
+  ; add a,-1      ;sets the carry flag if it is not a keypress
+  ; ret nz
 
 ;if would select oob
 ;   if next element exists
@@ -256,6 +259,7 @@ menu_up:
   dec bc
   push bc
   call menu_get_select
+  ld (menu_temp),hl
   pop hl
   ret c
   ld (menucur),hl
@@ -269,10 +273,12 @@ menu_up:
   scf
   ret
 _:
+;now we need to scroll the textbox down FONT_HEIGHT pixels, then draw the top element
+  ld a,11
+;decrement the menutop
   ld hl,(menutop)
   dec hl
-  ld (menutop),hl
-  ret
+  jr menu_scroll
 
 menu_down:
   or a
@@ -280,6 +286,7 @@ menu_down:
   inc bc
   push bc
   call menu_get_select
+  ld (menu_temp),hl
   pop hl
   ret c
   ld (menucur),hl
@@ -294,23 +301,76 @@ menu_down:
   scf
   ret
 _:
+;now we need to scroll the textbox up FONT_HEIGHT pixels, then draw the top element
+
+  ld a,10
+;decrement the menutop
   ld hl,(menutop)
   inc hl
+menu_scroll:
   ld (menutop),hl
+
+  push af
+  call gettextbox
+  ld h,FONT_HEIGHT
+  pop af
+_:
+  push af
+  push bc
+  push de
+  push hl
+  call drawrect
+  pop hl
+  pop de
+  pop bc
+  pop af
+  dec h
+  jr nz,-_
+
+;Set the textcoord
+  ld hl,(menuselection)
+  inc h
+  inc l
+#ifdef TEXTCOORD_YX
+  ;need to swap the coords order
+  ld b,l
+  ld c,h
+  ld (textcoord),bc
+#else
+  ld (textcoord),hl
+#endif
+
+  ld hl,(menu_temp)
+  Text()
+
+  scf
   ret
 
-
+gettextbox:
+  ld bc,(textbox_top)
+  ld e,b
+  ld hl,(textbox_bottom)
+  ld a,h
+  sub b
+  ld d,a
+  ld a,l
+  sub c
+  ld b,a
+  dec d
+  dec b
+  ret
 ;These change to the next menu header
-menu_left:
-  ld a,(menuheader_cur)
-  dec a
-  jr +_
-menu_right:
-  ld a,(menuheader_cur)
-  inc a
-_:
-  ld (menuheader_cur),a
-  call reset_menu_cursor
+; menu_left:
+
+  ; ld a,(menuheader_cur)
+  ; dec a
+  ; jr +_
+; menu_right:
+;   ld a,(menuheader_cur)
+;   inc a
+; _:
+;   ld (menuheader_cur),a
+;   call reset_menu_cursor
 
 draw_header:
 ;Set up textcoord

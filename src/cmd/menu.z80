@@ -15,7 +15,8 @@ menuheader_cur  = menuMem+16  ;1 byte
 menu_num_items  = menuMem+17  ;2 bytes
 menu_get        = menuMem+19
 menu_sel        = menuMem+21
-menuopts        = menuMem+23
+menu_temp       = menuMem+23
+menuopts        = menuMem+25
 
 #define MENU_MAX_ELEMENTS ((menuMem+768-menuopts)>>1)
 
