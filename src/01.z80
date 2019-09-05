@@ -2,6 +2,7 @@
 #define scrap 8000h
 #include "gfx/bigtile.z80"
 #include "isort.z80"
+drawrect:
 #include "gfx/drawrect.z80"
 #include "math/rand_single.z80"
 
