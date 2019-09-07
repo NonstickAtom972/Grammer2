@@ -52,8 +52,7 @@ Cos:
   cp 3Ah
   jr z,-_
   ld a,64
-  or a
-  .db 38h
+  .db $FE
 Sin:
   xor a
   push af
@@ -63,14 +62,14 @@ Sin:
   call ParseFullArg
   pop af
   add a,c
-  ld d,a
 Sine:
-  bit 6,a
-  jr z,+_
-  cpl
-  xor 80h
-_:
+  ld d,a
+  rlca
+  rlca
+  sbc a,a
+  xor d
   and 63
+  ld b,0
 #if (sinTable&255)<192
 #if (sintable&255)==0
   ld h,sinTable>>8
@@ -83,18 +82,11 @@ _:
 #else
   ld c,a
   ld hl,sinTable
-  ld b,0
   add hl,bc
 #endif
   ld c,(hl)
   rlc d
-  ret nc
-  xor a
-  sub c
-  ld c,a
-  sbc a,a
-  sub b
-  ld b,a
+  jr c,NegateBC
   ret
 _:
   ld hl,absSingle
