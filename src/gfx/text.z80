@@ -207,7 +207,7 @@ VPutSC:
 ;Inputs:
 ;    B is the char to draw
   ld a,b
-  cp 20h
+;  cp 20h     ;no idea why this is here?
   ld hl,(FontPointer)
   ld c,b
   ld b,0
