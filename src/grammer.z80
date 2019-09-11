@@ -504,7 +504,8 @@ VarName:
    dec d
    ld (parsePtr),hl
    ld (OP1+1),de
-   xor a \ ld (OP1+3),a    ;I don't think this is necessary
+   xor a
+   ld (OP1+3),a
    rst rFindSym
    jp VarTokenStepIn
 FuncToken:
@@ -1503,20 +1504,22 @@ RecallPicToken:
   cp 2Bh
   call z,ParseNextFullArg
   pop af
-  ex af,af'
-  ld d,b
-  ld e,c
-  pop bc
-  push de
-;de buffer to store to
-;bc is pic num
-;A' is the method to copy with
-  ld b,c
-  ld c,60h
-  ld (OP1+1),bc \ rst rFindSym
-  pop hl
-  ret c
-  push hl
+
+;A is the copy method
+;{stack} is the pic num
+  ld h,b
+  ld l,c
+;42
+  ex (sp),hl
+  push af
+  ld h,0
+  ;L is the pic num
+  ld (OP1+2),hl
+  ld a,$60
+  ld (OP1+1),a
+  rst rFindSym
+  jp c,pop2exit
+;stack={loc,method}
   ld a,b
   ld b,0
   push af
@@ -1535,9 +1538,8 @@ _:
   call ReadArc
   pop hl
   pop bc
+  pop af
   pop de
-  ex af,af'
-;'
   or a
   jp z,BufCopy+3
   ex de,hl
@@ -1678,7 +1680,8 @@ conj:
 ;A=1, B=3, C=4, D=6, E=8, F=9, and G=11
 ;Sharp is add 1
 ;flat is minus 1
-  cp 37 \ jr nz,subToken
+  cp 37
+  jp nz,subToken
   ei
   ld a,(hl)
   cp $AE
@@ -1691,26 +1694,35 @@ conj:
   pop af
   jr nz,SoundData
   ld h,b \ ld l,c \ pop bc
-p_FreqOut:
-  xor a
-__FreqOutLoop1:
-  push bc
-  xor 3
-  ld e,a
-_:
+
+freqout:
+;HL*87-11cc
+  ld d,b
+  ld e,c
+  jr freqoutEntry
+freqoutLoop:
+;add 46cc
+  ex (sp),hl
+  ex (sp),hl
+  nop
+  nop
+freqoutLoop1:
   ld a,h
   or l
   jr z,+_
   cpd
-  jp pe,-_
-  ld a,e
+  jp pe,freqoutLoop
+freqoutEntry:
+  in a,(0)
   scf
 _:
-  pop bc
+
+  ld b,d
+  ld c,e
   out (0),a
-  ret nc
-  jr __FreqOutLoop1
-__FreqOutEnd:
+  jr c,freqoutLoop
+  ret
+
 SoundData:
   push bc
   call ParseNextFullArg
@@ -1724,7 +1736,7 @@ SoundLoop:
   ld c,(hl) \ inc hl
   ld b,(hl) \ push hl
   ex de,hl
-  call p_FreqOut
+  call freqout
   pop hl \ pop bc \ pop de
   cpi
   jp pe,SoundLoop
@@ -1733,35 +1745,54 @@ GrammerSound:
   call ParseFullArg
   push bc
   call ParseNextFullArg
+;Octave*12
   ld h,b
   ld l,c
   add hl,hl
   add hl,bc
   add hl,hl
   add hl,hl
+
+;Now add in the note
   pop bc
   add hl,bc
+
+;get offset into the LUT
   add hl,hl
-  push hl
-  call ParseNextFullArg
-  ld d,b
-  ld e,c
-  pop hl
+
+;get the frequency
   ld bc,FrequencyLUT
   add hl,bc
   ld c,(hl)
   inc hl
   ld b,(hl)
+
+  push bc
+  call ParseNextFullArg
+  ;multiply BC by 34483, then divide by 32
+  ld de,34483
+  call DE_Times_BC
+  xor a
+  add hl,hl \ rl e \ rl d \ rla
+  add hl,hl \ rl e \ rl d \ rla
+  add hl,hl \ rl e \ rl d \ rla
+  ld l,h \ ld h,e \ ld e,d \ ld d,a
+  ;DEHL is how long to run it
+
+  pop bc
+
+  .db $FE
 NoteLoop:
+;If the CPU is exactly 6MHz, then we are .000004666... seconds short for every .950272 seconds.
+  dec de
+  push de
+  call freqout
+  pop de
   ld a,d
   or e
-  ret z
-  push de
-  ld hl,4096
-  call p_FreqOut
-  pop de
-  dec de
-  jp NoteLoop
+  dec hl
+  jr nz,NoteLoop
+  ret
 subToken:
   cp 12 \ jr nz,ANOVAsubset
   call ParseFullArg
@@ -1977,32 +2008,181 @@ GCDHL_BC:
   ld d,b
   ld e,c
 #include "math/gcdHL_DE.z80"
+
 CircleToken:
-  call ParseFullArg
+#define circle_pattern TempWord1
+  call ParseFullArg     ;Y
   push bc
-  call ParseNextFullArg
+  call ParseNextFullArg ;X
   pop de
   ld d,c
   push de
-  call ParseNextFullArg
+  call ParseNextFullArg ;R
   push bc
   cp 2Bh
   ld c,1
-  call z,ParseNextFullArg
+  call z,ParseNextFullArg ;Method
+  ld b,c
   push bc
-  ld c,00
+  ld c,0
   cp 2Bh
-  call z,ParseNextFullArg
-  ld a,c
+  call z,ParseNextFullArg ;pattern
+  push bc
+  cp 2Bh
+  call ParseNextFullArg_Buffer  ;buffer
+
+  pop hl
+  ld a,l
+  ld (circle_pattern),a
+  pop af    ;method in A
+  pop de    ;radius in E
   pop bc
-  ld b,a
-  ld (TempWord1),bc
-  ld a,(hl)
-  cp 2Bh
-  call ParseNextFullArg_Buffer
+
+  dec a
+  jr z,circle_wbcf
+  dec a
+  jr z,circle_bbcf
+  dec a
+  jr z,circle_xbcf
+
+  dec a
+  jr z,circle_wbwf
+  dec a
+  jr z,circle_bbbf
+  dec a
+  jr z,circle_xbxf
+
+  dec a
+  jr z,circle_wbbf
+  dec a
+  jr z,circle_wbxf
+
+  dec a
+  jr z,circle_bbwf
+  dec a
+  jr z,circle_bbxf
+
+  dec a
+  jr z,circle_xbbf
+  dec a
+  ret nz
+circle_xbwf:
+  push de
+  push bc
+  call circle_xbcf
   pop bc
   pop de
-  jp Circle
+  jr circle_wf
+
+circle_wbcf:
+  ld ix,pixelOff_pattern
+  jp circle
+circle_bbcf:
+  ld ix,pixelOn_pattern
+  jp circle
+circle_xbcf:
+  ld ix,pixelToggle_pattern
+  jp circle
+
+circle_wbwf:
+  push de
+  push bc
+  call circle_wbcf
+  pop bc
+  pop de
+circle_wf:
+  ld ix,horizline_white
+  jp drawfilledcircle
+
+circle_bbbf:
+  push de
+  push bc
+  call circle_bbcf
+  pop bc
+  pop de
+circle_bf:
+  ld ix,horizline_black
+  jp drawfilledcircle
+
+circle_xbxf:
+  push de
+  push bc
+  call circle_xbcf
+  pop bc
+  pop de
+circle_xf:
+  ld ix,horizline_invert
+  jp drawfilledcircle
+
+circle_wbbf:
+  push de
+  push bc
+  call circle_wbcf
+  pop bc
+  pop de
+  jr circle_bf
+
+circle_wbxf:
+  push de
+  push bc
+  call circle_wbcf
+  pop bc
+  pop de
+  jr circle_xf
+
+circle_bbwf:
+  push de
+  push bc
+  call circle_bbcf
+  pop bc
+  pop de
+  jr circle_wf
+
+circle_bbxf:
+  push de
+  push bc
+  call circle_bbcf
+  pop bc
+  pop de
+  jr circle_xf
+
+circle_xbbf:
+  push de
+  push bc
+  call circle_xbcf
+  pop bc
+  pop de
+  jr circle_bf
+
+
+
+pixelOn_pattern:
+  call getpixelloc
+  ret nc
+  or (hl)
+  ld (hl),a
+  ret
+pixelOff_pattern:
+  call getpixelloc
+  ret nc
+  cpl
+  and (hl)
+  ld (hl),a
+  ret
+pixelToggle_pattern:
+  call getpixelloc
+  ret nc
+  xor (hl)
+  ld (hl),a
+  ret
+
+drawfilledcircle:
+  push hl
+  ld hl,filledcircle
+  ld (next_page_call_address),hl
+  pop hl
+  jp next_page_call
+
 PauseToken:
   ld a,(hl)
   call EndOArg
@@ -2437,6 +2617,7 @@ _:
   pop bc
   pop de
   pop af
+  jr sprite
 #include "gfx/bigsprite.z80"
 
 
@@ -3081,7 +3262,8 @@ _:
   ld (OP1+1),hl
   xor a
   ld (OP1+3),a
-  ld (OP1+1),bc \ rst rFindSym
+  ld (OP1+1),bc
+  rst rFindSym
   jr c,+_
 ;HL = pointer to the variable's Symbol Table entry
 ;DE = pointer to the variable's data structure
@@ -4211,9 +4393,9 @@ _:
 #include "main.z80"
 #include "progmeta.z80"
 #include "compile.z80"
+#include "commandtable.z80"
 #include "module.z80"
 #include "ramcode.z80"
-#include "commandtable.z80"
 #include "routines.z80"
 #include "SetUpData.z80"
 #include "parserhook.z80"
