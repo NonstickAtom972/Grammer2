@@ -1,3 +1,4 @@
+#define db .db
 #define callp(x) call call_previous_page \ .dw x
 #define calln(x) call call_next_page \ .dw x
 _FindAlphaDn    = 4A47h
