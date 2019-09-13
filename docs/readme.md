@@ -5,8 +5,8 @@ An HTML version of this file is in the `readme` folder :)
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.6.2    (I will probably forget to change this :( )
-Last Update...4 September 2019
+Version.......2.50.6.3    (I will probably forget to change this :( )
+Last Update...11 September 2019
 Language......English
 Programming...Assembly
 Size..........2-Page app
@@ -451,11 +451,21 @@ Displays the graph screen. You can display another buffer by using a pointer. Fo
 The syntax is `Circle(Y,X,R[,Method[,pattern[,buffer`.
 
 This draws a circle using Y and X as pixel coordinates and R as the radius of the circle in pixels. Method is how to draw the circle:
-* 1-Black border (Default)
-* 2-White border
-* 3-Inverted border
+* 1 - Black border (Default)
+* 2 - White border
+* 3 - Inverted border
+* 4 - White border, white fill
+* 5 - Black border, black fill
+* 6 - Invert border, invert fill
+* 7 - White border, black fill
+* 8 - White border, invert fill
+* 9 - Black border, white fill
+* 10 - Black border, invert fill
+* 11 - Invert border, white fill
+* 12 - Invert border, black fill
 
-Pattern is a number from 0 to 255 that will be used as a drawing pattern. For example, 85 is `01010101` in binary, so every other pixel will not be drawn. Use 0 for no pattern. If the bit is 0, the pixel will be drawn, if it is 1, it won't be drawn. Buffer is the buffer to draw to (useful with grayscale).
+
+Pattern is a number from 0 to 255 that will be used as a drawing pattern for the border. For example, 85 is `01010101` in binary, so every other pixel will not be drawn. Use 0 for no pattern. If the bit is 0, the pixel will be drawn, if it is 1, it won't be drawn. Buffer is the buffer to draw to (useful with grayscale).
 
 ### Pt-Off(
 This is used to draw sprites to pixel coordinates. It is limited in some ways, compared to the Pt-On( command, but more flexible in others. The syntax is: `Pt-Off(Method,DataPointer,Y,X,[Width,[Height[,Buffer`
