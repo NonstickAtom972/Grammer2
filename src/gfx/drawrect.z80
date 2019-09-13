@@ -288,6 +288,12 @@ rect_xbcf_loopend:
   ld de,(fillmask)
   jp horiz_xb
 
+horizline_white:
+;takes as input E=x, A=y, D=width as input
+  ld b,1
+  ld c,a
+  call rectsub
+  ret nc
 horiz_wb:
 ;Draws a horizontal white border
 
@@ -329,7 +335,12 @@ _:
 ;take advantage of B=0 before restoring
   jr rect_restadd12
 
-
+horizline_black:
+;takes as input E=x, A=y, D=width as input
+  ld b,1
+  ld c,a
+  call rectsub
+  ret nc
 horiz_bb:
 ;Draws a horizontal black border
 
@@ -366,6 +377,12 @@ _:
 
   jr rect_restadd12
 
+horizline_invert:
+;takes as input E=x, A=y, D=width as input
+  ld b,1
+  ld c,a
+  call rectsub
+  ret nc
 horiz_xb:
 ;Draws a horizontal inverted border
 

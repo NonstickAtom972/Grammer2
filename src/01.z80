@@ -7,23 +7,6 @@ drawrect:
 #include "math/rand_single.z80"
 #include "gfx/filledcircle.z80"
 
-horizline_white:
-  ld b,1
-  ld c,a
-  xor a
-  jp drawrect
-
-horizline_black:
-  ld b,1
-  ld c,a
-  ld a,b
-  jp drawrect
-
-horizline_invert:
-  ld b,1
-  ld c,a
-  ld a,2
-  jp drawrect
 call_ix_01:
   jp (ix)
 
