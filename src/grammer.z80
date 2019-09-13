@@ -2063,16 +2063,17 @@ CircleToken:
   jr z,circle_bbxf
 
   dec a
-  jr z,circle_xbbf
+  jr z,circle_xbwf
   dec a
   ret nz
-circle_xbwf:
+
+circle_xbbf:
   push de
   push bc
   call circle_xbcf
   pop bc
   pop de
-  jr circle_wf
+  jr circle_bf
 
 circle_wbcf:
   ld ix,pixelOff_pattern
@@ -2146,13 +2147,13 @@ circle_bbxf:
   pop de
   jr circle_xf
 
-circle_xbbf:
+circle_xbwf:
   push de
   push bc
   call circle_xbcf
   pop bc
   pop de
-  jr circle_bf
+  jr circle_wf
 
 
 
