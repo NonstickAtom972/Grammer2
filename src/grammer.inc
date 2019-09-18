@@ -43,6 +43,7 @@ progStart       = 965Bh
 parsePtr        = 965Dh
 progEnd         = 965Fh
 parserHookPtr   = 9BACh
+tokenHookPtr    = 9BC8h
 OP5             = 84A4h
 OP4             = 8499h
 OP3             = 848Eh
@@ -228,3 +229,8 @@ shiftAlpha        =   4        ;1=[ALPHA] has been pressed
 shiftLwrAlph      =   5        ;1=lower case, 0=upper case
 shiftALock        =   6        ;1=alpha lock has been pressed
 shiftKeepAlph     =   7        ;1=cannot cancel alpha shift
+
+hookflags3        = 35h
+tokenHookActive   = 0		;1 = token hook active
+hookflags4        = 36h ;also sysHookFlag2
+parserHookActive  = 1		;1 = parser hook active
