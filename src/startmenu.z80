@@ -29,8 +29,7 @@ startmenu__:
   call ZeroMem768
 
 ;Set speed to 6MHz, take advantage of A=0 fom ZeroMem768
-  ld c,a
-  call SetSpeed
+  out (20h),a
 
 ;now we are going to draw the top and bottom fields
 ;Top line
@@ -72,10 +71,17 @@ _:
 ;Need to set the filter flags.
   ld (iy+34),8
 
-;highlight the hook option if the kook is active
-  bit 0,(iy+35h)
+;highlight the hook option if the token hook is active
+  bit tokenHookActive,(iy+hookflags3)
+  jr z,+_
+  ;verify it is the same page as Grammer
+  ld hl,(tokenHookPtr+2)
+  in a,(6)
+  cp (hl)
   ld de,$124E
-  call nz,highlight
+  call z,highlight
+_:
+
 ;Draw the menu box
   call DrawRectToGraphI \ .db 16,10,44,64,1
   call DrawRectToGraphI \ .db 15,11,42,66,2
@@ -166,20 +172,31 @@ _:
   jr highlight_option
 _:
   cp 49 \ jr nz,+_ ;F5
+;Gotta toggle the token hook
+;Point to the pge and load the current page in A
+  ld hl,tokenHookPtr+2
   in a,(6)
-  ld hl,9BCAh
+
+;If token hook is inactive, we need to set it to Grammer's
+  bit tokenHookActive,(iy+hookflags3)
+  jr z,tokenhook_on
+
+;The token hook is active.
+;If it is Grammer's, need to reset
   cp (hl)
+  jr z,resetTokenHook
+
+tokenhook_on:
+;Now we have to actually set the hook
+;We'll do it manually, I still have flashbacks to thepenguin77's April Fools Joke of 2011
+;HL already points to where the page should be written, and A is the page
+  ld (hl),a
   ld hl,TokenHook
-;Manually setting hook
-  ld (9BC8h),hl
-  ld (9BCAh),a
-  jr nz,SetTokenHook
-  bit 0,(iy+35h)
-  jr z,SetTokenHook
-  res 0,(iy+35h)
+  ld (tokenHookPtr),hl
+  set tokenHookActive,(iy+hookflags3)
   jr $+6
-SetTokenHook:
-  set 0,(iy+35h)
+resetTokenHook:
+  res tokenHookActive,(iy+hookflags3)
   ld de,$134E
   call highlight
   jp main_menu_loop
