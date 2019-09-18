@@ -552,12 +552,12 @@ NotSendByte:
   pop bc
   ld a,b
   or c
-  ld h,d
-  ld l,e
   inc hl
   inc hl
-  ld a,$00
-  call nz,SetMem
+  push hl
+  call nz,ZeroMem
+  pop bc
+  ret
 _:
   inc de \ inc de
   ld c,e \ ld b,d
