@@ -1,6 +1,6 @@
 # Drawing
 
-Drawing in Grammer has a few similarities to TI-BASIC, but not many. In Grammer, you'll need a lower-level understanding of graphics, and that is what we'll aim to teach here. to understand A primary difference is that Grammer uses pixel coordinates, like the BASIC `Pxl-*` commands.
+Drawing in Grammer has a few similarities to TI-BASIC, but not many. In Grammer, you'll need a lower-level understanding of graphics, and that is what we'll aim to teach here. To understand, a primary difference is that Grammer uses pixel coordinates, like the BASIC `Pxl-*` commands.
 
 The first thing you need to know is that drawing is done on "graphics buffers" before it is displayed on the LCD. This is true for both BASIC and Grammer. The difference is that in Grammer you have to manually issue a command to draw from the buffer to the LCD, and in BASIC it is automatic. This may sound annoying, but it's actually great because it lets you perform batch drawing operations before displaying. It makes for much smoother and faster graphics. We'll discuss buffers in more detail later, but for now here is an example.
 
@@ -24,7 +24,7 @@ In all cases, (0,0) is the upper left corner of the screen.
 ## Graphics Buffers
 
 Graphics buffers are 768 byte areas of memory (normally RAM) that store pixel data.
-Pixel data is shown on the LCD until you issue a `DispGraph` command. This means you can modify it however you like before showing the contents. For those who want to do *really* low level modifications, these buffers are stored such that each byte represents 8 pixels, where bit 7 corresponds to the left-most bit, and each twelve bytes forms a 96-pixel row, starting from the top of the screen.
+Pixel data is not shown on the LCD until you issue a `DispGraph` command. This means you can modify it however you like before showing the contents. For those who want to do *really* low level modifications, these buffers are stored such that each byte represents 8 pixels, where bit 7 corresponds to the left-most bit, and each twelve bytes forms a 96-pixel row, starting from the top of the screen.
 
 There are various reasons one might want to draw to some other buffer, or display some other buffer (especially in grayscale drawing). Grammer reserves two buffers for graphics, the primary being the graphscreen buffer used by the OS, located at `0x9340`. The other is what is called `AppBackUpScreen` located at `0x9872`. You don't have to memorize these addresses, you can use `G-T` and `G-T'`, respectively.
 
