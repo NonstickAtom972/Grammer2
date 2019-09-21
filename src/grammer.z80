@@ -247,7 +247,12 @@ _:
   ld (parsePtr),hl
   pop hl \ pop bc
   ld d,h \ ld e,l
-  jp ZeroMem
+ZeroMem:
+  ld a,b \ or c \ ld a,0
+  push de
+  call nz,SetMem
+  pop bc
+  ret
 
 PtChange:
   call ParseFullArg       ;To get the tilemap routine correct
@@ -1084,13 +1089,13 @@ g_ClrDraw:
   ld hl,(BufPtr)
   pop de
 ZeroMem768:
-  ld bc,768
-ZeroMem:
-  ld a,b \ or c \ ld a,0
-  push de
-  call nz,SetMem
-  pop bc
-  ret
+  xor a
+  ld b,a
+  ld c,a
+  ld (textRow),bc
+  ld b,3    ;BC is now 768
+  jp SetMem
+
 ClrHomeToken:
 g_ClrHome:
   ld hl,0
@@ -2039,9 +2044,9 @@ CircleToken:
   pop bc
 
   dec a
-  jr z,circle_wbcf
-  dec a
   jr z,circle_bbcf
+  dec a
+  jr z,circle_wbcf
   dec a
   jr z,circle_xbcf
 
@@ -3492,14 +3497,15 @@ GotoToken:
   ret
 DispGraph:
   ld a,(hl)
-  ld hl,(BufPtr)
   call EndOArg
   call nz,isop
-  jp z,GraphToLCD+3
+  jp z,GraphToLCD
   call ParseFullArg
   ld h,b
   ld l,c
-  jp GraphToLCD+3
+  ld ixh,b
+  ld ixl,c
+  jp BufferToLCD
 EndOArg:
   cp 4 \ ret z  ;->
 EndOArgNotSto:
