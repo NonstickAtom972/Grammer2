@@ -575,11 +575,12 @@ FixToken:
   ld (TextPauseTime),a
   ret
 SetMode:
-  ld bc,(flags+34)
+  ld a,(flags+UserFlags)
   ld b,0
+  ld c,a
   call ParseFullArg
   ld a,c
-  ld (flags+34),a
+  ld (flags+UserFlags),a
   ret
 OSVarToken:
   ld a,(hl)
