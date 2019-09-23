@@ -552,9 +552,8 @@ NotSendByte:
   bcall(_EnoughMem)
   jp c,ErrMEM
   ex de,hl
-  push hl
   bcall(_CreateVar)
-  pop bc
+  ex de,hl
   ld a,b
   or c
   inc hl
