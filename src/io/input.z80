@@ -307,7 +307,6 @@ inp_dispstr:
   jp inp_VPutMap
 _:
   push hl
-  ld a,(hl)
   bcall(_IsA2ByteTok)
   push af
   bcall(_Get_Tok_Strng)
