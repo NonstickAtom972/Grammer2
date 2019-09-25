@@ -1563,11 +1563,11 @@ BBTokens:
   cp $64    ;the G-T token
   jr nz,lowercasetokens
   ld a,(hl)
-  ld bc,9340h
+  ld bc,plotSScreen
   cp $AE
   jr nz,+_
   inc hl
-  ld bc,9872h
+  ld bc,appBackUpScreen
 _:
   ld (parsePtr),hl
   ret
@@ -3312,15 +3312,15 @@ _:
   dec a
   jr nz,+_
   dec c
-  ld hl,%1010101010101010
+  ld hl,%1010101010101010   ;50-50
 _:
   dec a
   jr nz,+_
-  ld hl,%1001001001001001
+  ld hl,%1001001001001001   ;33-67
 _:
   dec a
   jr nz,+_
-  ld hl,%1000100010001000
+  ld hl,%1000100010001000   ;25-75
 _:
   dec a
   jr nz,+_
@@ -4398,7 +4398,6 @@ _:
 #include "main.z80"
 #include "progmeta.z80"
 #include "compile.z80"
-#include "commandtable.z80"
 #include "module.z80"
 #include "ramcode.z80"
 #include "routines.z80"
@@ -4431,6 +4430,7 @@ _:
 #include "subroutines/CheckStatus.z80"
 #include "parserinterrupt.z80"
 #include "err.z80"
+#include "commandtable.z80"
 
 
 .echo "Page 0: ",$8000-$," bytes remaining"
