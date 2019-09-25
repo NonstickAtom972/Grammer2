@@ -77,8 +77,8 @@ chkalphakey_tok:
     call mod_reset
 
 
-    cp 'Z'+2
-    ret z
+    cp 'Z'+1
+    ret nc
     cp 2Ah \ jr nz,+_ \ ld e,$AE \ ret    ;Quote --> apostrophe
 _:
     cp $AF \ jr nz,+_ \ ld e,$2D \ ret    ;? --> !
