@@ -161,12 +161,11 @@ stack_top   = stack_base+2
 stack_ptr   = stack_top+2
 
 input_base  = stack_ptr+2
-input_head  = input_base+2
-input_top   = input_head+2
-input_size  = input_top+2
+input_size  = input_base+2
 
 
-PBuf          = 9872h
+appBackUpScreen=9872h
+PBuf          = abbBackupScreen
 ramCode       = 8100h
 SetLinePix    = ramCode
 interruptLoc  = 8A8Ah
