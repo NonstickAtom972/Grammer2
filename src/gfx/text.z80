@@ -307,6 +307,7 @@ _:
   ld a,7
   add a,l
   and %11111000
+  ret z
   rra
   rra
   rra
