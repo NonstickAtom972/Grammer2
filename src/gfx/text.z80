@@ -253,6 +253,35 @@ _:
   inc hl
   ex de,hl
 VputSCStepIn:
+  bit InvertTextFlag,(iy+UserFlags)
+  jr z,VputSCStepIn_postinvert
+  ;need to invert the text data
+  ;DE points to the sprite
+  ;H is height
+  ;L is width
+  push hl
+
+  ld b,h
+  ;get the mask to invert with
+  ld a,l
+  ld hl,spritemask
+  add a,l
+  ld l,a
+  jr nc,+_
+  inc h
+_:
+  ld c,(hl)
+  ld hl,OP1
+_:
+  ld a,(de)
+  xor c
+  ld (hl),a
+  inc hl
+  inc de
+  djnz -_
+  ld de,OP1
+  pop hl
+VputSCStepIn_postinvert:
   push hl
   ld bc,(TextRow)
   ld a,b \ add a,l
