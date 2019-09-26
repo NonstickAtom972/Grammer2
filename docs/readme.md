@@ -5,8 +5,8 @@ An HTML version of this file is in the `readme` folder :)
 Author........Zeda Thomas
 e-mail........xedaelnara@gmail.com
 Project.......Grammer
-Version.......2.50.6.3    (I will probably forget to change this :( )
-Last Update...11 September 2019
+Version.......2.50.6.6    (I will probably forget to change this :( )
+Last Update...25 September 2019
 Language......English
 Programming...Assembly
 Size..........2-Page app
@@ -18,6 +18,68 @@ Hey! You! This app is still in development! If you have issues, please send me a
 To follow the progress of Grammer, check out [Omnimaga](https://www.omnimaga.org/grammer/), [Cemetech](http://www.cemetech.net/forum/viewforum.php?f=71) or [GitHub](https://github.com/Zeda/Grammer2), where development is most active.
 
 If you have questions or suggestions, feel free to email me or post in the forums!
+
+<h1>Table of Contents</h1>
+
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Commands and Tutorial](#commands-and-tutorial)   
+   - [Intro](#intro)   
+   - [Getting Started](#getting-started)   
+   - [Your First Program](#your-first-program)   
+   - [Pointers](#pointers)   
+   - [Math](#math)   
+   - [Drawing](#drawing)   
+   - [Fonts](#fonts)   
+- [Command List](#command-list)   
+   - [Basic Operations](#basic-operations)   
+   - [Loops/Conditionals/Blocks](#loopsconditionalsblocks)   
+      - [Examples With Blocks](#examples-with-blocks)   
+   - [Control](#control)   
+      - [Control Examples](#control-examples)   
+   - [Input/Computing](#inputcomputing)   
+      - [Input Vars!](#input-vars)   
+      - [Input Examples](#input-examples)   
+   - [solve(](#solve)   
+   - [Physics](#physics)   
+   - [Miscellaneous](#miscellaneous)   
+   - [Drawing Commands](#drawing-commands)   
+      - [DispGraph](#dispgraph)   
+      - [Circle(](#circle)   
+      - [Pt-Off(](#pt-off)   
+      - [Pt-On(](#pt-on)   
+      - [Line('](#line)   
+      - [Text(](#text)   
+      - [Line(](#line)   
+      - [Pxl-On(](#pxl-on)   
+      - [Pxl-Off(](#pxl-off)   
+      - [Pxl-Change(](#pxl-change)   
+      - [Pxl-Test(](#pxl-test)   
+      - [ClrDraw](#clrdraw)   
+      - [ClrHome](#clrhome)   
+      - [Shade(](#shade)   
+      - [Horizontal](#horizontal)   
+      - [Vertical](#vertical)   
+      - [Tangent(](#tangent)   
+      - [Disp](#disp)   
+      - [Pt-Change(](#pt-change)   
+      - [Fill(](#fill)   
+      - [RecallPic](#recallpic)   
+      - [StorePic](#storepic)   
+   - [Data Structures](#data-structures)   
+   - [Memory Access](#memory-access)   
+   - [Data Structures, continued](#data-structures-continued)   
+   - [Modes](#modes)   
+      - [Fix](#fix)   
+      - [Output(](#output)   
+      - [Mode Examples](#mode-examples)   
+- [Charts](#charts)   
+   - [Key Codes](#key-codes)   
+- [Examples](#examples)   
+- [Thanks](#thanks)   
+
+<!-- /MDTOC -->
+
 
 ## Intro
 Grammer is a powerful programming language for the TI-83+/84+/SE calculators.

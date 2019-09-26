@@ -1,3 +1,15 @@
+<h1>Table of Contents</h1>
+
+<!-- MDTOC maxdepth:6 firsth1:2 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Graphics Buffers](#graphics-buffers)   
+- [Grayscale](#grayscale)   
+- [Sprites](#sprites)   
+   - [Sprite Data](#sprite-data)   
+   - [Sprite Logic](#sprite-logic)   
+   - [Displaying Sprites](#displaying-sprites)   
+
+<!-- /MDTOC -->
 # Drawing
 
 Drawing in Grammer has a few similarities to TI-BASIC, but not many. In Grammer, you'll need a lower-level understanding of graphics, and that is what we'll aim to teach here. To understand, a primary difference is that Grammer uses pixel coordinates, like the BASIC `Pxl-*` commands.

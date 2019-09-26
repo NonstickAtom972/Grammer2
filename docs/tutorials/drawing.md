@@ -1,3 +1,22 @@
+# Table of Contents
+
+<!-- MDTOC maxdepth:6 firsth1:2 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [DispGraph](#dispgraph)   
+- [Disp](#disp)   
+- [ClrDraw](#clrdraw)   
+- [Text(](#text)   
+   - [Draw text strings](#draw-text-strings)   
+   - [Draw numbers](#draw-numbers)   
+   - [Follow text with more text](#follow-text-with-more-text)   
+   - [Typewriter text](#typewriter-text)   
+   - [Display Text Characters (ASCII, ish)](#display-text-characters-ascii-ish)   
+   - [Display text as ASCII, not tokens](#display-text-as-ascii-not-tokens)   
+   - [Miscellaneous Text Operations](#miscellaneous-text-operations)   
+- [Circle(](#circle)   
+
+<!-- /MDTOC -->
+
 # Graphics Tutorial
 Grammer offers much faster graphics over BASIC, but a good understanding of the
 lower-level graphics is what will make your graphics *good*.
@@ -8,7 +27,7 @@ like they do in BASIC. Updating the LCD is a relatively slow operation on the TI
 in speed over BASIC graphics. This ability to defer is also what makes graphics
 smoother.
 
-#### DispGraph
+## DispGraph
 By default, `DispGraph` draws the **graphscreen** to the LCD. Here is an example:
 ```
 .0:Return
@@ -30,7 +49,7 @@ Stop
 This shows garbage because `DispGraph` is reading the start of memory
 (address 0) as if it is graphics data.
 
-#### Disp
+## Disp
 Most graphics routines allow you to provide an optional argument designating a
 graphics buffer to draw to. You can also set a default buffer with the `Disp `
 function. For example, `Disp G-T'` (or `Disp π9872` on older versions). Now,
@@ -98,13 +117,13 @@ Stop
 *![Image Description: Four vertical bars, each a quarter of the screen wide: Black, light gray, dark gray, white.](img/003.png)*
 
 
-#### ClrDraw
+## ClrDraw
 `ClrDraw` clears the primary graphics buffer, setting it to white, and resets
 the text coordinates to the upper-left, (0,0). Alternatively, you can specify a
 graphics buffer to erase, for example: `ClrDrawG-T'` would clear the buffer that
 `G-T'` points to (typically used as a back buffer for grayscale).
 
-#### Text(
+## Text(
 There are many different methods for drawing text in Grammer.
 By default, it uses a 4x6 fixed-width font, and can draw to 24 columns (much
 like the TI-BASIC `Output(` command drawing to only 16 columns on the
@@ -114,7 +133,7 @@ small, fixed-width font, or the large variable-width font, or even custom fonts
 from Batlib and Omnicalc. You can find more on this in the [Output(](#output)
 section.
 
-###### Draw text strings:
+### Draw text strings
 The most basic way to use `Text(` looks a lot like BASIC:
 ```
 .0:Return
@@ -151,7 +170,7 @@ Stop
 *![Image Description: 'Hello, "17 DispGra' is drawn to the graph screen.](img/00F.png)*
 
 
-###### Draw numbers:
+### Draw numbers
 To draw a number, use the `'` modifier:
 ```
 .0:Return
@@ -213,7 +232,7 @@ Stop
 *![Image Description: "5318008" is drawn to the graph screen.](img/00E.png)*
 
 
-###### Follow text with more text
+### Follow text with more text
 If you want to draw text where the last `Text(` command left off, use a degree
 token to replace coordinates: `Text(°`. For example, we'll
 display the numbers 3 and 4 with a comma separating them:
@@ -232,7 +251,7 @@ Note that `°` came *after* `'` when we wanted to display the `4`. This is becau
 the modifier `'` comes before the coordinates when displaying numbers, and `°`
 replaces the coordinates.
 
-###### Typewriter text
+### Typewriter text
 "Typewriter text" is text displayed with a small pause between characters drawn.
 To use this effect, you can use `/Text(` or `Text(`<sup>`r`</sup> (that is the
 superscript `r` found at [2nd][APPS]). You can change the delay with `Fix Text(`
@@ -248,7 +267,7 @@ Stop
 
 Typewriter text works with all of the text modes, not just strings!
 
-###### Display Text Characters (ASCII, ish)
+### Display Text Characters (ASCII, ish)
 There are 256 characters in the font, some are more difficult to access via the
 OS tokens. In Grammer, you can directly draw chars by number if you put a `'`
 before the last argument. For example, 37 corresponds to the `%` char:
@@ -274,7 +293,7 @@ Stop
 ```
 *![Image Description: "100%" is drawn to the graph screen.](img/00D.png)*
 
-###### Display text as ASCII, not tokens
+### Display text as ASCII, not tokens
 Drawing ASCII is **not** intended for drawing text that you type in the program
 editor! If you don't know what a "null terminated string" is, then you probably
 don't want to use this! After this sentence, I will get technical and you should
@@ -285,7 +304,7 @@ in mind that it must be null-terminated (ends in a 0x00). Display with the
 syntax, `Text(Y,X,°<<pointer>>`.
 
 
-###### Miscellaneous Text Operations
+### Miscellaneous Text Operations
 If you want to draw to coordinates relative to the last drawn coordinates, you
 can do something like this: `Text(+3,+0,"Hello`. But instead of +0, just leave
 it empty like this: `Text(+3,,"Hello`
@@ -295,7 +314,7 @@ in `Ans` and the X position in `Ɵ'`.
 
 You can set the coordinates without drawing text, too: `Text(0,0`.
 
-#### Circle(
+## Circle(
 The syntax is `Circle(Y,X,R[,Method[,pattern[,buffer`.
 This draws a circle using Y and X as pixel coordinates and R as the radius of the circle in pixels. `Method` is how to draw the circle:
 * 1 - Black border (Default)

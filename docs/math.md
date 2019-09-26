@@ -1,3 +1,13 @@
+<h1>Table of Contents</h1>
+
+<!-- MDTOC maxdepth:6 firsth1:2 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Math](#math)   
+- [Floating Point](#floating-point)   
+- [Number System](#number-system)   
+
+<!-- /MDTOC -->
+
 # Grammer Math
 
 Grammer uses 16-bit math. If you are not familiar with what this means, please look at the [Number System](#number-system) section.

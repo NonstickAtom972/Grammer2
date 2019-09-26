@@ -1,3 +1,17 @@
+<h1>Table of Contents</h1>
+
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Binary Lesson](#binary-lesson)   
+   - [Converting from Dec to Hex](#converting-from-dec-to-hex)   
+   - [Converting from Hex to Dec](#converting-from-hex-to-dec)   
+   - [Binary.](#binary)   
+   - [Octal.](#octal)   
+   - [Other Bases](#other-bases)   
+
+<!-- /MDTOC -->
+
+
 # Binary Lesson
 
 This document was designed to explain the basics of Decimal (our number system),
@@ -5,7 +19,7 @@ Hexadecimal (base16, the ASM number system), and binary (machine code, 0's and
 1's). Again, this is going to be very basic. Check the internet if you want to
 learn more.
 
-## Converting from Dec to Hex:
+## Converting from Dec to Hex
 1. Divide the number by 16. The remainder is the first number. If it is 0 to 9,
 just keep that. If it is 10 to 15, use letters A to F.
 
@@ -21,7 +35,7 @@ Here is an example of 32173 converted to Hex:
 ```
 So the number is 7DADh
 
-## Converting from Hex to Dec:
+## Converting from Hex to Dec
 I will start this with an example of 731h:
 ```
 1*16^0 = 1

@@ -1,3 +1,12 @@
+<h1>Table of Contents</h1>
+
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Modules](#modules)   
+- [Grammer Routines](#grammer-routines)   
+
+<!-- /MDTOC -->
+
 # Modules
 
 Modules help to extend the Grammer language. Unfortunately, there is a lot of overhead involved, so locating and loading routines is rather slow. As such, I recommend modules where speed isn't critical. Where it is, you can still use assembly programs and hex codes.
