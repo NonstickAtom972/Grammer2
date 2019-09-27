@@ -5,6 +5,7 @@
 drawrect:
 #include "gfx/drawrect.z80"
 #include "math/rand_single.z80"
+#include "math/atanbin.z80"
 #include "gfx/filledcircle.z80"
 
 call_ix_01:
@@ -54,6 +55,7 @@ menu_code_start:
 #include "io/getKeyTok.z80"
 #include "io/input.z80"
 #include "io/menu.z80"
+#include "io/sound.z80"
 
 p1_PutTokenText:
   ld bc,PutTokenText

@@ -1696,54 +1696,22 @@ conj:
   call ParseNextFullArg
   pop af
   jr nz,SoundData
+  ld hl,freqout
+  ld (next_page_call_address),hl
   ld h,b \ ld l,c \ pop bc
+  jp next_page_call
 
-freqout:
-;HL*87-11cc
-  ld d,b
-  ld e,c
-  jr freqoutEntry
-freqoutLoop:
-;add 46cc
-  ex (sp),hl
-  ex (sp),hl
-  nop
-  nop
-freqoutLoop1:
-  ld a,h
-  or l
-  jr z,+_
-  cpd
-  jp pe,freqoutLoop
-freqoutEntry:
-  in a,(0)
-  scf
-_:
-
-  ld b,d
-  ld c,e
-  out (0),a
-  jr c,freqoutLoop
-  ret
 
 SoundData:
   push bc
   call ParseNextFullArg
+  ld hl,SoundLoop
+  ld (next_page_call_address),hl
   pop hl \ pop de
-  ld a,b \ or c \ ret z
-;HL points to the data:
-;DE is the time
-;BC is the number of elements
-SoundLoop:
-  push de \ push bc
-  ld c,(hl) \ inc hl
-  ld b,(hl) \ push hl
-  ex de,hl
-  call freqout
-  pop hl \ pop bc \ pop de
-  cpi
-  jp pe,SoundLoop
+  ld a,b \ or c
+  jp nz,next_page_call
   ret
+
 GrammerSound:
   call ParseFullArg
   push bc
@@ -1773,6 +1741,7 @@ GrammerSound:
   push bc
   call ParseNextFullArg
   ;multiply BC by 34483, then divide by 32
+
   ld de,34483
   call DE_Times_BC
   xor a
@@ -1782,20 +1751,11 @@ GrammerSound:
   ld l,h \ ld h,e \ ld e,d \ ld d,a
   ;DEHL is how long to run it
 
+  ld bc,noteloop_begin
+  ld (next_page_call_address),bc
   pop bc
+  jp next_page_call
 
-  .db $FE
-NoteLoop:
-;If the CPU is exactly 6MHz, then we are .000004666... seconds short for every .950272 seconds.
-  dec de
-  push de
-  call freqout
-  pop de
-  ld a,d
-  or e
-  dec hl
-  jr nz,NoteLoop
-  ret
 subToken:
   cp 12 \ jr nz,ANOVAsubset
   call ParseFullArg
@@ -4435,7 +4395,11 @@ _:
 
 .echo "Page 0: ",$8000-$," bytes remaining"
 
+#if $>$8000
+.error "ERR!! Page 1 is over by ",$-$8000," bytes!"
+#else
 .fill $8000-$,255
+#endif
 #include "01.z80"
 
 
