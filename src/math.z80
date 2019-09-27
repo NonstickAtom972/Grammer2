@@ -498,9 +498,21 @@ tanToken:
 atanToken:
   ld a,(hl)
   cp 3Ah
-  jp nz,ErrBadToken
+  jr z,atan_float
+  call ParseFullArg
+  push bc
+  ld bc,128
+  cp 2Bh
+  call z,ParseNextFullArg
+  pop de
+  ld hl,atanbin
+  ld (next_page_call_address),hl
+  jp next_page_call
+
+atan_float:
   ld hl,atanSingle
   jp float_stepin_1
+
 acosToken:
   ld a,(hl)
   cp 3Ah
