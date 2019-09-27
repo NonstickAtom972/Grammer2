@@ -60,6 +60,7 @@ Here are the math operations currently available.
 | max(a,b | max(  | max(    | Returns the maximum of two numbers. |
 | sin(a   | sin(  | sin(    | This returns the sine of a number as a value between -128 and 127. The period is 256, not 360. For example, sin(32) is like sin(45) in normal math. If you need help, take the actual sin(45) and multiply by 128. Rounded, this is 91. So, sin(32)=91. |
 | cos(a   | cos(  | cos(    | This calculates cosine. See notes on sine. |
+| tan<sup>-1</sup>(a[,b   | tan<sup>-1</sup>(  | tan<sup>-1</sup>(    | This calculates arctangent such that `arctan(sin(x),cos(x))=x` using Grammer's integer trig. |
 | e^(a    | e^(   | e^(     | Computes a power of 2. |
 | gcd(a,b | gcd(  | gcd(    | Returns the greatest common divisor of two numbers. |
 | lcm(a,b | lcm(  | lcm(    | Returns the least common multiple of two numbers. |
