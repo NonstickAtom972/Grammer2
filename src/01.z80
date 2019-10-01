@@ -50,12 +50,14 @@ grampkg_end:
 
 menu_code_start:
 #include "cmd/menu.z80"
+#include "cmd/searchstring.z80"
 
 #include "io/getKeyChar.z80"
 #include "io/getKeyTok.z80"
 #include "io/input.z80"
 #include "io/menu.z80"
 #include "io/sound.z80"
+
 
 p1_PutTokenText:
   ld bc,PutTokenText
