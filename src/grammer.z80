@@ -1655,27 +1655,35 @@ FindvarInfo:
   ret
 inString:
   cp 15 \ jr nz,conj
-  call ParseNextFullArg
+  call ParseFullArg
   push bc
+
   call ParseNextFullArg
-  cp 2Bh        ;If there is another argument, then it is to put a limit on how mnay bytes to compare
-  ld h,b \ ld l,c
+  pop hl
+  push bc   ;second arg
+  push hl   ;first arg
+  push af
+  ld h,b
+  ld l,c
+  call GetGrammerStr
+  pop af
+  pop hl
+  push bc   ;size of second arg string
+
+  cp 2Bh        ;If there is another argument, then it is to put a limit on how many bytes to compare
   push hl
   jr z,+_
   call nz,GetGrammerStr
-  cp a
+  scf
 _:
-  call z,ParseNextFullArg
+  call nc,ParseNextFullArg
   ld (ThetaPrimeVar),bc
-  pop de
   pop hl
-  push bc
+  pop ix
+  pop de
+
   call SearchString
-  pop bc
-  jr c,+_
-  ld h,b \ ld l,c
-_:
-  or a \ sbc hl,bc
+  jp nc,return_BC_0
   ld b,h \ ld c,l
   ret
 conj:
@@ -3413,20 +3421,22 @@ Return:
   ld b,h
   ret
 LblToken:
-  push hl
   call ParseFullArg
-  pop hl
   push bc
+  ld h,b
+  ld l,c
   call GetGrammerStr
   pop hl
+  push bc
+
   ld de,OP2
-  push de
+  ld a,3Fh
+  ld (de),a
+  inc de
   ld a,3Ah
   ld (de),a
   inc de
-  push bc
   ldir
-  dec de
   ld a,3Fh
   ld (de),a
   ld hl,(parsePtr)
@@ -3436,17 +3446,32 @@ LblToken:
   inc hl
   ld (parsePtr),hl
   call GetVarInfo2
-  jr nc,+_+3
+  jr nc,LblToken_ptrdone
 _:
-  ld hl,(progStart)
-  ld a,3Fh
-  pop bc
-  inc bc
-  pop de
+  ld hl,(progEnd)
+  ld de,(progStart)
+  or a
+  sbc hl,de
+  ld b,h
+  ld c,l
+  ex de,hl
+LblToken_ptrdone:
+  ld de,OP2
+  pop ix
+  ld de,3
+  add ix,de
+  ld de,OP2
   call SearchString
   ld b,h
   ld c,l
   ret
+SearchString:
+  push hl
+  ld hl,searchstring_routine
+  ld (next_page_call_address),hl
+  pop hl
+  jp next_page_call
+
 GotoToken:
   push bc
   call ParseFullArg
@@ -4368,7 +4393,6 @@ _:
 #ifdef include_LoadTSA
 #include "cmd/loadtsa.z80"
 #endif
-#include "cmd/searchstring.z80"
 #include "gfx/text.z80"
 #include "gfx/circle.z80"
 #include "gfx/gbufToLCD.z80"
