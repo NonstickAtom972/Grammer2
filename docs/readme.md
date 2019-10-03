@@ -814,12 +814,12 @@ arrays and matrices. First, here are the commands you have to work with:
 
 | Name         | Description |
 |:------------ |:------- |
-| Get(         | This uses a string for the name of an OS var and returns a pointer to its data. If the variable does not exist, this returns 0. If it is archived, the value returned will be less than 32768. Ɵ' contains the flash page the variable is on, if it is archived, otherwise Ɵ' is 0. As an example, `Get("ESPRITES→A'` would return a pointer to the data of `prgmSPRITES` in `A'`.
+| FindVar( *<small>Get(</small>* | This uses a string for the name of an OS var and returns a pointer to its data. If the variable does not exist, this returns 0. If it is archived, the value returned will be less than 32768. Ɵ' contains the flash page the variable is on, if it is archived, otherwise Ɵ' is 0. As an example, `Get("ESPRITES→A'` would return a pointer to the data of `prgmSPRITES` in `A'`.
 | (            | Use this to read a byte of data from RAM
 | {            | Use this two read a two byte value from RAM (little endian)
 | int(         | Use this to write a byte of data to RAM.
 | iPart(       | Use this to write a word of data to RAM, little-endian (a word is 2 bytes). For example, to set the first two bytes to 0 in prgmHI: `Get("EHI→A:iPart(A,0`
-| Send(        | Use this to create Appvars or programs of any size (so long as there is enough memory). For example, to create `prgmHI` with 768 bytes: `Send(768,"EHI`. Programs must be prefixed with `"E"`, protected programs `"F"` and appvars `"U"`. Lowercase letters are allowed! :)
+| MakeVar( *<small>Send(</small>*  | Use this to create Appvars or programs of any size and filled with zeros (so long as there is enough memory). For example, to create `prgmHI` with 768 bytes: `Send(768,"EHI`. Programs must be prefixed with `"E"`, protected programs `"F"` and appvars `"U"`. Lowercase letters are allowed! :)
 | [            | Store a sequence of bytes to a given location. For example, `A[1,2,3,4` will store 4 bytes at A. You can also store some elements as two-byte words by using the `°` token. `A[1,2,3°,4`
 | [[           | Stores a sequence of 2-byte words. `A[[1,2,3,4`
 | [(           | Stores hexadecimal input as raw data. `A[(3C7EFFFFFFFF7E3C`
@@ -980,10 +980,11 @@ Here is code that changes X and Y based on key presses.
 :Stop
 ```
 # Thanks
-I have to give special thanks to Yeongjin Nam for his work on writing a
-better tutorial for Grammer and as well Louis Becquey (persalteas) for his work on
+I have to give special thanks to Yeongjin Nam for their work on writing a
+better tutorial for Grammer and as well Louis Becquey (persalteas) for their work on
 writing a french readme/tutorial. Both of them have also made many valuable
 suggestions that have helped make Grammer what it is right now. Thanks much!
+Thanks to GModder for the suggestions and (many) bug reports that I would not have found otherwise!
 
 I also thank Hans Burch for reconstructing Grammer 2 after I lost my work. It must have been a tremendous amount of effort and tedium, and I greatly appreciate it. They've continued to provide valuable feedback about bugs and it has been extremely helpful.
 
