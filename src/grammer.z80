@@ -1389,72 +1389,61 @@ InvertMem:
   ret
 VerticalToken:
   call ParseFullArg
-  ld a,b \ or a \ ret nz
-  ld a,c \ cp 96 \ ret nc
-  ld a,c
-  and 7
-  ld b,a
-  ld a,80h
-  jr nz,skip_vert_mask
-_:
-  rrca
-  djnz -_
-skip_vert_mask:
-  srl c \ srl c \ srl c
-  push af
   push bc
-  ld a,(hl) \ cp 2Bh
   ld c,1
+  cp $2B
   call z,ParseNextFullArg
-  ld b,c
+  pop hl
   push bc
+  push hl
   ld bc,(BufPtr)
   cp 2Bh
   call z,ParseNextFullArg
-  pop af
-  pop hl
-  add hl,bc
+  ld (gbuf_temp),bc
   pop bc
-  ld c,b
-;=======================================
-;     C is the mask
-;     A is the method:
-;        0=Off
-;        1=On
-;        2=Invert
-;     HL is where to start
-;=======================================
-  ld b,64
+  ld b,c
+  ld c,0
+  call getPixelLoc
+  pop bc      ;C is the method
+  ret nc
+
+;it is in-bounds
   ld de,12
-DrawVertOn:
-  dec a \ jr nz,DrawVertInv
+  ld b,64
+  dec c
+  jr nz,draw_vert_toggle
+  ld c,a
 _:
-  ld a,c
-  or (hl)
+  ld a,(hl)
+  or c
   ld (hl),a
   add hl,de
   djnz -_
   ret
-DrawVertInv:
-  dec a \ jr nz,DrawVertOff
+
+draw_vert_toggle:
+  dec c
+  jr nz,draw_vert_off
+  ld c,a
 _:
-  ld a,c
-  xor (hl)
+  ld a,(hl)
+  xor c
   ld (hl),a
   add hl,de
   djnz -_
   ret
-DrawVertOff:
-  ld a,c
+
+draw_vert_off:
   cpl
   ld c,a
 _:
-  ld a,c
-  and (hl)
+  ld a,(hl)
+  and c
   ld (hl),a
   add hl,de
   djnz -_
   ret
+
 ShadeToken:
   call ParseFullArg
   ld a,c
