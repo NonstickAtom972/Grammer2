@@ -1,19 +1,38 @@
 # Table of Contents
 
-<!-- MDTOC maxdepth:6 firsth1:2 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
-- [DispGraph](#dispgraph)   
-- [Disp](#disp)   
-- [ClrDraw](#clrdraw)   
-- [Text(](#text)   
-   - [Draw text strings](#draw-text-strings)   
-   - [Draw numbers](#draw-numbers)   
-   - [Follow text with more text](#follow-text-with-more-text)   
-   - [Typewriter text](#typewriter-text)   
-   - [Display Text Characters (ASCII, ish)](#display-text-characters-ascii-ish)   
-   - [Display text as ASCII, not tokens](#display-text-as-ascii-not-tokens)   
-   - [Miscellaneous Text Operations](#miscellaneous-text-operations)   
-- [Circle(](#circle)   
+- [Table of Contents](#table-of-contents)   
+- [Graphics Tutorial](#graphics-tutorial)   
+   - [DispGraph](#dispgraph)   
+   - [Disp](#disp)   
+   - [ClrDraw](#clrdraw)   
+   - [ClrHome](#clrhome)   
+   - [Shade(](#shade)   
+   - [Text(](#text)   
+      - [Draw text strings](#draw-text-strings)   
+      - [Draw numbers](#draw-numbers)   
+      - [Follow text with more text](#follow-text-with-more-text)   
+      - [Typewriter text](#typewriter-text)   
+      - [Display Text Characters (ASCII, ish)](#display-text-characters-ascii-ish)   
+      - [Display text as ASCII, not tokens](#display-text-as-ascii-not-tokens)   
+      - [Miscellaneous Text Operations](#miscellaneous-text-operations)   
+   - [Pxl-On(](#pxl-on)   
+   - [Pxl-Off(](#pxl-off)   
+   - [Pxl-Change(](#pxl-change)   
+      - [Langton's Ant Example](#langtons-ant-example)   
+   - [Pxl-Test(](#pxl-test)   
+   - [Horizontal](#horizontal)   
+   - [Vertical](#vertical)   
+   - [Tangent(](#tangent)   
+   - [Fill(](#fill)   
+   - [RecallPic](#recallpic)   
+   - [StorePic](#storepic)   
+   - [Pt-Off(](#pt-off)   
+   - [Pt-On(](#pt-on)   
+   - [Line(](#line)   
+   - [Line('](#line)   
+   - [Pt-Change(](#pt-change)   
 
 <!-- /MDTOC -->
 
@@ -122,6 +141,19 @@ Stop
 the text coordinates to the upper-left, (0,0). Alternatively, you can specify a
 graphics buffer to erase, for example: `ClrDrawG-T'` would clear the buffer that
 `G-T'` points to (typically used as a back buffer for grayscale).
+
+## ClrHome
+This clears the home screen buffer and resets the cursor coordinates. This isn't
+really useful in Grammer as the homescreen is essentially unused, but it's good
+for aesthetics and advanced users users.
+
+## Shade(
+This sets the contrast to a value from 0 to 39. 24 is normal. An example is
+`Shade(30`.
+
+*Note: I am aware that the LCD actually offers 64 different shades, however, I
+deferred to the OS conventions. Why I did this is beyond me, but it's too late
+to change it.*
 
 ## Text(
 There are many different methods for drawing text in Grammer.
@@ -314,39 +346,335 @@ in `Ans` and the X position in `Ɵ'`.
 
 You can set the coordinates without drawing text, too: `Text(0,0`.
 
-## Circle(
-The syntax is `Circle(Y,X,R[,Method[,pattern[,buffer`.
-This draws a circle using Y and X as pixel coordinates and R as the radius of the circle in pixels. `Method` is how to draw the circle:
-* 1 - Black border (Default)
-* 2 - White border
-* 3 - Inverted border
-* 4 - White border, white fill
-* 5 - Black border, black fill
-* 6 - Invert border, invert fill
-* 7 - White border, black fill
-* 8 - White border, invert fill
-* 9 - Black border, white fill
-* 10 - Black border, invert fill
-* 11 - Invert border, white fill
-* 12 - Invert border, black fill
+## Pxl-On(
+The arguments for this are: `Pxl-On(y,x[,buf`.
+This draws a black pixel at coordinates (`y`,`x`), on buffer `buf`. If you omit
+the `buf` argument, this defaults to the current default buffer. As well, the
+previous pixel value is returned, with 0 indicating white, and 1 indicating
+black.
+
+To set the upper-left pixel black, we can do:
+```
+Pxl-On(0,0
+```
+
+To set the bottom-right pixel black:
+```
+Pxl-On(63,95
+```
+
+## Pxl-Off(
+The arguments for this are: `Pxl-Off(y,x[,buf`.
+This draws a white pixel at coordinates (`y`,`x`), on buffer `buf`. If you omit
+the `buf` argument, this defaults to the current default buffer. As well, the
+previous pixel value is returned, with 0 indicating white, and 1 indicating
+black.
+
+To set the upper-left pixel white, we can do:
+```
+Pxl-Off(0,0
+```
+
+To set the bottom-right pixel white:
+```
+Pxl-Off(63,95
+```
 
 
-`Pattern` is a number from 0 to 255 that will be used as a drawing pattern for the border. For example, 85 is `01010101` in binary, so every other pixel will not be drawn. Use 0 for no pattern. If the bit is 0, the pixel will be drawn, if it is 1, it won't be drawn. `Buffer` is the buffer to draw to (useful with grayscale).
+## Pxl-Change(
+The arguments for this are: `Pxl-Change(y,x[,buf`.
+This toggles a pixel at coordinates (`y`,`x`), on buffer `buf`. If you omit
+the `buf` argument, this defaults to the current default buffer. As well, the
+previous pixel value is returned, with 0 indicating white, and 1 indicating
+black.
 
-For basic usage:
+To toggle the upper-left pixel:
 ```
-.0:Return
-Circle(32,48,20
-DispGraph
-Stop
+Pxl-Change(0,0
 ```
-*![Image Description: A black circle of radius 20 pixels is drawn at the center of the screen.](img/004.png)*
 
-Or an example using a pattern, we need to include the method argument.
+To toggle the bottom-right pixel:
 ```
-.0:Return
-Circle(32,48,20,1,85
-DispGraph
-Stop
+Pxl-Change(63,95
 ```
-*![Image Description: A black circle of radius 20 pixels is drawn at the center of the screen. Dotted every-other pixel.](img/005.png)*
+
+### Langton's Ant Example
+An interesting application of Grammer's `Pxl-Change(` command is with
+[Langton's Ant](https://en.wikipedia.org/wiki/Langton%27s_ant). Because a pixel
+test is built in, we can combine the test+toggle step. Here is an example that
+displays every 250 iterations, but only exits when you press `[Clear]`.
+
+```
+:.0:Return
+:Full
+:ClrDraw
+:0→D→C
+:32→Y:48→X
+:Repeat getKey(15
+:Pxl-Change(Y,X
+:+Ans+D-1
+: and 3→D
+:Y+D=0:-D=2→Y
+:X+D=3:-D=1→X
+:C+1→C
+:If !C and 255
+:DispGraph
+:End
+;Stop
+```
+***Note:*** *the `and 3` and `and 255` tricks only works for powers of 2! `3` is
+2^2-1 and `255` is 2^8-1.*
+
+*![Image Description: Langton's Ant is shown incrementally.](img/002.gif)*
+
+## Pxl-Test(
+The arguments for this are: `Pxl-Test(y,x[,buf`.
+This gets the pixel value at coordinates (`y`,`x`), on buffer `buf`. If you omit
+the `buf` argument, this defaults to the current default buffer. Returns 0 if
+the pixel is off (white), and 1 if the pixel is on (black).
+
+## Horizontal
+This draws a horizontal line on the graph. The syntax is
+`Horizontal y[,method,[,Buffer`
+* `y` is a value from 0 to 63
+* `method` is how to draw the line:
+  * 0 = draws a white line
+  * 1 = draws a black line (*Default*)
+  * 2 = draws an inverted line
+* `Buffer` is the buffer to draw to.
+
+For example, this will make a screen-wiping animation from the up and down
+directions:
+```
+:.0:Return
+:For(K,0,31
+:Horizontal K
+:Horizontal 63-K
+:DispGraph
+:End
+:Stop
+```
+
+*![Image Description: Screen wipe using horizontal black lines.](img/003.gif)*
+
+
+## Vertical
+This draws a vertical line on the graph. The syntax is:
+`Vertical x[,method[,Buffer`
+* `x` is a value from 0 to 63
+* `method` is how to draw the line:
+  * 0 = draws a white line
+  * 1 = draws a black line (*Default*)
+  * 2 = draws an inverted line
+* `Buffer` is the buffer to draw to.
+
+For example, this will make a screen-wiping animation from the left and right
+directions:
+```
+:.0:Return
+:For(K,0,47
+:Vertical K
+:Vertical 95-K
+:DispGraph
+:End
+:Stop
+```
+
+*![Image Description: Screen wipe using vertical black lines.](img/004.gif)*
+
+## Tangent(
+This is used to shift the screen a number of pixels. The syntax is:
+Tangent(#ofShifts,Direction[,Buffer
+`#ofShifts` is the number of pixels to shift the graph screen
+`Direction` is represented as a number:
+* 1 = Down
+* 2 = Right
+* 4 = Left
+* 8 = Up
+You can combine directions by adding the values. For example,
+Right and Up would be 10 because 2+8=10, so to shift the buffer contents right
+and up 4 pixels:
+
+```
+Tangent(4,10
+```
+
+<!--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Fill(
+  Stick around, this is a pretty full command list.
+* 0-Black
+  * This fills the screen buffer with black pixels
+* 1-Invert
+  * This inverts the screen buffer
+* 2-Checker1
+  * This fills the screen buffer with a checkered pattern
+* 3-Checker2
+  * This fills the screen buffer with another checkered pattern
+* 4,x-LoadBytePatternOR
+  * copies a byte to every byte of the buffer data with OR logic
+* 5,x-LoadBytePatternXOR
+  * copies a byte to every byte of the buffer data with XOR logic
+* 6,x-LoadBytePatternAND
+  * copies a byte to every byte of the buffer data with AND logic
+* 7,x-LoadBytePatternErase
+  * copies a byte to every byte of the buffer data with Erase logic
+* 8,x-BufCopy
+  * x points to another buffer. The current buffer gets copied there
+* 9,x-BufOR
+  * x points to another buffer. This gets copied to the current buffer with OR logic.
+* 10,x-BufAND
+  * x points to another buffer. This gets copied to the current buffer with AND logic.
+* 11,x-BufXOR
+  * x points to another buffer. This gets copied to the current buffer with XOR logic.
+* 12,x-BufErase
+  * x points to another buffer. This gets copied to the current buffer by erasing.
+* 13,x-BufSwap
+  * x points to a buffer. This swaps the current buffer with the other.
+* 14,x-CopyDownOR
+  * The current buffer is copied x pixels down to itself with OR logic
+* 15,x-CopyDownAND
+  * The current buffer is copied x pixels down to itself with AND logic
+* 16,x-CopyDownXOR
+  * The current buffer is copied x pixels down to itself with XOR logic
+* 17,x-CopyDownErase
+  * The current buffer is copied x pixels down to itself with Erase logic
+* 18,x-CopyUpOR
+  * The current buffer is copied x pixels up to itself with OR logic
+* 19,x-CopyUpAND
+  * The current buffer is copied x pixels up to itself with AND logic
+* 20,x-CopyUpXOR
+  * The current buffer is copied x pixels up to itself with XOR logic
+* 21,x-CopyUpErase
+  * The current buffer is copied x pixels up to itself with Erase logic
+* 22,type-FireCycle
+  * This burns the contents of the screen for one cycle. If type is 0, white fire is used, if it is 1, black fire is used.
+* 23,Type,Y,X,Width,Height-Fire Cycle 2
+  * Type is the same as FireCycle and the other inputs are the same as Pt-On( where X and Width go by every 8 pixels.
+
+
+## RecallPic
+This is used to copy a picture to the current buffer. As an example of its use `RecallPic 0`. This works for pictures 0 to 255 and archived pics.
+
+## StorePic
+This stores the contents of the current buffer to a picture. This automatically deletes a preexisting picture. You can use this to store to pictures 0 to 255.
+
+## Pt-Off(
+This is used to draw sprites to pixel coordinates. It is limited in some ways, compared to the Pt-On( command, but more flexible in others. The syntax is: `Pt-Off(Method,DataPointer,Y,X,[Width,[Height[,Buffer`
+
+* Method is how the sprite is drawn:
+  * 0-Overwrite
+    * This overwrites the graph screen data this is drawn to.
+  * 1-AND
+    * This draws the sprite with AND logic
+  * 2-XOR
+    * This draws the sprite with XOR logic
+  * 3-OR
+    * This draws the sprite with OR logic
+  * 5-Erase
+    * Where there are normally pixels on for the sprite, this
+  draws them as pixels off.
+  *By adding 8 to the Method, the data will be read as hexadecimal
+
+* DataPointer is a pointer to the sprite data
+* Y is the pixel Y-coordinate
+* X is the pixel X-coordinate
+* Width is the width of the sprite (in bytes). The default is 1 (8 pixels).
+* Height is the number of pixels tall the sprite is. 8 is default
+
+## Pt-On(
+This also draws sprites, but only to 12 columns (every 8 pixels).
+This is slightly faster than `Pt-Off(` and has the advantage of
+variable width. It also has the DataSwap option that isn't present
+with the `Pt-Off(` command. Here is the syntax of the command:
+`Pt-On(Method,DataPointer,Y,X,[Width,[Height[,Buffer`
+
+* Method-This is how the sprite is drawn:
+  * 0-Overwrite
+  * 1-AND
+  * 2-XOR
+  * 3-OR
+  * 4-DataSwap
+    * This swaps the data on the graph screen with the sprite data. Doing this twice results in no change.
+  * 5-Erase
+  * 6-Mask
+    * This will display a masked sprite.
+  * 7-Gray
+    * This draws a frame of a 3 level gray sprite
+  *By adding 8 to the Method, the data will be read as hexadecimal
+* DataPointer is a pointer to the sprite data
+* Y is the pixel Y-coordinate
+* X is a value from 0 to 11.
+* Width is how wide the sprite is. 1=8 pixels, 2=16 pixels,.... Default is 1.
+* Height is the number of pixels tall the sprite is. Default is 8.
+
+## Line(
+This is used to draw rectangles. The syntax for this command is:
+`Line(x,y,Height,Width,Method`
+
+* x is a value from 0 to 95 and is the x pixel coordinate to begin drawing at
+* y is a value from 0 to 63 and is the y pixel coordinate to begin drawing at
+* Height is a value from 1 to 64 is the number of pixels tall the box will be
+* Width is a value from 1 to 96 is the number of pixels tall the box will be
+* Method is what kind of fill you want:
+  * 0-White. This turns off all of the pixels of the rectangle
+  * 1-Black. This turns on all of the pixels of the rectangle
+  * 2-Invert. This inverts all of the pixels of the rectangle
+  * 3-Black border. Draws a black perimeter not changing the inside
+  * 4-White border. Draws a white perimeter not changing the inside
+  * 5-Inverted border. Draws an inverted perimeter not changing the inside
+  * 6-Black border, White inside.
+  * 7-Black border, Inverted inside.
+  * 8-White border, Black inside.
+  * 9-White border, Inverted inside.
+  * 10-Shifts the contents in that rectangle up
+  * 11-Shifts the contents in that rectangle down
+  * 12-
+  * 13-
+  * 14-Pxl-Test Rect (count the number of ON pixels in the rectangle)
+  * 15-Pxl-Test Border (count the number of ON pixels on the border)
+  * 16-Inverted border, black fill
+  * 17-Inverted border, white fill
+
+## Line('
+This is used to draw lines. The syntax for this command is `Line('x1,y1,x2,y2[,Method[,Buffer`
+So it is two sets of pixel coordinates and then the Method:
+* 0=White
+* 1=Black
+* 2=Invert
+
+If Method is omitted, it uses `1` as the default.
+
+* Buffer is the buffer to draw to.
+
+## Pt-Change(
+This command is used to draw tilemaps. There is currently one
+method, but more should be added in the future. Here is the
+syntax:
+`Pt-Change(0,MapData,TileData,MapWidth,MapXOffset,MapYOffset,TileMethod`
+* MapData is a pointer to the map data
+* TileData is a pointer to the tile set
+* MapWidth is the width of the map (at least 12)
+* MapXOffset is the X offset into the map data
+* MapYOffset is the Y offset into the map data
+* TileMethod is how the sprite will be drawn (see Pt-On()
+
+Please note that the tile data and map data have to be raw bytes, as opposed to hexadecimal. There are some tools written in Grammer for creating sprite sets and tilemaps on TICalc or Omnimaga.
+
+
+-->
