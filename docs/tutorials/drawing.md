@@ -26,12 +26,18 @@
    - [Vertical](#vertical)   
    - [Tangent(](#tangent)   
    - [Fill(](#fill)   
-   - [RecallPic](#recallpic)   
+      - [Byte Patterns](#byte-patterns)   
+      - [Full buffer copies](#full-buffer-copies)   
+      - [Shift-and-copy](#shift-and-copy)   
+      - [Flames Graphics](#flames-graphics)   
+      - [Fill( command summary](#fill-command-summary)   
    - [StorePic](#storepic)   
+   - [RecallPic](#recallpic)   
+   - [Rectangles](#rectangles)   
+   - [Line('](#line)   
+   - [Circle(](#circle)   
    - [Pt-Off(](#pt-off)   
    - [Pt-On(](#pt-on)   
-   - [Line(](#line)   
-   - [Line('](#line)   
    - [Pt-Change(](#pt-change)   
 
 <!-- /MDTOC -->
@@ -499,80 +505,312 @@ and up 4 pixels:
 Tangent(4,10
 ```
 
-<!--
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Fill(
+`Fill(` is a whole bunch of commands for buffer operations.
+For example, suppose you want to fill the buffer with black pixels. Then you can
+use `Fill(0)`
+
+```
+:.0:Return
+:Fill(0
+:DispGraph
+:Stop
+```
+*![Image Description: The graph screen is all black, in the background of the homescreen.](img/00H.png)*
+
+Or to invert the buffer:
+```
+:.0:Return
+:Fill(1
+:DispGraph
+:Stop
+```
+*![Image Description: The graph screen is all black, in the background of the homescreen.](img/00I.png)*
+
+You can also fill the screen buffer with a checkered pattern. There are two
+versions of this. I don't know how this is useful, but I won't judge:
+```
+:.0:Return
+:Fill(2
+:DispGraph
+:Stop
+```
+```
+:.0:Return
+:Fill(3
+:DispGraph
+:Stop
+```
+*![Image Description: The graph screen is checkered.](img/00J.png)*
+*![Image Description: The graph screen is checkered.](img/00K.png)*
+
+### Byte Patterns
+You can fill the buffer with a byte pattern, too. For example, suppose you want
+to set every other pixel black. You will need to use OR logic, and a byte
+pattern of `85` or `170`. This is because in binary, `85` is `01010101` and
+`170` is `10101010`. So we'll use Fill( method number 4:
+`Fill(4,byte  - LoadBytePatternOR`:
+```
+:.0:Return
+:Fill(4,85
+:DispGraph
+:Stop
+```
+*![Image Description: The graph screen is checkered.](img/00L.png)*
+
+But you can also use method 5 to invert instead. To alternate inverting 2 pixels
+and then leaving 2 pixels ignored, we use a byte whose binary looks something
+like 11001100. In decimal, this is 204:
+```
+:.0:Return
+:Fill(5,204
+:DispGraph
+:Stop
+```
+In this image I got rid of the axes and drew a sine curve beforehand:
+
+*![Image Description: The graph looks cool.](img/00M.png)*
+
+### Full buffer copies
+Buffer copies are useful operations, especially for game graphics. These copy
+the data from one buffer to another. The most useful ones are probably the
+masking routines, allowing you to perform such operations as ORing or XORing one
+buffer on top of another.
+This is a little more complicated to show, but in this example, I've copied a
+sine graph into Pic1, and now I'll invert it onto the graphscreen:
+
+```
+:.0:Return
+:Fill(11,Pic1
+:DispGraph
+:Stop
+```
+*![Image Description: Sine XORed on to the graph screen.](img/00N.png)*
+
+### Shift-and-copy
+These operations are pretty esoteric, honestly, but maybe you can find a use for
+them. These copy the current buffer up or down one pixel, masked back on top of
+the buffer. It can make some neat cellular automata effects, for example:
+```
+:.0:Return
+:For(X,0,95
+:Pxl-On(0,X
+:Fill(16,1
+:DispGraph
+:End
+:Stop
+```
+This marches a pixel on the top row from left to right, while XORing the buffer
+1 pixel down onto itself.
+
+*![Image Description: Shifting in a Sierpinski's Gasket.](img/005.gif)*
+
+### Flames Graphics
+Flames graphics are pretty cool, and might be useful in games. The flame
+functions have two modes: white fire and black fire. In white fire mode, any
+white pixels on the screen are shifted up and have some probability of turning
+black (dissipating, burning out). In black fire mode, it is the opposite.
+
+Grammer has two commands to use these, one for the whole screen, and one for
+part of the screen. Here is an example where we take the contents of the graph
+screen as constant "fuel." To do this, we need to switch to another default
+buffer, then in a loop, we copy the graph buffer to the new buffer with OR logic
+and then perform one cycle of fire:
+```
+:.0:Return
+:Disp G-T'
+:ClrDraw
+:Repeat getKey(15
+:Fill(9,G-T
+:Fill(22,1
+:DispGraph
+:End
+:Stop
+```
+Note that `G-T` is the token found in the mode menu, or at `[2nd]` `[0]` `[^]` `[up]`.
+
+*![Image Description: The graphscreen, but burning.](img/006.gif)*
+
+
+### Fill( command summary
   Stick around, this is a pretty full command list.
-* 0-Black
+* `Fill(0` - Black
   * This fills the screen buffer with black pixels
-* 1-Invert
+* `Fill(1` - Invert
   * This inverts the screen buffer
-* 2-Checker1
+* `Fill(2` - Checker1
   * This fills the screen buffer with a checkered pattern
-* 3-Checker2
+* `Fill(3` - Checker2
   * This fills the screen buffer with another checkered pattern
-* 4,x-LoadBytePatternOR
-  * copies a byte to every byte of the buffer data with OR logic
-* 5,x-LoadBytePatternXOR
-  * copies a byte to every byte of the buffer data with XOR logic
-* 6,x-LoadBytePatternAND
-  * copies a byte to every byte of the buffer data with AND logic
-* 7,x-LoadBytePatternErase
-  * copies a byte to every byte of the buffer data with Erase logic
-* 8,x-BufCopy
-  * x points to another buffer. The current buffer gets copied there
-* 9,x-BufOR
-  * x points to another buffer. This gets copied to the current buffer with OR logic.
-* 10,x-BufAND
-  * x points to another buffer. This gets copied to the current buffer with AND logic.
-* 11,x-BufXOR
-  * x points to another buffer. This gets copied to the current buffer with XOR logic.
-* 12,x-BufErase
-  * x points to another buffer. This gets copied to the current buffer by erasing.
-* 13,x-BufSwap
-  * x points to a buffer. This swaps the current buffer with the other.
-* 14,x-CopyDownOR
-  * The current buffer is copied x pixels down to itself with OR logic
-* 15,x-CopyDownAND
-  * The current buffer is copied x pixels down to itself with AND logic
-* 16,x-CopyDownXOR
-  * The current buffer is copied x pixels down to itself with XOR logic
-* 17,x-CopyDownErase
-  * The current buffer is copied x pixels down to itself with Erase logic
-* 18,x-CopyUpOR
-  * The current buffer is copied x pixels up to itself with OR logic
-* 19,x-CopyUpAND
-  * The current buffer is copied x pixels up to itself with AND logic
-* 20,x-CopyUpXOR
-  * The current buffer is copied x pixels up to itself with XOR logic
-* 21,x-CopyUpErase
-  * The current buffer is copied x pixels up to itself with Erase logic
-* 22,type-FireCycle
-  * This burns the contents of the screen for one cycle. If type is 0, white fire is used, if it is 1, black fire is used.
-* 23,Type,Y,X,Width,Height-Fire Cycle 2
-  * Type is the same as FireCycle and the other inputs are the same as Pt-On( where X and Width go by every 8 pixels.
-
-
-## RecallPic
-This is used to copy a picture to the current buffer. As an example of its use `RecallPic 0`. This works for pictures 0 to 255 and archived pics.
+* `Fill(4,byte` - LoadBytePatternOR
+  * copies `byte` to every byte of the buffer data with OR logic
+* `Fill(5,byte` - LoadBytePatternXOR
+  * copies a `byte` to every byte of the buffer data with XOR logic
+* `Fill(6,byte` - LoadBytePatternAND
+  * copies a `byte` to every byte of the buffer data with AND logic
+* `Fill(7,byte` - LoadBytePatternErase
+  * copies a `byte` to every byte of the buffer data with Erase logic
+* `Fill(8,buf` - BufCopy
+  * `buf` points to another buffer. The current buffer gets copied there
+* `Fill(9,buf` - BufOR
+  * `buf` points to another buffer. This gets copied to the current buffer with OR logic.
+* `Fill(10,buf` - BufAND
+  * `buf` points to another buffer. This gets copied to the current buffer with AND logic.
+* `Fill(11,buf` - BufXOR
+  * `buf` points to another buffer. This gets copied to the current buffer with XOR logic.
+* `Fill(12,buf` - BufErase
+  * `buf` points to another buffer. This gets copied to the current buffer by erasing.
+* `Fill(13,buf` - BufSwap
+  * `buf` points to a buffer. This swaps the current buffer with the other.
+* `Fill(14,n` - CopyDownOR
+  * The current buffer is copied `n` pixels down to itself with OR logic
+* `Fill(15,n` - CopyDownAND
+  * The current buffer is copied `n` pixels down to itself with AND logic
+* `Fill(16,n` - CopyDownXOR
+  * The current buffer is copied `n` pixels down to itself with XOR logic
+* `Fill(17,n` - CopyDownErase
+  * The current buffer is copied `n` pixels down to itself with Erase logic
+* `Fill(18,n` - CopyUpOR
+  * The current buffer is copied `n` pixels up to itself with OR logic
+* `Fill(19,n` - CopyUpAND
+  * The current buffer is copied `n` pixels up to itself with AND logic
+* `Fill(20,n` - CopyUpXOR
+  * The current buffer is copied `n` pixels up to itself with XOR logic
+* `Fill(21,n` - CopyUpErase
+  * The current buffer is copied `n` pixels up to itself with Erase logic
+* `Fill(22,type` - FireCycle
+  * This burns the contents of the screen for one cycle. If type is 0,
+    white fire is used, if it is 1, black fire is used.
+* `Fill(23,Type,Y,X,Width,Height` - Fire Cycle 2
+  * Type is the same as FireCycle and the other inputs are the same as Pt-On(
+    where X and Width go by every 8 pixels.
 
 ## StorePic
-This stores the contents of the current buffer to a picture. This automatically deletes a preexisting picture. You can use this to store to pictures 0 to 255.
+Syntax is: `StorePic pic#[,buf`, where `buf` is an optional argument pointing
+to the buffer to save. By default, `buf` is the current buffer.
+
+This stores the contents of the buffer to an OS Pic var. This automatically
+deletes a preexisting picture. You can use this to store to pictures 0 to 255,
+where 0 = `Pic1`, 1 = `Pic2`, 9 = `Pic0`.
+
+## RecallPic
+Syntax is: `RecallPic pic#[,logic[,buf`, where `buf` is an optional argument
+pointing to where the contents are copied to. By default, `buf` is the current
+buffer.
+
+`pic#` is the picture var to read from, from 0 to 255 where 0 = `Pic1`,
+1 = `Pic2`, 9 = `Pic0`. This works even if the pic var is archived :)
+
+`logic` is:
+* 0 = Overwrite (default)
+* 1 = AND
+* 2 = XOR
+* 3 = OR
+* 5 = Erase
+
+## Rectangles
+*Unfortunately, you use `Line(` to draw rectangles. The excuse for this is that
+when I very first made Grammer 1, I didn't think I'd ever have a line drawing
+routine, but I had rectangles galore. Without forethought, I decided using the
+`Line(` token was quite reasonable. I was wrong.*
+
+This is used to draw rectangles. The syntax for this command is:
+`Line(x,y,Height,Width,Method`
+
+* x is a value from 0 to 95 and is the x pixel coordinate to begin drawing at
+* y is a value from 0 to 63 and is the y pixel coordinate to begin drawing at
+* Height is a value from 1 to 64 is the number of pixels tall the box will be
+* Width is a value from 1 to 96 is the number of pixels tall the box will be
+* Method is what kind of fill you want:
+  * 0-White. This turns off all of the pixels of the rectangle
+  * 1-Black. This turns on all of the pixels of the rectangle
+  * 2-Invert. This inverts all of the pixels of the rectangle
+  * 3-Black border. Draws a black perimeter not changing the inside
+  * 4-White border. Draws a white perimeter not changing the inside
+  * 5-Inverted border. Draws an inverted perimeter not changing the inside
+  * 6-Black border, White inside.
+  * 7-Black border, Inverted inside.
+  * 8-White border, Black inside.
+  * 9-White border, Inverted inside.
+  * 10-Shifts the contents in that rectangle up
+  * 11-Shifts the contents in that rectangle down
+  * 12-
+  * 13-
+  * 14-Pxl-Test Rect (count the number of ON pixels in the rectangle)
+  * 15-Pxl-Test Border (count the number of ON pixels on the border)
+  * 16-Inverted border, black fill
+  * 17-Inverted border, white fill
+
+## Line('
+*Unfortunately, you use `Line(` to draw rectangles. The excuse for this is that
+when I very first made Grammer 1, I didn't think I'd ever have a line drawing
+routine, but I had rectangles galore. Without forethought, I decided using the
+`Line(` token was quite reasonable. I was wrong.*
+
+This is used to draw lines. The syntax for this command is
+`Line('x1,y1,x2,y2[,Method[,Buffer`
+
+So it is two sets of pixel coordinates and then the Method:
+* 0=White
+* 1=Black (Default)
+* 2=Invert
+
+`Buffer` is the buffer to draw to. It defaults to the current buffer.
+
+
+## Circle(
+The syntax is `Circle(Y,X,R[,Method[,pattern[,buffer`.
+This draws a circle using Y and X as pixel coordinates and R as the radius of the circle in pixels. `Method` is how to draw the circle:
+* 1 - Black border (Default)
+* 2 - White border
+* 3 - Inverted border
+* 4 - White border, white fill
+* 5 - Black border, black fill
+* 6 - Invert border, invert fill
+* 7 - White border, black fill
+* 8 - White border, invert fill
+* 9 - Black border, white fill
+* 10 - Black border, invert fill
+* 11 - Invert border, white fill
+* 12 - Invert border, black fill
+
+
+`Pattern` is a number from 0 to 255 that will be used as a drawing pattern for the border. For example, 85 is `01010101` in binary, so every other pixel will not be drawn. Use 0 for no pattern. If the bit is 0, the pixel will be drawn, if it is 1, it won't be drawn. `Buffer` is the buffer to draw to (useful with grayscale).
+
+For basic usage:
+```
+.0:Return
+Circle(32,48,20
+DispGraph
+Stop
+```
+*![Image Description: A black circle of radius 20 pixels is drawn at the center of the screen.](img/004.png)*
+
+Or an example using a pattern, we need to include the method argument.
+```
+.0:Return
+Circle(32,48,20,1,85
+DispGraph
+Stop
+```
+*![Image Description: A black circle of radius 20 pixels is drawn at the center of the screen. Dotted every-other pixel.](img/005.png)*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Pt-Off(
 This is used to draw sprites to pixel coordinates. It is limited in some ways, compared to the Pt-On( command, but more flexible in others. The syntax is: `Pt-Off(Method,DataPointer,Y,X,[Width,[Height[,Buffer`
@@ -623,45 +861,6 @@ with the `Pt-Off(` command. Here is the syntax of the command:
 * Width is how wide the sprite is. 1=8 pixels, 2=16 pixels,.... Default is 1.
 * Height is the number of pixels tall the sprite is. Default is 8.
 
-## Line(
-This is used to draw rectangles. The syntax for this command is:
-`Line(x,y,Height,Width,Method`
-
-* x is a value from 0 to 95 and is the x pixel coordinate to begin drawing at
-* y is a value from 0 to 63 and is the y pixel coordinate to begin drawing at
-* Height is a value from 1 to 64 is the number of pixels tall the box will be
-* Width is a value from 1 to 96 is the number of pixels tall the box will be
-* Method is what kind of fill you want:
-  * 0-White. This turns off all of the pixels of the rectangle
-  * 1-Black. This turns on all of the pixels of the rectangle
-  * 2-Invert. This inverts all of the pixels of the rectangle
-  * 3-Black border. Draws a black perimeter not changing the inside
-  * 4-White border. Draws a white perimeter not changing the inside
-  * 5-Inverted border. Draws an inverted perimeter not changing the inside
-  * 6-Black border, White inside.
-  * 7-Black border, Inverted inside.
-  * 8-White border, Black inside.
-  * 9-White border, Inverted inside.
-  * 10-Shifts the contents in that rectangle up
-  * 11-Shifts the contents in that rectangle down
-  * 12-
-  * 13-
-  * 14-Pxl-Test Rect (count the number of ON pixels in the rectangle)
-  * 15-Pxl-Test Border (count the number of ON pixels on the border)
-  * 16-Inverted border, black fill
-  * 17-Inverted border, white fill
-
-## Line('
-This is used to draw lines. The syntax for this command is `Line('x1,y1,x2,y2[,Method[,Buffer`
-So it is two sets of pixel coordinates and then the Method:
-* 0=White
-* 1=Black
-* 2=Invert
-
-If Method is omitted, it uses `1` as the default.
-
-* Buffer is the buffer to draw to.
-
 ## Pt-Change(
 This command is used to draw tilemaps. There is currently one
 method, but more should be added in the future. Here is the
@@ -675,6 +874,3 @@ syntax:
 * TileMethod is how the sprite will be drawn (see Pt-On()
 
 Please note that the tile data and map data have to be raw bytes, as opposed to hexadecimal. There are some tools written in Grammer for creating sprite sets and tilemaps on TICalc or Omnimaga.
-
-
--->
