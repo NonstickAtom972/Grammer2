@@ -3665,7 +3665,8 @@ _:
   ld a,(hl)
   cp 4 \ ret z
   cp 3Fh \ ret z
-  cp 2Ah \ jr nz,-_
+  cp 2Ah \ ret z
+  or a \ jr nz,-_
   inc hl
   ret
 VarP:
