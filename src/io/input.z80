@@ -90,7 +90,8 @@ _:
 
 ;append a null byte to end the input string.
   ld hl,(input_head)
-  ld (hl),0
+;  ld (hl),0
+  ld (hl),$3F       ;Grammer needs a newline token
   ld hl,(input_base)
   ret
 inputloop:
