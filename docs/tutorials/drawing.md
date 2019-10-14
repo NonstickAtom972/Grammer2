@@ -151,7 +151,7 @@ graphics buffer to erase, for example: `ClrDrawG-T'` would clear the buffer that
 ## ClrHome
 This clears the home screen buffer and resets the cursor coordinates. This isn't
 really useful in Grammer as the homescreen is essentially unused, but it's good
-for aesthetics and advanced users users.
+for aesthetics and advanced users.
 
 ## Shade(
 This sets the contrast to a value from 0 to 39. 24 is normal. An example is
